@@ -1,9 +1,9 @@
 <template>
 	<new-page-wrapper>
-		<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-			<div class="relative z-20 flex h-16 items-center justify-between">
+		<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+			<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 				<div class="">
-					<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+					<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 						Tunnels
 					</h3>
 					<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -33,7 +33,7 @@
 						<div class="inline-block min-w-full align-middle">
 							<div class="sm:rounded-t-lg overflow-hidden">
 								<div>
-									<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 											<tr>
 												<th

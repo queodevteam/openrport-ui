@@ -81,7 +81,7 @@
 				<div class="flex flex-1 xl:overflow-hidden">
 					<!----><!---->
 					<div class="scrollbar-hide max-h-screen flex-1 xl:overflow-y-auto">
-						<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+						<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
 							<div
 								class="home-intro flex h-screen items-center justify-center after:fixed after:inset-x-0 after:bottom-0 after:top-[125px] after:z-[2] after:flex after:bg-white after:content-[''] lg:after:top-[45px] xl:after:top-0"
 							>

@@ -12,6 +12,15 @@ class UserGroupsModule extends HttpFactory {
 		);
 		return response.data;
 	}
+
+	async update(name: string, group: UserGroup): Promise<UserGroup> {
+		const response = await this.call<{ data: UserGroup }>(
+			'PUT',
+			`${this.RESOURCE}/${encodeURIComponent(name)}`,
+			group,
+		);
+		return response.data;
+	}
 }
 
 export default UserGroupsModule;

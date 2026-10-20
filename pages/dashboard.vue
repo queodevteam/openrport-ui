@@ -1,13 +1,19 @@
 <template>
 	<new-page-wrapper is-extra="true">
-		<div class="flex flex-1 xl:overflow-hidden">
+		<div class="flex min-h-0 flex-1 flex-col xl:flex-row xl:overflow-hidden">
 			<new-devices-sidebar :accordion-items="accordionItems" />
-			<NuxtPage />
+			<div
+				class="min-h-0 flex-1"
+				:class="route.params.id ? 'flex' : 'hidden xl:block'"
+			>
+				<NuxtPage />
+			</div>
 		</div>
 	</new-page-wrapper>
 </template>
 
 <script setup lang="ts">
+const route = useRoute();
 const clientStore = useClientStore();
 const accordionItems = ref([
 	{ title: 'All', content: 'Content for item 1' },

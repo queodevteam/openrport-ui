@@ -1,13 +1,13 @@
 <template>
 	<new-page-wrapper is-extra="true">
-		<div class="flex flex-1 xl:overflow-hidden">
+		<div class="flex min-h-0 flex-1 flex-col xl:flex-row xl:overflow-hidden">
 			<new-settings-sidebar />
 			<div class="scrollbar-hide max-h-screen flex-1 xl:overflow-y-auto">
-				<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+				<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
 					<div class="px-3">
-						<div class="relative z-20 flex h-16 items-center justify-between">
+						<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 							<div class="">
-								<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Client Access
 								</h3>
 								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -98,7 +98,7 @@
 									<div class="inline-block min-w-full align-middle">
 										<div class="sm:rounded-t-lg overflow-hidden">
 											<div>
-												<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+												<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 													<thead class="rounded-lg bg-gray-50 dark:bg-slate-950">
 														<tr>
 															<th

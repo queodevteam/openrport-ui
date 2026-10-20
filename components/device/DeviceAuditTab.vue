@@ -79,7 +79,7 @@
 								<div class="sm:rounded-t-lg overflow-hidden">
 									<div>
 										<table
-											class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+											class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700"
 										>
 											<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 												<tr>

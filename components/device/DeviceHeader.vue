@@ -1,28 +1,31 @@
 <template>
-	<div class="relative z-20 flex h-16 items-center justify-between">
-		<div class="">
-			<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
-				<div class="item-center flex flex-wrap items-center gap-4">
-					<div class="flex gap-4">
-						<div
-							class="client-icon flex w-12 items-center justify-center"
-							style="opacity: 1; transform: scale(1.4);"
-						>
+	<div class="relative z-20 flex flex-wrap items-start justify-between gap-3">
+		<div class="min-w-0">
+			<NuxtLink
+				to="/dashboard"
+				class="mb-2 inline-flex min-h-11 items-center text-sm font-medium text-primary-700 xl:hidden"
+			>
+				Clients
+			</NuxtLink>
+			<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
+				<div class="flex flex-wrap items-center gap-3">
+					<div class="flex min-w-0 items-center gap-3">
+						<div class="client-icon flex w-10 shrink-0 items-center justify-center">
 							<ClientIcon
 								:os_family="device.os_family"
 								:os_kernel="device.os_kernel"
 								:os_full_name="device.os_full_name"
 							/>
 						</div>
-						<h2 class="text-3xl font-bold uppercase text-primary">
-							{{ (device?.name || device?.hostname || '').toUpperCase() }}
+						<h2 class="truncate text-2xl font-semibold text-primary sm:text-3xl">
+							{{ device?.name || device?.hostname || '' }}
 						</h2>
 					</div>
 					<div
-						class="hidden h-4 w-4 rounded-full lg:flex"
+						class="h-3 w-3 shrink-0 rounded-full"
 						:class="{ 'bg-error': device?.disconnected_at !== null, 'bg-success': device?.disconnected_at === null }"
 					/>
-					<div class="flex items-center gap-2 text-sm font-bold text-theme-inverted-darker">
+					<div class="flex min-w-0 flex-wrap items-center gap-2 text-sm font-medium text-theme-inverted-darker">
 						<div class="inline-flex w-max cursor-pointer">
 							<span>{{ device?.address }}</span>
 						</div>
@@ -72,11 +75,10 @@
 &nbsp;
 			</p>
 		</div>
-		<div class="flex-1" />
-		<div class="ml-2 flex-shrink-0">
-			<div class="flex items-center justify-end gap-4">
+		<div class="flex-shrink-0">
+			<div class="flex flex-wrap items-center justify-end gap-2">
 				<button
-					class="hover:opacity-80 p-0 text-primary rounded inline-flex items-center duration-200 focus:outline-none bg-transparent text-sm font-normal uppercase"
+					class="hover:opacity-80 inline-flex min-h-11 items-center rounded bg-transparent p-2 text-sm font-medium text-primary duration-150 focus:outline-none"
 					type="button"
 				>
 					<svg

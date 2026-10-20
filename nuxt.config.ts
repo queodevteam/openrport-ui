@@ -77,10 +77,21 @@ export default defineNuxtConfig({
 		},
 	},
 
+	components: {
+		dirs: [
+			{
+				path: '~/components',
+				pathPrefix: false,
+				ignore: ['**/DeviceMonitoringTab.vue'],
+			},
+		],
+	},
+
 	runtimeConfig: {
 		public: {
 			appEnv: process.env.NUXT_APP_ENV,
 			apiUrl: process.env.NUXT_API_URL,
+			monitoringEnabled: process.env.NUXT_PUBLIC_MONITORING_ENABLED === 'true',
 		},
 	},
 

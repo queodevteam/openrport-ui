@@ -1,7 +1,7 @@
 <template>
 	<BaseModal v-model="internalIsOpen">
 		<div
-			class="relative z-20 w-full max-w-screen-xl items-center rounded border border-slate-400 bg-gray-100 px-5 py-10 text-theme-inverted-lighter shadow dark:bg-slate-800"
+			class="relative z-20 max-h-[100dvh] w-full max-w-screen-xl items-center overflow-y-auto border border-slate-400 bg-gray-100 px-4 py-6 text-theme-inverted-lighter shadow dark:bg-slate-800 sm:rounded sm:px-5 sm:py-10"
 		>
 			<form @submit.prevent="apply">
 				<div

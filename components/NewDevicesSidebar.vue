@@ -1,11 +1,12 @@
 <template>
 	<nav
 		aria-label="Sections"
-		class="hidden h-screen w-96 flex-shrink-0 overflow-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:flex xl:flex-col"
+		class="h-[calc(100dvh-3.5rem)] w-full flex-shrink-0 overflow-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:h-screen xl:w-96 xl:flex-col"
+		:class="route.params.id ? 'hidden xl:flex' : 'flex flex-col'"
 	>
 		<div>
-			<div class="relative h-screen w-full p-3 px-2">
-				<div class="flex h-10 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
+			<div class="relative h-full min-h-0 w-full p-3 px-2">
+				<div class="flex min-h-11 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
 					<form
 						class="w-full"
 						@submit.prevent
@@ -308,6 +309,7 @@ import { useDebounceFn, useLocalStorage } from '@vueuse/core';
 import Accordion from './Accordion.vue';
 import AddClientModal from '~/components/clients/AddClientModal.vue';
 
+const route = useRoute();
 const props = defineProps({
 	accordionItems: Array,
 	default: [

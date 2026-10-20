@@ -24,7 +24,7 @@
 						<div class="inline-block min-w-full align-middle">
 							<div class="sm:rounded-lg overflow-hidden">
 								<div>
-									<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 											<tr>
 												<th
@@ -207,7 +207,7 @@
 						<div class="inline-block min-w-full align-middle">
 							<div class="sm:rounded-lg overflow-hidden">
 								<div>
-									<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 											<tr>
 												<th
@@ -356,7 +356,7 @@
 		</div>
 		<BaseModal :model-value="Boolean(editingAcl)">
 			<form
-				class="w-full max-w-lg rounded border border-slate-400 bg-white p-6 shadow dark:bg-slate-800"
+				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6"
 				@submit.prevent="saveAcl"
 			>
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
@@ -407,7 +407,7 @@
 		</BaseModal>
 		<BaseModal :model-value="Boolean(editingStored)">
 			<form
-				class="w-full max-w-lg rounded border border-slate-400 bg-white p-6 shadow dark:bg-slate-800"
+				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6"
 				@submit.prevent="saveStored"
 			>
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
@@ -500,7 +500,7 @@
 			</form>
 		</BaseModal>
 		<BaseModal :model-value="Boolean(pendingDelete)">
-			<div class="w-full max-w-md rounded border border-slate-400 bg-white p-6 shadow dark:bg-slate-800">
+			<div class="max-h-[100dvh] w-full max-w-md overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6">
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
 					Delete tunnel
 				</h3>

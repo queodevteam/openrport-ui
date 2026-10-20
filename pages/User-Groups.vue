@@ -1,12 +1,12 @@
 <template>
 	<new-page-wrapper is-extra="true">
-		<div class="flex flex-1 xl:overflow-hidden">
+		<div class="flex min-h-0 flex-1 flex-col xl:flex-row xl:overflow-hidden">
 			<new-settings-sidebar />
 			<div class="scrollbar-hide max-h-screen flex-1 xl:overflow-y-auto">
-				<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-					<div class="relative z-20 flex h-16 items-center justify-between">
+				<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+					<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 						<div class="">
-							<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+							<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 								User groups
 							</h3>
 							<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -22,14 +22,12 @@
 					</div><!---->
 					<div class="relative z-10 w-full">
 						<!---->
-						<div
-							class="flow-root overflow-hidden border border-gray-100 ring-1 ring-black ring-opacity-10 dark:border-gray-600 sm:rounded-lg"
-						>
+						<AppCard>
 							<div class="overflow-auto relative z-10 -mb-2">
 								<div class="inline-block min-w-full align-middle">
 									<div class="sm:rounded-t-lg overflow-hidden">
 										<div>
-											<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+											<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 												<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 													<tr>
 														<th
@@ -68,6 +66,11 @@
 													</tr>
 												</thead>
 												<tbody class="z-10 divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+													<tr v-if="userGroups && userGroups.length === 0">
+														<td colspan="4">
+															<AppEmpty>No user groups.</AppEmpty>
+														</td>
+													</tr>
 													<tr
 														v-for="(group, key) in userGroups"
 														:key="key"
@@ -93,7 +96,15 @@
 																</template>
 															</div>
 														</td>
-														<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6" />
+														<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
+															<button
+																type="button"
+																class="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-primary-700 hover:bg-primary-50"
+																@click="openDeviceTabs(group)"
+															>
+																Pestañas
+															</button>
+														</td>
 														<td class="pr-4 sm:pr-6 relative w-8 whitespace-nowrap py-3.5 pl-3 text-right text-sm font-normal">
 															<div class="text-blue-600 hover:text-blue-900">
 																<HeadlessMenu as="div">
@@ -223,7 +234,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</AppCard>
 						<p class="mt-3 px-1.5 py-5 text-sm text-theme-inverted-light">
 							New user groups are created from
 							the
@@ -304,11 +315,112 @@
 </div>
 </div>
 </div> -->
+		<BaseModal v-model="tabsOpen">
+			<AppCard>
+				<form
+					class="max-h-[100dvh] w-full max-w-lg overflow-y-auto p-4 sm:p-6"
+					@submit.prevent="saveDeviceTabs"
+				>
+					<h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+						Pestañas del dispositivo
+					</h2>
+					<p class="mt-1 text-sm text-gray-500">
+						{{ editingGroup?.name }}. Si se ocultan todas, Inventory sigue visible.
+					</p>
+					<div class="mt-4 grid gap-2">
+						<label
+							v-for="tab in configurableTabs"
+							:key="tab.id"
+							class="flex min-h-11 items-center gap-3 rounded-md px-2 text-sm text-gray-800 dark:text-gray-100"
+						>
+							<input
+								v-model="draftTabs[tab.id]"
+								type="checkbox"
+								class="h-4 w-4"
+							>
+							{{ tab.label }}
+						</label>
+					</div>
+					<p
+						v-if="tabsError"
+						class="mt-3 text-sm text-red-600"
+					>
+						{{ tabsError }}
+					</p>
+					<div class="mt-6 flex flex-wrap justify-end gap-2">
+						<button
+							type="button"
+							class="inline-flex min-h-11 items-center rounded-md px-4 text-sm"
+							@click="tabsOpen = false"
+						>
+							Cancel
+						</button>
+						<button
+							type="submit"
+							class="inline-flex min-h-11 items-center rounded-md bg-primary-800 px-4 text-sm font-semibold text-white"
+							:disabled="savingTabs"
+						>
+							Save
+						</button>
+					</div>
+				</form>
+			</AppCard>
+		</BaseModal>
 	</new-page-wrapper>
 </template>
 
 <script setup lang="ts">
-const { $api } = useNuxtApp();
+import type { UserGroup } from '~/types';
+import { BaseModal } from '~/components/ui/base-modal';
 
-const { data: userGroups } = useAsyncData(('user-groups'), () => $api.userGroups.all());
+const { $api } = useNuxtApp();
+const { configurableTabs } = useDeviceTabs();
+const { data: userGroups, refresh } = useAsyncData(('user-groups'), () => $api.userGroups.all());
+
+const tabsOpen = ref(false);
+const savingTabs = ref(false);
+const tabsError = ref('');
+const editingGroup = ref<UserGroup | null>(null);
+const draftTabs = reactive<Record<string, boolean>>({});
+
+const openDeviceTabs = (group: UserGroup) => {
+	editingGroup.value = group;
+	tabsError.value = '';
+	for (const tab of configurableTabs.value) {
+		const saved = group.device_tabs;
+		draftTabs[tab.id] = !saved || Object.keys(saved).length === 0 ? true : saved[tab.id] !== false;
+	}
+	tabsOpen.value = true;
+};
+
+const saveDeviceTabs = async () => {
+	if (!editingGroup.value) {
+		return;
+	}
+	savingTabs.value = true;
+	tabsError.value = '';
+	const deviceTabs: Record<string, boolean> = {};
+	for (const tab of configurableTabs.value) {
+		deviceTabs[tab.id] = draftTabs[tab.id] !== false;
+	}
+	const savedMonitoring = editingGroup.value.device_tabs?.monitoring;
+	if (savedMonitoring !== undefined) {
+		deviceTabs.monitoring = savedMonitoring;
+	}
+	try {
+		await $api.userGroups.update(editingGroup.value.name, {
+			...editingGroup.value,
+			device_tabs: deviceTabs,
+		});
+		tabsOpen.value = false;
+		await refresh();
+	}
+	catch (error) {
+		tabsError.value = 'No se pudieron guardar las pestañas. Hace falta la base de usuarios.';
+		console.error(error);
+	}
+	finally {
+		savingTabs.value = false;
+	}
+};
 </script>

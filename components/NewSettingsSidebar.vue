@@ -1,7 +1,7 @@
 <template>
 	<nav
 		aria-label="Sections"
-		class="hidden w-96 flex-shrink-0 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:flex xl:flex-col"
+		class="flex max-h-64 w-full flex-shrink-0 flex-col overflow-y-auto border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:max-h-none xl:w-96 xl:border-b-0 xl:border-r"
 	>
 		<div class="flex h-16 flex-shrink-0 items-center border-b border-gray-200 px-6 dark:border-gray-700">
 			<p class="text-lg font-medium text-gray-900 dark:text-gray-50">
@@ -11,7 +11,7 @@
 		<div class="min-h-0 flex-1 overflow-y-auto">
 			<nuxt-link
 				to="/profile"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/users"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/user-groups"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/client-access"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +114,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/client-groups"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -140,7 +140,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/vault"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/api-tokens"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/info"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +216,7 @@
 			</nuxt-link>
 			<nuxt-link
 				to="/support"
-				class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"
+				class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"
 			><svg
 					data-v-ca945699=""
 					xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +241,7 @@
 				</div>
 			</nuxt-link>
 			<!-- <a href="https://downloads.rport.io/frontend/license.html" rel="noopener noreferrer" target="_self"
-                class="hover:bg-blue-300 hover:bg-opacity-50 flex border-b border-gray-200 p-6 dark:border-gray-700"><svg
+                class="hover:bg-blue-300 hover:bg-opacity-50 flex min-h-11 border-b border-gray-200 px-4 py-3 transition-colors duration-150 dark:border-gray-700 xl:p-6"><svg
                     data-v-ca945699="" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"
                     class="icon -mt-0.5 h-6 w-6 flex-shrink-0 text-gray-400" aria-hidden="true">
                     <path fill="currentColor"

@@ -123,4 +123,26 @@
     .bg-transparent {
         background-color: transparent;
     }
+
+    @media (max-width: 767px) {
+        .app-table thead {
+            display: none;
+        }
+
+        .app-table tbody tr {
+            display: block;
+            margin: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            background: white;
+        }
+
+        .app-table td {
+            display: block;
+            white-space: normal;
+            border: 0;
+            padding: 0.5rem 0.75rem;
+        }
+    }
 }

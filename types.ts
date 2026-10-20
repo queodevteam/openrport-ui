@@ -145,6 +145,7 @@ export interface Profile {
 	groups: string[];
 	two_fa_send_to: string;
 	effective_user_permissions: Permissions;
+	effective_device_tabs?: Record<string, boolean>;
 	group_permissions_enabled: boolean;
 }
 export interface UserListResponse {
@@ -182,6 +183,7 @@ export interface UserPayload {
 export interface UserGroup {
 	name: string;
 	permissions: Permissions;
+	device_tabs?: Record<string, boolean>;
 }
 
 export interface UserGroupResponse {

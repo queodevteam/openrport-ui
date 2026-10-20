@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
-	devtools: { enabled: true },
+	devtools: { enabled: process.env.NODE_ENV !== 'production' },
+	sourcemap: false,
 
 	css: [
 		'~/assets/css/tailwind.css',

@@ -1,0 +1,15 @@
+# Read at container start. Changing them does not require a rebuild.
+# UI: http://localhost:3001
+
+services:
+  ui:
+    build:
+      context: .
+    image: openrport-ui:latest
+    ports:
+      - "${UI_PORT:-3001}:80"
+    environment:
+      NUXT_API_URL: ${NUXT_API_URL:-https://iot.console.queo.com.co}
+      NUXT_PUBLIC_MONITORING_ENABLED: ${NUXT_PUBLIC_MONITORING_ENABLED:-false}
+      NUXT_APP_ENV: ${NUXT_APP_ENV:-}
+    restart: unless-stopped

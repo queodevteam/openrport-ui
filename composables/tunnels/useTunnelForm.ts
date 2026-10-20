@@ -2,7 +2,7 @@ import { storeToRefs } from 'pinia';
 import type { TunnelFormState, TunnelPayload } from '~/types';
 import { useTunnelValidation } from '~/composables/tunnels/useTunnelValidation';
 import { TUNNEL_OPTIONS } from '~/constants';
-import { toQueryString } from '~/lib/utils';
+import { tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
 
 export function useTunnelForm(client: any) {
 	const tunnelStore = useTunnelStore();
@@ -69,8 +69,21 @@ export function useTunnelForm(client: any) {
 		}
 	};
 
+	const submitError = computed(() => {
+		if (!errors.value || typeof errors.value !== 'object') return '';
+		if (!Object.keys(errors.value as object).length) return '';
+		return tunnelErrorMessage(errors.value);
+	});
+	const portApiError = computed(() => /port/i.test(submitError.value) ? submitError.value : '');
+	const aclApiError = computed(() => /acl/i.test(submitError.value) ? submitError.value : '');
+	const formApiError = computed(() => {
+		if (!submitError.value || portApiError.value || aclApiError.value) return '';
+		return submitError.value;
+	});
+
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
+		errors.value = {};
 		if (!isFormValid.value) return;
 		const payload: TunnelPayload = {
 			remote: String(formState.port),
@@ -114,12 +127,11 @@ export function useTunnelForm(client: any) {
 			isLoading.value = false;
 		}
 		catch (e) {
-			console.log(e);
+			errors.value = (e as { data?: unknown })?.data ?? e;
 		}
 		finally {
 			isLoading.value = false;
 		}
-		console.log(toQueryString(payload));
 	};
 
 	watch(() => formState.service, handleServiceChange);
@@ -134,6 +146,9 @@ export function useTunnelForm(client: any) {
 		lportError,
 		lportErrorMessage,
 		forwardingError,
+		portApiError,
+		aclApiError,
+		formApiError,
 		isFormValid,
 		handleSubmit,
 	};

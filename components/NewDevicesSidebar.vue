@@ -1,11 +1,11 @@
 <template>
 	<nav
 		aria-label="Sections"
-		class="h-[calc(100dvh-3.5rem)] w-full flex-shrink-0 overflow-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 lg:h-screen xl:w-96 xl:flex-col"
+		class="relative h-full w-full flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:w-96 xl:flex-col"
 		:class="route.params.id ? 'hidden xl:flex' : 'flex flex-col'"
 	>
-		<div>
-			<div class="relative h-full min-h-0 w-full p-3 px-2">
+		<div class="flex h-full min-h-0 flex-col">
+			<div class="sticky top-0 z-30 shrink-0 border-b border-gray-200 bg-white px-2 pb-2 pt-3 dark:border-gray-700 dark:bg-gray-900">
 				<div class="flex min-h-11 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
 					<form
 						class="w-full"
@@ -233,6 +233,8 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="relative min-h-0 flex-1 overflow-hidden">
 
 				<!--                <div class="absolute inset-x-0 bottom-0 top-32">&lt;!&ndash;&ndash;&gt; -->
 				<!--                    <div class="w-full px-1"> -->
@@ -272,6 +274,7 @@
 				<!--                    <div class="my-4 flex items-center justify-between">&lt;!&ndash;&ndash;&gt;&lt;!&ndash;&ndash;&gt;</div> -->
 				<!--                </div> -->
 				<Accordion
+					class="!top-0 overflow-y-auto px-2 pb-3"
 					:list-style="selectedSettingOpt"
 					:items="accordionItems"
 					:filter="clientFilter"
@@ -310,6 +313,7 @@ import Accordion from './Accordion.vue';
 import AddClientModal from '~/components/clients/AddClientModal.vue';
 
 const route = useRoute();
+const clientStore = useClientStore();
 const props = defineProps({
 	accordionItems: Array,
 	default: [
@@ -326,6 +330,9 @@ const appliedSearch = ref('');
 const matchBy = ref('word_in_word');
 const connectionState = ref('any');
 const reloadToken = ref(0);
+watch(() => clientStore.listRevision, (revision) => {
+	if (revision > 0) reloadToken.value += 1;
+});
 const clientFilter = computed(() => ({
 	search: appliedSearch.value,
 	matchBy: matchBy.value,

@@ -1,10 +1,10 @@
 <template>
 	<new-page-wrapper is-extra="true">
-		<div class="flex min-h-0 flex-1 flex-col xl:flex-row xl:overflow-hidden">
+		<div class="flex h-full min-h-0 flex-1 flex-col overflow-hidden xl:flex-row">
 			<new-devices-sidebar :accordion-items="accordionItems" />
 			<div
-				class="min-h-0 flex-1"
-				:class="route.params.id ? 'flex' : 'hidden xl:block'"
+				class="h-full min-h-0 flex-1 overflow-hidden"
+				:class="route.params.id ? 'flex flex-col' : 'hidden xl:block'"
 			>
 				<NuxtPage />
 			</div>
@@ -30,7 +30,16 @@ const updateGroupsItems = () => {
 	accordionItems.value.push({ title: 'Favorites', content: 'Content for item 2', id: 'favorites' });
 
 	clientStore.groups.forEach((group) => {
-		accordionItems.value.push({ title: group.id, id: group.id, content: `${group.description} - (${group.num_clients})` });
+		accordionItems.value.push({
+			title: group.id,
+			id: group.id,
+			count: group.num_clients,
+			content: `${group.description} - (${group.num_clients})`,
+		});
 	});
 };
+
+watch(() => clientStore.listRevision, () => {
+	updateGroupsItems();
+});
 </script>

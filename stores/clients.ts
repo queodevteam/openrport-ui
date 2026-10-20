@@ -10,6 +10,7 @@ export const useClientStore = defineStore('clients', {
 		currentClient: {} as Client,
 		currentMetrics: [] as Array<ClientMetric>,
 		clientLoadSeq: 0,
+		listRevision: 0,
 	}),
 	getters: {
 		getClients(state) {
@@ -57,6 +58,21 @@ export const useClientStore = defineStore('clients', {
 			for (const client of clients) {
 				this.rememberClient(client);
 			}
+		},
+
+		forgetClient(clientId: string) {
+			if (!clientId) return;
+			delete this.knownClients[clientId];
+			delete this.knownClients[clientId.toLowerCase()];
+			if (this.currentClient?.id === clientId || this.currentClient?.id?.toLowerCase() === clientId.toLowerCase()) {
+				this.currentClient = {} as Client;
+			}
+		},
+
+		async dropClient(clientId: string) {
+			this.forgetClient(clientId);
+			await this.loadGroups();
+			this.listRevision += 1;
 		},
 
 		async loadGroupList(id: string, filter?: ClientSearch) {

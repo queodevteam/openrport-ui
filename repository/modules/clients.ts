@@ -88,6 +88,14 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
+	async mountpoints(id: string): Promise<{ data?: { mountpoints?: string | Record<string, number> }[] }> {
+		return this.call(
+			'GET',
+			`${this.RESOURCE}/${id}/mountpoints?page[limit]=1`,
+			undefined,
+		);
+	}
+
 	async tunnels(id: string): Promise<Tunnel[]> {
 		const response = await this.call<TunnelResponse>(
 			'GET',
@@ -110,6 +118,14 @@ class ClientsModule extends HttpFactory {
 		return await this.call<{ data: Tunnel }>(
 			'PUT',
 			`${this.RESOURCE}/${clientId}/tunnels${toQueryString(payload)}`,
+			undefined,
+		);
+	}
+
+	async delete(id: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${id}`,
 			undefined,
 		);
 	}

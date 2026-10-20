@@ -14,19 +14,6 @@
 							</p>
 						</div>
 						<div class="flex-1" />
-						<div class="ml-2 flex-shrink-0">
-							<button
-								class="bg-primary-500 hover:bg-primary-800 focus-visible:outline-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-								type="button"
-							>
-								<!----><!----><span
-									class="flex items-center justify-center gap-x-2"
-								><!----> Reload</span>
-							</button>
-							<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-							</p>
-						</div>
 					</div><!---->
 					<div class="flex flex-col gap-y-8">
 						<div

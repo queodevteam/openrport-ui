@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full w-full flex-1">
+	<div class="h-full w-full flex-1 px-2 pb-6 sm:px-4">
 		<div
 			data-v-8efdf101=""
 			class="min-h-[600px] w-full px-1"

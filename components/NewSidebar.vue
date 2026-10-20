@@ -1,11 +1,11 @@
 <template>
 	<div
-		class="lg:flex lg:flex-shrink-0"
+		class="h-full overflow-hidden lg:flex lg:flex-shrink-0"
 		:class="mobileNavOpen ? 'fixed inset-0 z-50 flex bg-black/40 lg:static lg:inset-auto lg:z-40 lg:bg-transparent' : 'hidden lg:flex'"
 		@click.self="closeMobileNav"
 	>
 		<div :class="['relative z-40 flex h-full flex-col bg-primary-800 transition-all duration-150', showLabels ? 'w-64' : 'w-20']">
-			<div class="flex min-h-0 flex-1 flex-col bg-primary-800">
+			<div class="flex min-h-0 flex-1 flex-col overflow-y-auto bg-primary-800">
 				<div class="flex-1">
 					<div class="flex items-center justify-center bg-primary-800 py-4">
 						<div class="flex justify-center py-6 text-white">

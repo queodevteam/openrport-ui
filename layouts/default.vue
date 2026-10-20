@@ -1,8 +1,8 @@
 <template>
-	<div class="flex h-full min-h-screen">
+	<div class="flex h-full overflow-hidden">
 		<NewSidebar />
-		<div class="flex min-w-0 flex-1 flex-col">
-			<header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-gray-200 bg-white px-3 lg:hidden dark:border-gray-700 dark:bg-gray-900">
+		<div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+			<header class="z-30 flex h-14 shrink-0 items-center gap-3 border-b border-gray-200 bg-white px-3 lg:hidden dark:border-gray-700 dark:bg-gray-900">
 				<button
 					type="button"
 					class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-gray-700"
@@ -24,7 +24,7 @@
 				</button>
 				<span class="text-sm font-semibold text-gray-900 dark:text-white">OpenRport</span>
 			</header>
-			<div class="min-h-0 flex-1">
+			<div class="min-h-0 flex-1 overflow-hidden">
 				<slot />
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="px-3 pt-16">
+	<div class="pt-2">
 		<form @submit="handleSubmit">
 			<div class="flex flex-col gap-y-8">
 				<div
@@ -13,7 +13,7 @@
 									title="Service to access on theremote site"
 									number="1"
 								>
-									<div class="grid-cols-3 grid gap-2">
+									<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
 										<div class="col-span-2">
 											<div class="relative mt-1 flex w-full flex-col">
 												<select
@@ -112,7 +112,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="mt-2 grid grid-cols-3 gap-2">
+									<div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
 										<div class="col-span-2 flex items-start justify-between">
 											<div class="mr-5 pt-9">
 												<div class="flex flex-col">
@@ -309,7 +309,7 @@
 									title="Public Port"
 									number="2"
 								>
-									<div class="grid grid-cols-3 gap-2">
+									<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
 										<div class="col-span-2">
 											<div class="relative mt-1 flex w-full flex-col">
 												<select
@@ -360,10 +360,10 @@
 												>Port</label>
 											</div>
 											<p
-												v-if="lportError"
+												v-if="lportError || portApiError"
 												class="mt-1 pl-1 text-sm text-red-500"
 											>
-												{{ lportErrorMessage }}
+												{{ lportError ? lportErrorMessage : portApiError }}
 											</p>
 											<!---->
 										</div>
@@ -374,7 +374,7 @@
 									title="ACL, who is allowed to use the tunnel"
 									number="3"
 								>
-									<div class="grid grid-cols-3 gap-2">
+									<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
 										<div class="col-span-2">
 											<div class="relative mt-1 flex w-full flex-col">
 												<select
@@ -482,10 +482,24 @@
 										</div>
 										<!---->
 										<!----><!---->
-									</div><!----><!---->
+									</div>
+									<p
+										v-if="aclApiError"
+										class="mt-2 text-sm text-red-500"
+									>
+										{{ aclApiError }}
+									</p>
 								</FormSection>
 
+								<button
+									type="button"
+									class="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-primary-700"
+									@click="showAdvanced = !showAdvanced"
+								>
+									{{ showAdvanced ? 'Hide more options' : 'More options' }}
+								</button>
 								<FormSection
+									v-if="showAdvanced"
 									title="Further options"
 									number="4"
 								>
@@ -580,10 +594,17 @@
 						</div>
 					</div><!---->
 				</div>
+				<p
+					v-if="formApiError"
+					class="text-sm text-red-600"
+				>
+					{{ formApiError }}
+				</p>
 				<div class="flex w-full items-center justify-end">
 					<button
-						class="bg-vtd-primary-500 hover:bg-vtd-primary-700 focus-visible:outline-vtd-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+						class="inline-flex min-h-11 items-center rounded-md bg-primary-800 px-4 text-sm font-semibold text-white transition-colors duration-150 hover:bg-primary-700 disabled:bg-gray-400"
 						type="submit"
+						:disabled="isLoading"
 					>
 						<span
 							v-if="isLoading"
@@ -637,7 +658,12 @@ const {
 	lportError,
 	lportErrorMessage,
 	forwardingError,
+	portApiError,
+	aclApiError,
+	formApiError,
 	isLoading,
 	handleSubmit,
 } = useTunnelForm(props.device);
+
+const showAdvanced = ref(false);
 </script>

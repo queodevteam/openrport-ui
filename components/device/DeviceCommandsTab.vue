@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full w-full flex-1">
+	<div class="h-full w-full flex-1 px-2 pb-6 sm:px-4">
 		<div class="relative">
 			<div class="primary relative grid grid-cols-7">
 				<div

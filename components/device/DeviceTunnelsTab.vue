@@ -1,6 +1,6 @@
 <template>
-	<div class="h-full flex-1">
-		<div class="mt-8 w-full shrink-0">
+	<div class="h-full flex-1 px-2 pb-6 sm:px-4">
+		<div class="mt-4 w-full shrink-0">
 			<div class="relative z-10 w-full">
 				<div class="sm:flex sm:items-center">
 					<div class="sm:flex-auto">

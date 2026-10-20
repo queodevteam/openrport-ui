@@ -81,7 +81,13 @@ export default defineNuxtConfig({
 		dirs: [
 			{
 				path: '~/components',
-				ignore: ['**/DeviceMonitoringTab.vue'],
+				ignore: [
+					'**/DeviceMonitoringTab.vue',
+					'**/DeviceMetaDataTab.vue',
+					'**/DeviceDocumentsTab.vue',
+					'**/DeviceFilesTab.vue',
+					'**/DeviceAuditTab.vue',
+				],
 			},
 		],
 	},

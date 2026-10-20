@@ -1,12 +1,8 @@
 import type { Component } from 'vue';
 import { defineAsyncComponent } from 'vue';
 import type { Permissions } from '~/types';
-import DeviceAuditTab from '~/components/device/DeviceAuditTab.vue';
 import DeviceCommandsTab from '~/components/device/DeviceCommandsTab.vue';
-import DeviceDocumentsTab from '~/components/device/DeviceDocumentsTab.vue';
-import DeviceFilesTab from '~/components/device/DeviceFilesTab.vue';
 import DeviceInventoryTab from '~/components/device/DeviceInventoryTab.vue';
-import DeviceMetaDataTab from '~/components/device/DeviceMetaDataTab.vue';
 import DeviceScriptsTab from '~/components/device/DeviceScriptsTab.vue';
 import DeviceTunnelsTab from '~/components/device/DeviceTunnelsTab.vue';
 import SchedulesTab from '~/components/device/SchedulesTab.vue';
@@ -30,12 +26,24 @@ export const deviceTabCatalog: DeviceTab[] = [
 	{ id: 'schedules', label: 'Schedules', permission: 'scheduler' },
 ];
 
+const disabledTabIds = new Set(['meta-data', 'documents', 'files', 'audit']);
+
 export function isMonitoringEnabled(value: unknown): boolean {
 	return value === true;
 }
 
+export function isDeviceTabOffered(id: string, monitoringEnabled: boolean): boolean {
+	if (disabledTabIds.has(id)) {
+		return false;
+	}
+	if (id === 'monitoring') {
+		return monitoringEnabled;
+	}
+	return true;
+}
+
 export function configurableDeviceTabs(monitoringEnabled: boolean): DeviceTab[] {
-	return deviceTabCatalog.filter(tab => tab.id !== 'monitoring' || monitoringEnabled);
+	return deviceTabCatalog.filter(tab => isDeviceTabOffered(tab.id, monitoringEnabled));
 }
 
 export function visibleDeviceTabs(options: {
@@ -44,7 +52,7 @@ export function visibleDeviceTabs(options: {
 	deviceTabs?: Record<string, boolean> | null;
 }): DeviceTab[] {
 	const tabs = deviceTabCatalog.filter((tab) => {
-		if (tab.id === 'monitoring' && !options.monitoringEnabled) {
+		if (!isDeviceTabOffered(tab.id, options.monitoringEnabled)) {
 			return false;
 		}
 		if (options.deviceTabs && options.deviceTabs[tab.id] === false) {
@@ -66,12 +74,8 @@ export function deviceTabComponents(monitoringEnabled: boolean): Record<string, 
 	const components: Record<string, Component> = {
 		inventory: DeviceInventoryTab,
 		tunnels: DeviceTunnelsTab,
-		'meta-data': DeviceMetaDataTab,
-		documents: DeviceDocumentsTab,
 		commands: DeviceCommandsTab,
 		scripts: DeviceScriptsTab,
-		files: DeviceFilesTab,
-		audit: DeviceAuditTab,
 		schedules: SchedulesTab,
 	};
 

@@ -5,9 +5,26 @@ class GroupsModule extends HttpFactory {
 	private RESOURCE = '/api/v1/client-groups';
 
 	async listGroups(): Promise<ClientGroupResponse> {
-		return this.call<ClientGroupResponse>(
-			'GET',
-			`${this.RESOURCE}?page[limit]=20&page[offset]=0&fields[client_groups]=id,description,num_clients`, undefined);
+		const pageSize = 500;
+		const fields = 'id,description,num_clients';
+		const all: ClientGroup[] = [];
+		let offset = 0;
+		let total = 0;
+
+		do {
+			const page = await this.call<ClientGroupResponse>(
+				'GET',
+				`${this.RESOURCE}?page[limit]=${pageSize}&page[offset]=${offset}&fields[client_groups]=${fields}`,
+				undefined,
+			);
+			const batch = page.data ?? [];
+			total = page.meta?.count ?? all.length + batch.length;
+			all.push(...batch);
+			if (!batch.length) break;
+			offset += batch.length;
+		} while (offset < total);
+
+		return { data: all, meta: { count: total } };
 	}
 
 	async paginate(offset = 0, itemPerPage = 20): Promise<ClientGroupResponse> {

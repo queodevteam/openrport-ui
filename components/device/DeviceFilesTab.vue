@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full w-full flex-1">
+	<div class="h-full w-full flex-1 px-2 pb-6 sm:px-4">
 		<div class="relative">
 			<div class="min-h-[400px]">
 				<div class="relative mb-4 rounded border border-theme-border">

@@ -52,19 +52,19 @@
 						class="primary p-2.5 focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 					>
 						<option value="" />
-						<option :value="3600">
+						<option value="3600">
 							1 hour
 						</option>
-						<option :value="3600 * 24">
+						<option value="86400">
 							24 hours
 						</option>
-						<option :value="3600 * 24 * 7">
+						<option value="604800">
 							7 days
 						</option>
-						<option :value="3600 * 24 * 14">
+						<option value="1209600">
 							14 days
 						</option>
-						<option :value="3600 * 24 * 30">
+						<option value="2592000">
 							30 days
 						</option>
 					</select>
@@ -158,16 +158,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { ILoginInput } from '~/types';
+
+const REMEMBER_OPTIONS = ['', '3600', '86400', '604800', '1209600', '2592000'];
 
 const store = useTokenStore();
 
 const { errors, loading } = storeToRefs(store);
+const remembered = useCookie('remember_for', {
+	default: () => '3600',
+	maxAge: 60 * 60 * 24 * 400,
+	sameSite: 'lax',
+});
 const user = ref<ILoginInput>({
-	username: 'admin',
+	username: '',
 	password: '',
-	remember_me: '3600',
+	remember_me: REMEMBER_OPTIONS.includes(String(remembered.value)) ? String(remembered.value) : '3600',
+});
+watch(() => user.value.remember_me, (value) => {
+	remembered.value = String(value);
 });
 const emit = defineEmits(['login']);
 const login = async () => {

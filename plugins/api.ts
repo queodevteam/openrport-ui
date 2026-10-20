@@ -9,6 +9,9 @@ import ProfileModule from '~/repository/modules/profile';
 import ClientAuthModule from '~/repository/modules/client-auth';
 import StatusModule from '~/repository/modules/status';
 import TunnelsModule from '~/repository/modules/tunnels';
+import LibraryModule from '~/repository/modules/library';
+import VaultModule from '~/repository/modules/vault';
+import AuditModule from '~/repository/modules/audit';
 
 interface IApiInstance {
 	auth: AuthModule;
@@ -20,6 +23,9 @@ interface IApiInstance {
 	clientAuth: ClientAuthModule;
 	status: StatusModule;
 	tunnels: TunnelsModule;
+	library: LibraryModule;
+	vault: VaultModule;
+	audit: AuditModule;
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -67,6 +73,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 		clientAuth: new ClientAuthModule(apiFetcher),
 		status: new StatusModule(apiFetcher),
 		tunnels: new TunnelsModule(apiFetcher),
+		library: new LibraryModule(apiFetcher),
+		vault: new VaultModule(apiFetcher),
+		audit: new AuditModule(apiFetcher),
 	};
 
 	return {

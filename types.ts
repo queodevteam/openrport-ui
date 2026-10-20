@@ -90,6 +90,7 @@ export interface ClientGroup {
 	id: string;
 	description: string;
 	num_clients: number;
+	num_clients_connected?: number;
 	clients_ids?: string[];
 	params?: any;
 	allowed_user_groups?: string[];
@@ -284,6 +285,7 @@ export interface APIToken {
 	name: string;
 	created_at: Date;
 	expires_at: Date;
+	token?: string;
 }
 export interface APITokensResponse {
 	data: APIToken[];
@@ -298,7 +300,7 @@ export interface IpResponse {
 	};
 }
 export interface APITokenPayload {
-	expires_at: Date;
+	expires_at?: Date;
 	name: string;
 	scope: string;
 	prefix?: string;

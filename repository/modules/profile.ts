@@ -2,7 +2,7 @@ import { HttpFactory, HttpMethod } from '~/repository/factory';
 import type {APITokenPayload, APITokenResponse, APITokensResponse, IpResponse, Profile, ProfileResponse} from '~/types';
 
 class ProfileModule extends HttpFactory {
-	private RESOURCE = 'api/v1/me';
+	private RESOURCE = '/api/v1/me';
 
 	async get(): Promise<Profile> {
 		const response = await this.call<ProfileResponse>(

@@ -5,7 +5,7 @@
 		@click.self="closeMobileNav"
 	>
 		<div :class="['relative z-40 flex h-full flex-col bg-primary-800 transition-all duration-150', showLabels ? 'w-64' : 'w-20']">
-			<div class="flex min-h-0 flex-1 flex-col overflow-y-auto bg-primary-800">
+			<div class="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-primary-800">
 				<div class="flex-1">
 					<div class="flex items-center justify-center bg-primary-800 py-4">
 						<div class="flex justify-center py-6 text-white">
@@ -135,52 +135,6 @@
                                 class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span> -->
 						</nuxt-link>
 						<nuxt-link
-							to="/inventory"
-							:title="showLabels ? undefined : 'Inventory'"
-							:class="['flex min-h-11 w-full items-center rounded-lg py-2 text-sm text-primary-50 transition-all duration-150 hover:bg-primary-700', showLabels ? 'justify-start gap-x-3 px-3' : 'justify-center px-2']"
-						>
-							<svg
-								data-v-ca945699=""
-								xmlns="http://www.w3.org/2000/svg"
-								width="24px"
-								height="24px"
-								viewBox="0 0 24 24"
-								class="icon h-6 w-6"
-								aria-hidden="true"
-							>
-								<g fill="currentColor">
-									<path
-										d="M5 5a1 1 0 0 0-1 1v1h16V6a1 1 0 0 0-1-1H5zM2 6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v1a2 2 0 0 1-1 1.732V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8.732A2 2 0 0 1 2 7V6zm3 3v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9H5zm4 3a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1z"
-									/>
-								</g>
-							</svg>
-							<span v-if="showLabels">Inventory</span>
-							<!-- <span
-                                class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
-						</nuxt-link>
-
-						<nuxt-link
-							to="/documentation"
-							:title="showLabels ? undefined : 'Documentation'"
-							:class="['flex min-h-11 w-full items-center rounded-lg py-2 text-sm text-primary-50 transition-all duration-150 hover:bg-primary-700', showLabels ? 'justify-start gap-x-3 px-3' : 'justify-center px-2']"
-						>
-							<svg
-								data-v-ca945699=""
-								xmlns="http://www.w3.org/2000/svg"
-								width="24px"
-								height="24px"
-								viewBox="0 0 16 16"
-								class="icon h-6 w-6"
-								aria-hidden="true"
-							>
-								<path
-									fill="currentColor"
-									d="M1 2.828c.885-.37 2.154-.769 3.388-.893c1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493c-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752c1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81c-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02c1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877c1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"
-								/>
-							</svg>
-							<span v-if="showLabels">Documentation</span>
-						</nuxt-link>
-						<nuxt-link
 							to="/commands"
 							:title="showLabels ? undefined : 'Commands'"
 							:class="['flex min-h-11 w-full items-center rounded-lg py-2 text-sm text-primary-50 transition-all duration-150 hover:bg-primary-700', showLabels ? 'justify-start gap-x-3 px-3' : 'justify-center px-2']"
@@ -201,27 +155,6 @@
 								</g>
 							</svg>
 							<span v-if="showLabels">Commands</span>
-						</nuxt-link>
-						<nuxt-link
-							to="/scripts"
-							:title="showLabels ? undefined : 'Scripts'"
-							:class="['flex min-h-11 w-full items-center rounded-lg py-2 text-sm text-primary-50 transition-all duration-150 hover:bg-primary-700', showLabels ? 'justify-start gap-x-3 px-3' : 'justify-center px-2']"
-						>
-							<svg
-								data-v-ca945699=""
-								xmlns="http://www.w3.org/2000/svg"
-								width="24px"
-								height="24px"
-								viewBox="0 0 256 256"
-								class="icon h-6 w-6"
-								aria-hidden="true"
-							>
-								<path
-									fill="currentColor"
-									d="M96 104a8 8 0 0 1 8-8h64a8 8 0 0 1 0 16h-64a8 8 0 0 1-8-8Zm8 40h64a8 8 0 0 0 0-16h-64a8 8 0 0 0 0 16Zm128 48a32 32 0 0 1-32 32H88a32 32 0 0 1-32-32V64a16 16 0 0 0-32 0c0 5.74 4.83 9.62 4.88 9.66A8 8 0 0 1 24 88a7.89 7.89 0 0 1-4.79-1.61C18.05 85.54 8 77.61 8 64a32 32 0 0 1 32-32h136a32 32 0 0 1 32 32v104h8a8 8 0 0 1 4.8 1.6c1.2.86 11.2 8.79 11.2 22.4ZM96.26 173.48A8.07 8.07 0 0 1 104 168h88V64a16 16 0 0 0-16-16H67.69A31.71 31.71 0 0 1 72 64v128a16 16 0 0 0 32 0c0-5.74-4.83-9.62-4.88-9.66a7.82 7.82 0 0 1-2.86-8.86ZM216 192a12.58 12.58 0 0 0-3.23-8h-94a26.92 26.92 0 0 1 1.21 8a31.82 31.82 0 0 1-4.29 16H200a16 16 0 0 0 16-16Z"
-								/>
-							</svg>
-							<span v-if="showLabels">Scripts</span>
 						</nuxt-link>
 						<nuxt-link
 							to="/schedules"
@@ -264,27 +197,6 @@
 								/>
 							</svg>
 							<span v-if="showLabels">Settings</span>
-						</nuxt-link>
-						<nuxt-link
-							to="/library"
-							:title="showLabels ? undefined : 'Library'"
-							:class="['flex min-h-11 w-full items-center rounded-lg py-2 text-sm text-primary-50 transition-all duration-150 hover:bg-primary-700', showLabels ? 'justify-start gap-x-3 px-3' : 'justify-center px-2']"
-						>
-							<svg
-								data-v-ca945699=""
-								xmlns="http://www.w3.org/2000/svg"
-								width="24px"
-								height="24px"
-								viewBox="0 0 20 20"
-								class="icon h-6 w-6"
-								aria-hidden="true"
-							>
-								<path
-									fill="currentColor"
-									d="M3.5 2C2.67 2 2 2.67 2 3.498v12.981c0 .828.671 1.498 1.5 1.498h1c.827 0 1.499-.67 1.499-1.498V3.498C5.999 2.67 5.327 2 4.499 2h-1Zm4.998 0c-.828 0-1.5.67-1.5 1.498v12.981c0 .828.672 1.498 1.5 1.498h1c.828 0 1.499-.67 1.499-1.498V3.498c0-.827-.671-1.498-1.5-1.498h-1Zm7.22 4.157a1.5 1.5 0 0 0-1.87-1.106l-.745.21a1.498 1.498 0 0 0-1.06 1.742l2.003 9.799a1.5 1.5 0 0 0 1.839 1.151l.985-.25c.79-.2 1.274-.994 1.092-1.787l-2.244-9.76Z"
-								/>
-							</svg>
-							<span v-if="showLabels">Library</span>
 						</nuxt-link>
 						<nuxt-link
 							to="/audits"
@@ -332,7 +244,7 @@
 					</nav>
 				</div>
 				<div class="flex flex-shrink-0 flex-col items-center gap-y-4 pb-5">
-					<div class="hidden px-12 lg:block">
+					<div class="hidden lg:block">
 						<button
 							class="bg-primary hover:bg-vtd-primary-700 focus-visible:outline-vtd-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 							type="button"

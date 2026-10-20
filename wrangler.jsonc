@@ -1,0 +1,9 @@
+{
+	"name": "openrport-ui",
+	"compatibility_date": "2026-10-20",
+	"assets": {
+		"directory": "./.output/public",
+		"html_handling": "none",
+		"not_found_handling": "single-page-application"
+	}
+}

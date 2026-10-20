@@ -49,7 +49,7 @@
 						id="rememberMe"
 						v-model="user.remember_me"
 						name="rememberMe"
-						class="primary p-2.5 focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+						class="primary peer order-2 block w-full rounded border-theme-border bg-transparent py-0 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 					>
 						<option value="" />
 						<option value="3600">

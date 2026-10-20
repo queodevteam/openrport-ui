@@ -267,10 +267,9 @@
 							</span>
 						</button>
 					</div>
-					<a
-						href="/profile"
-						class="router-link-active router-link-exact-active w-full flex-shrink-0"
-						aria-current="page"
+					<nuxt-link
+						to="/profile"
+						class="w-full flex-shrink-0"
 					>
 						<div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary-700">
 							<svg
@@ -286,7 +285,7 @@
 								/>
 							</svg>
 						</div>
-					</a>
+					</nuxt-link>
 				</div>
 			</div>
 		</div>

@@ -1,406 +1,625 @@
 <template>
 	<new-page-wrapper>
-		<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
-			<div class="h-full flex-1">
-				<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
-					<div class="">
-						<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
-							Commands
-						</h3>
-						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-							Execute command on multiple clients
-						</p>
+		<div class="app-page mx-auto flex h-full max-h-full min-h-[32rem] w-full max-w-7xl flex-col overflow-hidden px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+			<div class="flex shrink-0 flex-wrap items-end justify-between gap-3">
+				<div>
+					<h3 class="text-2xl font-semibold leading-tight text-gray-800">
+						Commands
+					</h3>
+					<p class="mt-1 text-sm text-gray-500">
+						Run a command or a script on several devices, all at once or one by one.
+					</p>
+				</div>
+			</div>
+
+			<div class="mt-4 grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(16rem,1fr)_minmax(9rem,0.75fr)_minmax(8rem,1fr)] gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.8fr)] xl:grid-rows-[minmax(16rem,0.95fr)_minmax(8rem,1.05fr)]">
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border-2 border-slate-300 bg-slate-100 shadow-sm xl:col-start-1 xl:row-start-1">
+					<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-2">
+						<span class="text-xs font-semibold uppercase tracking-wide text-slate-700">Command</span>
+						<span class="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-slate-200">Ctrl+Enter</span>
 					</div>
-					<div class="flex-1" />
-					<div class="ml-2 flex-shrink-0">
-						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
+					<div class="grid shrink-0 gap-3 px-3 py-3 sm:grid-cols-2">
+						<label class="block text-sm text-slate-700">
+							Name
+							<input
+								v-model="name"
+								class="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
+								placeholder="Optional, used when saving"
+							>
+						</label>
+						<label class="block text-sm text-slate-700">
+							Timeout (seconds)
+							<input
+								v-model.number="timeoutSec"
+								type="number"
+								min="1"
+								class="mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
+							>
+						</label>
+					</div>
+					<div class="min-h-0 flex-1 px-3 pb-3">
+						<textarea
+							v-model="draft"
+							class="h-full min-h-0 w-full resize-none rounded-lg border border-slate-300 bg-slate-50 px-3 py-3 font-mono text-sm leading-6 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-200"
+							placeholder="hostname&#10;or a script, one line per command"
+							:disabled="running"
+							@keydown="onKeydown"
+						/>
+					</div>
+					<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-3 py-2">
+						<label class="flex items-center gap-2 text-sm text-slate-700">
+							<input
+								v-model="allAtOnce"
+								type="checkbox"
+								class="h-4 w-4 rounded border-slate-300 text-primary-800"
+							>
+							<span>All at once<span class="mt-0.5 block text-xs font-normal text-slate-500">Off runs one device after another.</span></span>
+						</label>
+						<div class="flex flex-wrap gap-2">
+							<button
+								type="button"
+								class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
+								@click="showLibrary = !showLibrary"
+							>
+								Load
+							</button>
+							<button
+								type="button"
+								class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+								:disabled="!draft.trim() || !name.trim() || saving"
+								@click="save"
+							>
+								Save
+							</button>
+							<button
+								v-if="running"
+								type="button"
+								class="inline-flex min-h-11 items-center rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-medium text-red-700 hover:bg-red-100"
+								@click="stop"
+							>
+								Stop
+							</button>
+							<button
+								v-else
+								type="button"
+								class="inline-flex min-h-11 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white disabled:opacity-40"
+								:disabled="!canRun"
+								@click="run"
+							>
+								Run
+							</button>
+						</div>
+					</div>
+					<p
+						v-if="notice"
+						class="border-t border-slate-200 px-3 py-2 text-sm text-slate-600"
+					>
+						{{ notice }}
+					</p>
+					<div
+						v-if="showLibrary"
+						class="max-h-36 shrink-0 overflow-y-auto border-t border-slate-200 bg-white"
+					>
+						<p
+							v-if="!saved.length"
+							class="px-3 py-4 text-sm text-slate-500"
+						>
+							No saved commands or scripts.
 						</p>
+						<button
+							v-for="item in saved"
+							:key="`${item.kind}-${item.id}`"
+							type="button"
+							class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-slate-50"
+							@click="loadItem(item)"
+						>
+							<span class="min-w-0 truncate font-medium text-slate-800">{{ item.name }}</span>
+							<span class="shrink-0 text-xs uppercase text-slate-400">{{ item.kind }}</span>
+						</button>
 					</div>
 				</div>
-				<div class="mt-5 flex h-full flex-col pb-24">
-					<div class="primary relative grid grid-cols-7">
-						<div class="primary col-span-2">
-							<div class="max-h-[550px] min-h-[550px] overflow-y-auto px-6 py-4">
-								<div class="flex flex-col">
-									<div class="relative mt-1 flex w-full flex-col">
-										<input
-											class="border-white text-white focus:border-white input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
-											placeholder=" "
-											type="text"
-											autocomplete="off"
-										>
-										<label
-											class="order-1 flex pb-1 pl-1 text-white text-sm font-normal"
-											for="43HNJXPf8x"
-										>Command name</label>
-									</div>
-								</div>
-								<div
-									data-v-e6ecae96=""
-									class="flex flex-col mt-1"
-								>
-									<label
-										data-v-e6ecae96=""
-										class="text-sm font-normal text-white"
-									>Tags</label>
-									<div
-										class="mt-1 flex min-h-[40px] flex-wrap overflow-hidden rounded border border-white"
-									>
-										<input
-											class="flex-auto border-none bg-transparent p-2 text-sm text-white placeholder-gray-300 outline-none"
-											placeholder="Add a tag by typing"
-										>
-									</div>
-								</div>
-								<div class="flex flex-col mt-1">
-									<div class="relative mt-1 flex w-full flex-col">
-										<input
-											class="border-white text-white focus:border-white input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
-											placeholder="300"
-											type="number"
-											autocomplete="off"
-										>
-										<label
-											class="order-1 flex pb-1 pl-1 text-white text-sm font-normal"
-											for="3hSWIT7FZG"
-										>Time out (seconds)</label>
-									</div>
-								</div>
-							</div>
-							<div class="flex h-[55px] items-center justify-center border-t border-[#133B66]">
-								<div class="grid grid-cols-3 rounded-l-md">
-									<button
-										class="cursor-not-allowed hover:opacity-100 px-4 py-2 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none col-span-3 secondary"
-										disabled=""
-										type="button"
-									>
-										Save
-									</button>
-								</div>
-								<button
-									class="hover:opacity-80 px-4 py-2 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none ml-2 bg-white bg-opacity-10"
-									type="button"
-								>
-									Load
-								</button>
-							</div>
-						</div>
-						<div class="col-span-5">
-							<div
-								class="command-editor max-h-[550px] min-h-[550px] overflow-auto overflow-auto bg-[#224A75] text-xs text-gray-200"
+
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-3 shadow-sm xl:col-start-2 xl:row-start-1">
+					<h4 class="shrink-0 text-sm font-semibold text-gray-800">
+						Targets
+					</h4>
+					<p class="mt-1 shrink-0 text-xs text-gray-500">
+						Choose groups, devices, or both. One line runs as a command. Several lines run as a script.
+					</p>
+					<div class="mt-3 flex min-h-0 flex-1 flex-col">
+						<p class="shrink-0 text-xs font-medium uppercase tracking-wide text-gray-500">
+							Groups
+						</p>
+						<div class="mt-2 min-h-0 flex-1 space-y-1 overflow-y-auto">
+							<label
+								v-for="group in groups"
+								:key="group.id"
+								class="flex items-center gap-2 text-sm text-gray-700"
 							>
-								<command-editor />
-							</div>
-							<div
-								class="flex h-[55px] items-center justify-between border-t border-[#133B66] bg-[#224A75] p-2 shadow-md"
+								<input
+									type="checkbox"
+									class="h-4 w-4 rounded border-slate-300 text-primary-800"
+									:checked="groupIds.includes(group.id)"
+									@change="toggle(groupIds, group.id)"
+								>
+								<span class="min-w-0 truncate">{{ groupLabel(group.id) }}</span>
+							</label>
+							<p
+								v-if="!groups.length"
+								class="text-sm text-gray-400"
 							>
-								<div>
-									<button
-										class="cursor-not-allowed hover:opacity-100 px-4 py-2 text-sm text-black rounded inline-flex items-center duration-200 focus:outline-none bg-gray-100 opacity-50"
-										disabled=""
-										type="button"
-									>
-										<svg
-											data-v-ca945699=""
-											xmlns="http://www.w3.org/2000/svg"
-											width="24px"
-											height="24px"
-											viewBox="0 0 24 24"
-											class="icon mr-2"
-										>
-											<path
-												fill="currentColor"
-												d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z"
-											/>
-										</svg><span class="pr-2">Schedule</span>
-									</button>
-								</div>
-								<div class="flex items-center">
-									<div class="flex flex-col mr-6">
-										<label
-											class="flex cursor-pointer select-none items-center justify-start text-sm text-gray-200"
-										><input
-											type="checkbox"
-											class="mr-2 h-[16px] w-[16px] cursor-pointer rounded border-none bg-transparent ring-2 ring-gray-300 focus:ring-gray-300 focus:ring-offset-0 text-transparent"
-										>Abort
-											on error</label>
-									</div>
-									<div class="flex flex-col mr-6">
-										<label
-											class="flex cursor-pointer select-none items-center justify-start text-sm text-gray-200"
-										><input
-											type="checkbox"
-											class="mr-2 h-[16px] w-[16px] cursor-pointer rounded border-none bg-transparent ring-2 ring-gray-300 focus:ring-gray-300 focus:ring-offset-0 text-transparent"
-										>Execute
-											concurrently</label>
-									</div><span class="mr-4 text-xs text-gray-300">
-										(CMD + ENTER) </span><button
-										class="hover:opacity-80 px-4 py-2 text-sm text-black rounded inline-flex items-center duration-200 focus:outline-none bg-[#C6F94C]"
-										type="button"
-									>
-										<svg
-											data-v-ca945699=""
-											xmlns="http://www.w3.org/2000/svg"
-											width="24px"
-											height="24px"
-											viewBox="0 0 24 24"
-											class="icon mr-2"
-										>
-											<path
-												fill="currentColor"
-												d="M9.5 9.325v5.35q0 .6.525.875t1.025-.05l4.15-2.65q.475-.275.475-.85t-.475-.85L11.05 8.5q-.5-.325-1.025-.05t-.525.875ZM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-10Zm0 8q3.325 0 5.663-2.337T20 12q0-3.325-2.337-5.663T12 4Q8.675 4 6.337 6.337T4 12q0 3.325 2.337 5.663T12 20Z"
-											/>
-										</svg><span class="pr-2">Execute</span>
-									</button>
-								</div>
-							</div>
+								No groups.
+							</p>
 						</div>
 					</div>
-					<div class="class relative max-h-[1720px] min-h-[480px] flex-1">
-						<div
-							class="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-theme-dark/80"
+					<div class="mt-4 flex min-h-0 flex-1 flex-col">
+						<p class="shrink-0 text-xs font-medium uppercase tracking-wide text-gray-500">
+							Devices
+						</p>
+						<input
+							v-model="clientQuery"
+							class="mt-2 w-full shrink-0 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
+							placeholder="Filter devices"
+							@input="scheduleClientSearch"
 						>
-							<span class="text-primary"> Execute commands on many clients concurrently. The client list
-								will be defined by: </span>
-							<div class="flex w-1/4 flex-col items-center justify-center space-y-2">
-								<button
-									class="hover:opacity-80 px-6 py-3 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none flex w-full items-start justify-start space-x-2 bg-primary"
-									type="button"
+						<div class="mt-2 min-h-0 flex-1 space-y-1 overflow-y-auto">
+							<label
+								v-for="client in orderedClients"
+								:key="client.id"
+								class="flex items-center gap-2 rounded-md px-2 py-1 text-sm text-gray-700"
+								:class="clientIds.includes(client.id) ? 'bg-slate-100' : ''"
+							>
+								<input
+									type="checkbox"
+									class="h-4 w-4 rounded border-slate-300 text-primary-800"
+									:checked="clientIds.includes(client.id)"
+									@change="toggleClient(client)"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="24px"
-										height="24px"
-										viewBox="0 0 256 256"
-										class="icon"
-									>
-										<path
-											fill="currentColor"
-											d="m120 137l-72 64a12 12 0 1 1-16-18l61.91-55L32 73a12 12 0 1 1 16-18l72 64a12 12 0 0 1 0 18Zm96 43h-96a12 12 0 0 0 0 24h96a12 12 0 0 0 0-24Z"
-										/>
-									</svg><span>Individual Clients</span>
-								</button><button
-									class="hover:opacity-80 px-6 py-3 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none flex w-full items-start justify-start space-x-2 bg-primary"
-									type="button"
-								>
-									<svg
-										data-v-ca945699=""
-										xmlns="http://www.w3.org/2000/svg"
-										width="24px"
-										height="24px"
-										viewBox="0 0 2048 2048"
-										class="icon"
-									>
-										<path
-											fill="currentColor"
-											d="M1664 1536h-128v-128h128v128zm-256 0h-128v-128h128v128zm256-512h-128V896h128v128zm-256 0h-128V896h128v128zm320-896q40 0 75 15t61 41t41 61t15 75v1472H128V320q0-40 15-75t41-61t61-41t75-15h1408zm64 1152H256v384h1536v-384zm0-512H256v384h1536V768zm0-128V320q0-26-19-45t-45-19H320q-26 0-45 19t-19 45v320h1536zm-256-256h128v128h-128V384zm-256 0h128v128h-128V384z"
-										/>
-									</svg><span>Client Groups</span>
-								</button><button
-									class="hover:opacity-80 px-6 py-3 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none flex w-full items-start justify-start space-x-2 bg-primary"
-									type="button"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="24px"
-										height="24px"
-										viewBox="0 0 24 24"
-										class="icon"
-									>
-										<path
-											fill="none"
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="1.5"
-											d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
-										/>
-									</svg><span>Clients Matching</span>
-								</button>
-								<button
-									class="hover:opacity-80 px-6 py-3 text-sm text-white rounded inline-flex items-center duration-200 focus:outline-none flex w-full items-start justify-start space-x-2 bg-primary"
-									type="button"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="24px"
-										height="24px"
-										viewBox="0 0 24 24"
-										class="icon"
-									>
-										<g
-											fill="none"
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="1.5"
-										>
-											<path
-												d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607l-9.58-9.58A2.25 2.25 0 0 0 9.568 3Z"
-											/>
-											<path d="M6 6h.008v.008H6V6Z" />
-										</g>
-									</svg><span>Clients by tags</span>
-								</button>
-							</div>
-						</div>
-						<div class="relative z-10">
-							<div class="sm:hidden">
-								<label
-									class="sr-only"
-									for="tabs"
-								>Select an option</label><select
-									id="tabs"
-									class="block w-full rounded-md border-gray-300 bg-theme focus:border-primary focus:ring-primary"
-									name="tabs"
-								>
-									<option class="text-theme-inverted">
-										Individual Clients
-									</option>
-									<option class="text-theme-inverted">
-										Client Groups
-									</option>
-									<option class="text-theme-inverted">
-										Clients Matching
-									</option>
-									<option class="text-theme-inverted">
-										Clients by tags
-									</option>
-								</select>
-							</div>
-							<div class="hidden sm:block">
-								<div class="border-b border-gray-200">
-									<div
-										aria-label="Tabs"
-										class="-mb-px flex"
-									>
-										<button
-											class="border-transparent text-theme-inverted hover:border-primary hover:text-primary group flex w-1/4 items-center justify-center space-x-1 border-b-2 px-1 py-4 text-center text-sm font-medium"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												width="24px"
-												height="24px"
-												viewBox="0 0 256 256"
-												class="icon"
-											>
-												<path
-													fill="currentColor"
-													d="m120 137l-72 64a12 12 0 1 1-16-18l61.91-55L32 73a12 12 0 1 1 16-18l72 64a12 12 0 0 1 0 18Zm96 43h-96a12 12 0 0 0 0 24h96a12 12 0 0 0 0-24Z"
-												/>
-											</svg>
-											<span>Individual Clients</span>
-										</button>
-										<button
-											class="border-transparent text-theme-inverted hover:border-primary hover:text-primary group flex w-1/4 items-center justify-center space-x-1 border-b-2 px-1 py-4 text-center text-sm font-medium"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												width="24px"
-												height="24px"
-												viewBox="0 0 2048 2048"
-												class="icon"
-											>
-												<path
-													fill="currentColor"
-													d="M1664 1536h-128v-128h128v128zm-256 0h-128v-128h128v128zm256-512h-128V896h128v128zm-256 0h-128V896h128v128zm320-896q40 0 75 15t61 41t41 61t15 75v1472H128V320q0-40 15-75t41-61t61-41t75-15h1408zm64 1152H256v384h1536v-384zm0-512H256v384h1536V768zm0-128V320q0-26-19-45t-45-19H320q-26 0-45 19t-19 45v320h1536zm-256-256h128v128h-128V384zm-256 0h128v128h-128V384z"
-												/>
-											</svg>
-											<span>Client Groups</span>
-										</button>
-										<button
-											class="border-transparent text-theme-inverted hover:border-primary hover:text-primary group flex w-1/4 items-center justify-center space-x-1 border-b-2 px-1 py-4 text-center text-sm font-medium"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												width="24px"
-												height="24px"
-												viewBox="0 0 24 24"
-												class="icon"
-											>
-												<path
-													fill="none"
-													stroke="currentColor"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth="1.5"
-													d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
-												/>
-											</svg>
-											<span>Clients Matching</span>
-										</button>
-										<button
-											class="border-transparent text-theme-inverted hover:border-primary hover:text-primary group flex w-1/4 items-center justify-center space-x-1 border-b-2 px-1 py-4 text-center text-sm font-medium"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												width="24px"
-												height="24px"
-												viewBox="0 0 24 24"
-												class="icon"
-											>
-												<g
-													fill="none"
-													stroke="currentColor"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													strokeWidth="1.5"
-												>
-													<path
-														d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607l-9.58-9.58A2.25 2.25 0 0 0 9.568 3Z"
-													/>
-													<path d="M6 6h.008v.008H6V6Z" />
-												</g>
-											</svg>
-											<span>Clients by tags</span>
-										</button>
-									</div>
-								</div>
-							</div>
+								<span class="min-w-0 truncate">{{ client.name || client.id }}</span>
+							</label>
 						</div>
 					</div>
+				</div>
+
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-950 shadow-inner xl:col-span-2 xl:row-start-2">
+				<div
+					v-if="tabList.length"
+					class="scrollbar-hide flex gap-1 overflow-x-auto border-b border-gray-800 px-2 pt-2"
+				>
+					<button
+						v-for="pane in tabList"
+						:key="pane.id"
+						type="button"
+						class="inline-flex shrink-0 items-center gap-2 rounded-t-md px-3 py-2 text-xs font-medium"
+						:class="pane.id === activePane ? 'bg-gray-900 text-white' : 'text-gray-400 hover:text-gray-200'"
+						@click="activePane = pane.id"
+					>
+						<span
+							class="h-2 w-2 shrink-0 rounded-full"
+							:class="pane.state === 'ok' ? 'bg-emerald-400' : pane.state === 'error' ? 'bg-red-400' : 'bg-gray-500'"
+						/>
+						{{ pane.name }}
+					</button>
+				</div>
+				<div
+					ref="logEl"
+					class="scrollbar-hide min-h-0 flex-1 overflow-y-auto p-3"
+				>
+					<p
+						v-show="!hasOutput"
+						class="font-mono text-xs leading-5 text-gray-500"
+					>
+						Output appears here.
+					</p>
+					<pre
+						ref="preEl"
+						class="whitespace-pre-wrap break-all font-mono text-xs leading-5 text-gray-100"
+					/>
+				</div>
 				</div>
 			</div>
 		</div>
 	</new-page-wrapper>
 </template>
 
-<script>
-export default {
+<script setup lang="ts">
+import { apiWebSocketUrl } from '~/utils/url';
+import { apiErrorMessage } from '~/lib/apiError';
+import { groupLabel } from '~/lib/groupId';
+import { createAnsiAppender } from '~/lib/ansi';
 
+type SavedItem = {
+	id: string;
+	name: string;
+	kind: 'command' | 'script';
+	body: string;
+	timeout_sec: number;
 };
+
+const { $api } = useNuxtApp();
+const config = useRuntimeConfig();
+const token = useCookie('token');
+
+const name = ref('');
+const draft = ref('');
+const timeoutSec = ref(300);
+const allAtOnce = ref(true);
+const running = ref(false);
+const saving = ref(false);
+const notice = ref('');
+const showLibrary = ref(false);
+const saved = ref<SavedItem[]>([]);
+const savedId = ref('');
+const savedKind = ref<'command' | 'script' | ''>('');
+const groups = ref<{ id: string }[]>([]);
+const clients = ref<{ id: string; name?: string }[]>([]);
+const picked = ref<Record<string, string>>({});
+const groupIds = ref<string[]>([]);
+const clientIds = ref<string[]>([]);
+const clientQuery = ref('');
+const tabList = ref<{ id: string; name: string; state: 'pending' | 'ok' | 'error' }[]>([]);
+const activePane = ref('');
+const hasOutput = ref(false);
+const logEl = ref<HTMLElement | null>(null);
+const preEl = ref<HTMLElement | null>(null);
+let socket: WebSocket | null = null;
+let searchTimer = 0;
+let runToken = 0;
+let paintedFor = '';
+let writer: ReturnType<typeof createAnsiAppender> | null = null;
+
+type PaneState = 'pending' | 'ok' | 'error';
+type PaneBuf = { id: string; name: string; text: string; streamed: boolean; state: PaneState };
+const paneMap = new Map<string, PaneBuf>();
+const outputLimit = 60_000;
+
+const canRun = computed(() => Boolean(draft.value.trim()) && (clientIds.value.length > 0 || groupIds.value.length > 0));
+
+const orderedClients = computed(() => {
+	const selected = clientIds.value.map(id => ({ id, name: picked.value[id] || id }));
+	const rest = clients.value.filter(client => !clientIds.value.includes(client.id));
+	return [...selected, ...rest];
+});
+
+const toggle = (list: string[], id: string) => {
+	const index = list.indexOf(id);
+	if (index === -1) list.push(id);
+	else list.splice(index, 1);
+};
+
+const toggleClient = (client: { id: string; name?: string }) => {
+	toggle(clientIds.value, client.id);
+	if (clientIds.value.includes(client.id)) picked.value[client.id] = client.name || client.id;
+	else delete picked.value[client.id];
+};
+
+const clientLabel = (id: string, name?: string) => picked.value[id] || name || id;
+
+const resetOutput = () => {
+	paneMap.clear();
+	tabList.value = clientIds.value.map((id) => {
+		const label = clientLabel(id);
+		paneMap.set(id, { id, name: label, text: '', streamed: false, state: 'pending' });
+		return { id, name: label, state: 'pending' };
+	});
+	activePane.value = tabList.value[0]?.id ?? '';
+	hasOutput.value = false;
+	paintedFor = '';
+	writer = null;
+	nextTick(() => {
+		if (preEl.value) createAnsiAppender(preEl.value).clear();
+	});
+};
+
+const showPane = (id: string) => {
+	const pre = preEl.value;
+	if (!pre) return;
+	writer = createAnsiAppender(pre);
+	writer.clear();
+	paintedFor = id;
+	const text = paneMap.get(id)?.text ?? '';
+	hasOutput.value = text.length > 0;
+	if (text) writer.write(text);
+	const box = logEl.value;
+	if (box) box.scrollTop = box.scrollHeight;
+};
+
+const ensurePane = (id: string, name?: string) => {
+	let pane = paneMap.get(id);
+	if (!pane) {
+		pane = { id, name: clientLabel(id, name), text: '', streamed: false, state: 'pending' };
+		paneMap.set(id, pane);
+		tabList.value = [...tabList.value, { id, name: pane.name, state: 'pending' }];
+		if (!activePane.value) activePane.value = id;
+	}
+	else if (name && pane.name === pane.id) {
+		pane.name = name;
+		const tab = tabList.value.find(item => item.id === id);
+		if (tab) tab.name = name;
+	}
+	return pane;
+};
+
+const markPane = (id: string, state: PaneState) => {
+	const pane = paneMap.get(id);
+	if (pane) pane.state = state;
+	const tab = tabList.value.find(item => item.id === id);
+	if (tab) tab.state = state;
+};
+
+const appendTo = (id: string, name: string | undefined, text: string) => {
+	if (!text) return;
+	const pane = ensurePane(id, name);
+	pane.text += text;
+	let trimmed = false;
+	if (pane.text.length > outputLimit) {
+		pane.text = `[earlier output omitted]\n${pane.text.slice(pane.text.length - outputLimit)}`;
+		trimmed = true;
+	}
+	if (pane.id !== activePane.value) return;
+	if (trimmed || paintedFor !== pane.id) {
+		showPane(pane.id);
+		return;
+	}
+	hasOutput.value = true;
+	writer?.write(text);
+	const box = logEl.value;
+	if (box) box.scrollTop = box.scrollHeight;
+};
+
+watch(activePane, (id) => {
+	if (!id) return;
+	nextTick(() => showPane(id));
+});
+
+const loadTargets = async () => {
+	try {
+		const response = await $api.groups.listGroups();
+		groups.value = response.data ?? [];
+	}
+	catch {
+		groups.value = [];
+	}
+	await searchClients();
+	await refreshLibrary();
+};
+
+const searchClients = async () => {
+	try {
+		const response = await $api.clients.listByGroup('all', {
+			search: clientQuery.value.trim() || undefined,
+			matchBy: 'word_in_word',
+		});
+		clients.value = response.data ?? [];
+	}
+	catch {
+		clients.value = [];
+	}
+};
+
+const scheduleClientSearch = () => {
+	window.clearTimeout(searchTimer);
+	searchTimer = window.setTimeout(searchClients, 250);
+};
+
+const refreshLibrary = async () => {
+	const items: SavedItem[] = [];
+	try {
+		const commands = await $api.library.listCommand();
+		for (const item of commands.data ?? []) {
+			items.push({
+				id: item.id,
+				name: item.name,
+				kind: 'command',
+				body: item.cmd,
+				timeout_sec: item.timeout_sec || 300,
+			});
+		}
+	}
+	catch {
+		notice.value = 'Saved commands could not be loaded.';
+	}
+	try {
+		const scripts = await $api.library.listScripts();
+		for (const item of scripts.data ?? []) {
+			items.push({
+				id: item.id,
+				name: item.name,
+				kind: 'script',
+				body: item.script,
+				timeout_sec: item.timeout_sec || 300,
+			});
+		}
+	}
+	catch {
+		notice.value = 'Saved scripts could not be loaded.';
+	}
+	saved.value = items.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+const loadItem = (item: SavedItem) => {
+	name.value = item.name;
+	draft.value = item.body;
+	timeoutSec.value = item.timeout_sec || 300;
+	savedId.value = item.id;
+	savedKind.value = item.kind;
+	showLibrary.value = false;
+	notice.value = '';
+};
+
+const save = async () => {
+	const body = draft.value.replace(/\s+$/, '');
+	if (!body || !name.value.trim()) return;
+	saving.value = true;
+	notice.value = '';
+	const kind = body.includes('\n') ? 'script' : 'command';
+	const timeout = Number(timeoutSec.value) || 300;
+	try {
+		if (kind === 'command') {
+			const payload = { name: name.value.trim(), cmd: body, tags: [], timeout_sec: timeout };
+			if (savedId.value && savedKind.value === 'command') await $api.library.updateCommand(savedId.value, payload);
+			else {
+				const created = await $api.library.createCommand(payload);
+				savedId.value = created.data.id;
+				savedKind.value = 'command';
+			}
+		}
+		else {
+			const payload = {
+				name: name.value.trim(),
+				script: body,
+				tags: [],
+				timeout_sec: timeout,
+				cwd: '',
+				is_sudo: false,
+				interpreter: '',
+			};
+			if (savedId.value && savedKind.value === 'script') await $api.library.updateScript(savedId.value, payload);
+			else {
+				const created = await $api.library.createScript(payload);
+				savedId.value = created.data.id;
+				savedKind.value = 'script';
+			}
+		}
+		notice.value = 'Saved.';
+		await refreshLibrary();
+	}
+	catch (error) {
+		notice.value = apiErrorMessage(error, 'Could not save.');
+	}
+	finally {
+		saving.value = false;
+	}
+};
+
+function toBase64(value: string) {
+	const bytes = new TextEncoder().encode(value);
+	let binary = '';
+	bytes.forEach((byte) => {
+		binary += String.fromCharCode(byte);
+	});
+	return btoa(binary);
+}
+
+const handleFrame = (raw: string) => {
+	if (raw.length > 32_000) {
+		const id = raw.match(/"client_id"\s*:\s*"([^"]+)"/)?.[1];
+		const status = raw.match(/"status"\s*:\s*"([^"]+)"/)?.[1];
+		if (id && status) markPane(id, status === 'successful' ? 'ok' : status === 'running' ? 'pending' : 'error');
+		if (id && paneMap.get(id)?.streamed) return;
+		if (raw.length > 120_000) {
+			appendTo(id || 'general', undefined, '\n[output too large to show in full]\n');
+			if (id && status !== 'successful') markPane(id, 'error');
+			return;
+		}
+	}
+	let data: { status?: string; error?: string; errors?: { detail?: string; title?: string }[]; client_id?: string; client_name?: string; result?: { stdout?: string; stderr?: string } };
+	try {
+		data = JSON.parse(raw);
+	}
+	catch {
+		appendTo(activePane.value || 'general', 'General', raw);
+		return;
+	}
+	const id = data.client_id || 'general';
+	const name = data.client_name || (id === 'general' ? 'General' : undefined);
+	const pane = ensurePane(id, name);
+	if (!data.status && (data.result?.stdout || data.result?.stderr)) pane.streamed = true;
+	if (data.status && pane.streamed && raw.length > 32_000) return;
+	const failure = data.error || data.errors?.map(item => item.detail || item.title).filter(Boolean).join('\n');
+	if (failure) {
+		markPane(id, 'error');
+		appendTo(id, name, failure.endsWith('\n') ? failure : `${failure}\n`);
+	}
+	if (!pane.streamed || !data.status) {
+		if (data.result?.stdout) appendTo(id, name, data.result.stdout);
+		if (data.result?.stderr) appendTo(id, name, data.result.stderr);
+	}
+	if (data.status) {
+		if (data.status === 'successful') markPane(id, 'ok');
+		else if (data.status !== 'running') markPane(id, 'error');
+		appendTo(id, name, data.status.endsWith('\n') ? data.status : `${data.status}\n`);
+	}
+};
+
+const run = () => {
+	const body = draft.value.replace(/\s+$/, '');
+	if (!canRun.value || running.value) return;
+	const generation = ++runToken;
+	resetOutput();
+	notice.value = '';
+	running.value = true;
+	const multiline = body.includes('\n');
+	const path = multiline ? '/api/v1/ws/scripts' : '/api/v1/ws/commands';
+	const shared = {
+		client_ids: [...clientIds.value],
+		group_ids: [...groupIds.value],
+		timeout_sec: Number(timeoutSec.value) || 300,
+		execute_concurrently: allAtOnce.value,
+		is_sudo: false,
+	};
+	const payload = multiline
+		? { ...shared, script: toBase64(body), cwd: '' }
+		: { ...shared, command: body };
+	const ws = new WebSocket(apiWebSocketUrl(config.public.apiUrl, path, token.value));
+	socket = ws;
+	const inbox: string[] = [];
+	let pumping = false;
+	const pump = () => {
+		if (generation !== runToken) {
+			inbox.length = 0;
+			pumping = false;
+			return;
+		}
+		const started = performance.now();
+		let count = 0;
+		while (inbox.length && count < 4 && performance.now() - started < 6) {
+			handleFrame(inbox.shift() ?? '');
+			count += 1;
+		}
+		if (inbox.length && generation === runToken) window.setTimeout(pump, 24);
+		else pumping = false;
+	};
+	ws.onopen = () => ws.send(JSON.stringify(payload));
+	ws.onmessage = (event) => {
+		if (generation !== runToken) return;
+		const raw = typeof event.data === 'string' ? event.data : '';
+		if (inbox.length >= 48) {
+			const dropAt = inbox.findIndex(item => item.length < 32_000 && !item.includes('"status"'));
+			if (dropAt === -1) return;
+			inbox.splice(dropAt, 1);
+		}
+		inbox.push(raw);
+		if (pumping) return;
+		pumping = true;
+		window.setTimeout(pump, 0);
+	};
+	ws.onerror = () => {
+		if (generation !== runToken) return;
+		appendTo(activePane.value || 'general', 'General', 'Could not reach the server.\n');
+		running.value = false;
+	};
+	ws.onclose = () => {
+		if (generation !== runToken) return;
+		running.value = false;
+		socket = null;
+	};
+};
+
+const stop = () => {
+	runToken += 1;
+	socket?.close();
+	socket = null;
+	running.value = false;
+};
+
+const onKeydown = (event: KeyboardEvent) => {
+	if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+		event.preventDefault();
+		run();
+	}
+};
+
+onMounted(loadTargets);
+onBeforeUnmount(stop);
 </script>
-
-<style>
-.command-editor .prism-editor__container {
-  min-height: 520px!important;
-  overflow: visible
-}
-
-.command-editor .prism-editor-wrapper {
-  overflow: visible
-}
-
-.command-editor .prism-editor-wrapper .prism-editor__editor,.command-editor .prism-editor-wrapper .prism-editor__textarea {
-  white-space: pre
-}
-
-.command-editor .prism-editor-wrapper .prism-editor__textarea:focus {
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color),var(--tw-ring-inset) 0 0 0 calc(var(--tw-ring-offset-width)) var(--tw-ring-color),0 0 #0000;
-  box-shadow: var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);
-  box-shadow: var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)
-}
-
-.command-editor .prism-editor__line-number {
-  --tw-text-opacity: 1!important;
-  color: #9ca3af!important;
-  color: rgb(156 163 175/var(--tw-text-opacity))!important;
-  font-size: .75rem!important;
-  line-height: 1rem!important
-}
-</style>

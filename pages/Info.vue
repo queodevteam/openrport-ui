@@ -9,9 +9,6 @@
 							<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 								Info
 							</h3>
-							<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-							</p>
 						</div>
 						<div class="flex-1" />
 					</div><!---->
@@ -19,25 +16,19 @@
 						<div
 							class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 						>
-							<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
-								<!----><!---->
+							<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+								<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+									Server Api
+								</h3>
 							</div>
 							<div class="flex-1 px-4 py-5 text-gray-950 dark:text-gray-50 sm:p-6">
 								<div class="h-full w-full">
 									<div>
-										<div class="px-4 sm:px-0">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
-												Server Api
-											</h3>
-											<p
-												class="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-500"
-											/>
-										</div>
-										<div class="mt-6 border-t border-gray-200 dark:border-gray-700">
+										<div>
 											<dl class="divide-y divide-gray-200 dark:divide-gray-700">
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Clients Auth Mode
 													</dt>
@@ -63,7 +54,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Clients Auth Mode
 													</dt>
@@ -75,7 +66,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Clients connected
 													</dt>
@@ -87,7 +78,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Clients disconnected
 													</dt>
@@ -99,7 +90,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Users Auth Source
 													</dt>
@@ -114,7 +105,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Two-factor authentication enabled
 													</dt>
@@ -144,7 +135,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Two-factor authentication delivery method
 													</dt>
@@ -156,7 +147,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Fingerprint
 													</dt>
@@ -168,7 +159,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Version
 													</dt>
@@ -187,25 +178,19 @@
 						<div
 							class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 						>
-							<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
-								<!----><!---->
+							<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+								<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+									Frontend
+								</h3>
 							</div>
 							<div class="flex-1 px-4 py-5 text-gray-950 dark:text-gray-50 sm:p-6">
 								<div class="h-full w-full">
 									<div>
-										<div class="px-4 sm:px-0">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
-												Frontend
-											</h3>
-											<p
-												class="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-500"
-											/>
-										</div>
-										<div class="mt-6 border-t border-gray-200 dark:border-gray-700">
+										<div>
 											<dl class="divide-y divide-gray-200 dark:divide-gray-700">
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Version
 													</dt>
@@ -217,7 +202,7 @@
 												</div>
 												<div class="px-2 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 													<dt
-														class="text-sm font-medium leading-6 text-gray-950 dark:text-white"
+														class="text-xs font-medium uppercase tracking-wide text-gray-400"
 													>
 														Download the latest version of VNC® Viewer
 													</dt>

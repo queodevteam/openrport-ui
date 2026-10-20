@@ -159,3 +159,66 @@
         }
     }
 }
+
+/* Shared page chrome. Unlayered so it wins over the old utility classes. */
+input.primary,
+select.primary,
+textarea.primary {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    line-height: 2.5rem;
+}
+
+select.primary {
+    padding-right: 2.5rem !important;
+}
+
+.app-page button.rounded-md.font-semibold,
+.app-page button.rounded-md.px-2\.5 {
+    min-height: 2.75rem;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    border-radius: 0.5rem;
+}
+
+.app-page .flow-root.ring-1 {
+    margin-top: 1rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-shadow: 0 0 #0000;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.app-page thead th {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.app-page thead th button {
+    min-height: 0;
+    padding: 0 !important;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    background: transparent;
+    border-radius: 0;
+}
+
+.app-page .divide-y.overflow-hidden.rounded-lg.bg-white.shadow,
+.app-page .divide-y.overflow-hidden.rounded-lg.bg-white.shadow.dark\:bg-gray-900 {
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}

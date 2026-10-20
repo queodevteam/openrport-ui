@@ -26,13 +26,13 @@
 			</p>
 			<div class="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
 				<table class="min-w-full divide-y divide-gray-200 text-sm">
-					<thead class="bg-gray-50 text-left text-gray-600">
+					<thead class="bg-gray-50 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
 						<tr>
-							<th class="px-4 py-3 font-semibold">Client</th>
-							<th class="px-4 py-3 font-semibold">Username</th>
-							<th class="px-4 py-3 font-semibold">Application</th>
-							<th class="px-4 py-3 font-semibold">Action</th>
-							<th class="px-4 py-3 font-semibold">Date</th>
+							<th class="px-4 py-3">Client</th>
+							<th class="px-4 py-3">Username</th>
+							<th class="px-4 py-3">Application</th>
+							<th class="px-4 py-3">Action</th>
+							<th class="px-4 py-3">Date</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-100">

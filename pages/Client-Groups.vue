@@ -10,9 +10,6 @@
 								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Client groups
 								</h3>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 							<div class="flex-1" />
 							<div class="ml-2 flex-shrink-0">
@@ -34,9 +31,6 @@
 									><!----> Add group
 									</span>
 								</button>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 						</div>
 						<form

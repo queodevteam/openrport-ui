@@ -7,15 +7,9 @@
 						<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 							Library
 						</h3>
-						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-						</p>
 					</div>
 					<div class="flex-1" />
 					<div class="ml-2 flex-shrink-0">
-						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-						</p>
 					</div>
 				</div><!---->
 				<div class="border-b border-gray-200 mt-6">

@@ -13,9 +13,16 @@
 			</div>
 
 			<div class="mt-4 grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(16rem,1fr)_minmax(9rem,0.75fr)_minmax(8rem,1fr)] gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.8fr)] xl:grid-rows-[minmax(16rem,0.95fr)_minmax(8rem,1.05fr)]">
-				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border-2 border-slate-300 bg-slate-100 shadow-sm xl:col-start-1 xl:row-start-1">
-					<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-2">
-						<span class="text-xs font-semibold uppercase tracking-wide text-slate-700">Command</span>
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm xl:col-start-1 xl:row-start-1">
+					<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-gray-50 px-3 py-2.5">
+						<div class="flex min-w-0 items-center gap-2.5">
+							<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+									<path fill="currentColor" d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2m1 3.2 2.8 2.3L5 13v1.6l4.2-3.5L5 7.6zm6 6.3h6V16h-6z" />
+								</svg>
+							</span>
+							<h3 class="text-sm font-semibold text-gray-900">Command</h3>
+						</div>
 						<span class="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-slate-200">Ctrl+Enter</span>
 					</div>
 					<div class="grid shrink-0 gap-3 px-3 py-3 sm:grid-cols-2">
@@ -47,14 +54,24 @@
 						/>
 					</div>
 					<div class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-3 py-2">
-						<label class="flex items-center gap-2 text-sm text-slate-700">
-							<input
-								v-model="allAtOnce"
-								type="checkbox"
-								class="h-4 w-4 rounded border-slate-300 text-primary-800"
-							>
-							<span>All at once<span class="mt-0.5 block text-xs font-normal text-slate-500">Off runs one device after another.</span></span>
-						</label>
+						<div class="flex flex-col gap-2">
+							<label class="flex items-center gap-2 text-sm text-slate-700">
+								<input
+									v-model="allAtOnce"
+									type="checkbox"
+									class="h-4 w-4 rounded border-slate-300 text-primary-800"
+								>
+								<span>All at once<span class="mt-0.5 block text-xs font-normal text-slate-500">Off runs one device after another.</span></span>
+							</label>
+							<label class="flex items-center gap-2 text-sm text-slate-700">
+								<input
+									v-model="tabsForOffline"
+									type="checkbox"
+									class="h-4 w-4 rounded border-slate-300 text-primary-800"
+								>
+								<span>Output tab if disconnected<span class="mt-0.5 block text-xs font-normal text-slate-500">On creates a tab for devices that are offline.</span></span>
+							</label>
+						</div>
 						<div class="flex flex-wrap gap-2">
 							<button
 								type="button"
@@ -119,14 +136,16 @@
 					</div>
 				</div>
 
-				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white p-3 shadow-sm xl:col-start-2 xl:row-start-1">
-					<h4 class="shrink-0 text-sm font-semibold text-gray-800">
-						Targets
-					</h4>
-					<p class="mt-1 shrink-0 text-xs text-gray-500">
-						Choose groups, devices, or both. One line runs as a command. Several lines run as a script.
-					</p>
-					<div class="mt-3 flex min-h-0 flex-1 flex-col">
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm xl:col-start-2 xl:row-start-1">
+					<div class="flex shrink-0 items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5">
+						<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+								<path fill="currentColor" d="M4 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2 2v10h12V8z" />
+							</svg>
+						</span>
+						<h3 class="text-sm font-semibold text-gray-900">Targets</h3>
+					</div>
+					<div class="flex min-h-0 flex-1 flex-col p-3">
 						<p class="shrink-0 text-xs font-medium uppercase tracking-wide text-gray-500">
 							Groups
 						</p>
@@ -152,7 +171,7 @@
 							</p>
 						</div>
 					</div>
-					<div class="mt-4 flex min-h-0 flex-1 flex-col">
+					<div class="flex min-h-0 flex-1 flex-col px-3 pb-3">
 						<p class="shrink-0 text-xs font-medium uppercase tracking-wide text-gray-500">
 							Devices
 						</p>
@@ -181,10 +200,18 @@
 					</div>
 				</div>
 
-				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-950 shadow-inner xl:col-span-2 xl:row-start-2">
+				<div class="flex min-h-0 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm xl:col-span-2 xl:row-start-2">
+				<div class="flex shrink-0 items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5">
+					<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path fill="currentColor" d="M4 6h16v2H4zm0 4h10v2H4zm0 4h16v2H4zm0 4h7v2H4z" />
+						</svg>
+					</span>
+					<h3 class="text-sm font-semibold text-gray-900">Output</h3>
+				</div>
 				<div
 					v-if="tabList.length"
-					class="scrollbar-hide flex gap-1 overflow-x-auto border-b border-gray-800 px-2 pt-2"
+					class="scrollbar-hide flex gap-1 overflow-x-auto border-b border-gray-800 bg-gray-950 px-2 pt-2"
 				>
 					<button
 						v-for="pane in tabList"
@@ -203,7 +230,7 @@
 				</div>
 				<div
 					ref="logEl"
-					class="scrollbar-hide min-h-0 flex-1 overflow-y-auto p-3"
+					class="scrollbar-hide min-h-0 flex-1 overflow-y-auto bg-gray-950 p-3"
 				>
 					<p
 						v-show="!hasOutput"
@@ -244,6 +271,7 @@ const name = ref('');
 const draft = ref('');
 const timeoutSec = ref(300);
 const allAtOnce = ref(true);
+const tabsForOffline = ref(true);
 const running = ref(false);
 const saving = ref(false);
 const notice = ref('');
@@ -252,8 +280,9 @@ const saved = ref<SavedItem[]>([]);
 const savedId = ref('');
 const savedKind = ref<'command' | 'script' | ''>('');
 const groups = ref<{ id: string }[]>([]);
-const clients = ref<{ id: string; name?: string }[]>([]);
+const clients = ref<{ id: string; name?: string; disconnected_at?: string | null }[]>([]);
 const picked = ref<Record<string, string>>({});
+const offlineById = ref<Record<string, boolean>>({});
 const groupIds = ref<string[]>([]);
 const clientIds = ref<string[]>([]);
 const clientQuery = ref('');
@@ -267,6 +296,7 @@ let searchTimer = 0;
 let runToken = 0;
 let paintedFor = '';
 let writer: ReturnType<typeof createAnsiAppender> | null = null;
+let offlineIds = new Set<string>();
 
 type PaneState = 'pending' | 'ok' | 'error';
 type PaneBuf = { id: string; name: string; text: string; streamed: boolean; state: PaneState };
@@ -287,28 +317,47 @@ const toggle = (list: string[], id: string) => {
 	else list.splice(index, 1);
 };
 
-const toggleClient = (client: { id: string; name?: string }) => {
+const isOffline = (value?: string | null) => value != null && value !== '';
+
+const rememberClient = (client: { id: string; name?: string; disconnected_at?: string | null }) => {
+	offlineById.value[client.id] = isOffline(client.disconnected_at);
+	if (client.name) picked.value[client.id] = client.name;
+};
+
+const toggleClient = (client: { id: string; name?: string; disconnected_at?: string | null }) => {
 	toggle(clientIds.value, client.id);
-	if (clientIds.value.includes(client.id)) picked.value[client.id] = client.name || client.id;
+	if (clientIds.value.includes(client.id)) {
+		picked.value[client.id] = client.name || client.id;
+		offlineById.value[client.id] = isOffline(client.disconnected_at);
+	}
 	else delete picked.value[client.id];
 };
 
 const clientLabel = (id: string, name?: string) => picked.value[id] || name || id;
 
-const resetOutput = () => {
+const resetOutput = (targets: { id: string; name: string; offline: boolean }[]) => {
 	paneMap.clear();
-	tabList.value = clientIds.value.map((id) => {
-		const label = clientLabel(id);
-		paneMap.set(id, { id, name: label, text: '', streamed: false, state: 'pending' });
-		return { id, name: label, state: 'pending' };
+	offlineIds = new Set(targets.filter(item => item.offline).map(item => item.id));
+	const shown = targets.filter(item => tabsForOffline.value || !item.offline);
+	tabList.value = shown.map((item) => {
+		const state: PaneState = item.offline ? 'error' : 'pending';
+		const text = item.offline ? 'Disconnected.\n' : '';
+		paneMap.set(item.id, { id: item.id, name: item.name, text, streamed: false, state });
+		picked.value[item.id] = item.name;
+		return { id: item.id, name: item.name, state };
 	});
-	activePane.value = tabList.value[0]?.id ?? '';
+	const first = tabList.value[0]?.id ?? '';
+	const same = activePane.value === first && first !== '';
+	activePane.value = first;
 	hasOutput.value = false;
 	paintedFor = '';
 	writer = null;
-	nextTick(() => {
-		if (preEl.value) createAnsiAppender(preEl.value).clear();
-	});
+	if (same) nextTick(() => showPane(first));
+	else if (!first) {
+		nextTick(() => {
+			if (preEl.value) createAnsiAppender(preEl.value).clear();
+		});
+	}
 };
 
 const showPane = (id: string) => {
@@ -391,6 +440,7 @@ const searchClients = async () => {
 			matchBy: 'word_in_word',
 		});
 		clients.value = response.data ?? [];
+		for (const client of clients.value) rememberClient(client);
 	}
 	catch {
 		clients.value = [];
@@ -501,7 +551,41 @@ function toBase64(value: string) {
 	return btoa(binary);
 }
 
+const collectTargets = async () => {
+	const byId = new Map<string, { id: string; name: string; offline: boolean }>();
+	for (const id of clientIds.value) {
+		byId.set(id, {
+			id,
+			name: clientLabel(id),
+			offline: Boolean(offlineById.value[id]),
+		});
+	}
+	for (const groupId of groupIds.value) {
+		try {
+			const response = await $api.clients.listByGroup(groupId);
+			for (const client of response.data ?? []) {
+				rememberClient(client);
+				if (byId.has(client.id)) {
+					const current = byId.get(client.id);
+					if (current) current.offline = isOffline(client.disconnected_at);
+					continue;
+				}
+				byId.set(client.id, {
+					id: client.id,
+					name: client.name || client.id,
+					offline: isOffline(client.disconnected_at),
+				});
+			}
+		}
+		catch {
+			notice.value = 'Some group devices could not be listed.';
+		}
+	}
+	return [...byId.values()];
+};
+
 const handleFrame = (raw: string) => {
+	if (!tabsForOffline.value && /"error"\s*:\s*"client is not connected"/.test(raw)) return;
 	if (raw.length > 32_000) {
 		const id = raw.match(/"client_id"\s*:\s*"([^"]+)"/)?.[1];
 		const status = raw.match(/"status"\s*:\s*"([^"]+)"/)?.[1];
@@ -523,7 +607,12 @@ const handleFrame = (raw: string) => {
 	}
 	const id = data.client_id || 'general';
 	const name = data.client_name || (id === 'general' ? 'General' : undefined);
+	if (!tabsForOffline.value && (offlineIds.has(id) || data.error === 'client is not connected')) return;
 	const pane = ensurePane(id, name);
+	if (data.error === 'client is not connected' && pane.text.includes('Disconnected')) {
+		markPane(id, 'error');
+		return;
+	}
 	if (!data.status && (data.result?.stdout || data.result?.stderr)) pane.streamed = true;
 	if (data.status && pane.streamed && raw.length > 32_000) return;
 	const failure = data.error || data.errors?.map(item => item.detail || item.title).filter(Boolean).join('\n');
@@ -542,11 +631,13 @@ const handleFrame = (raw: string) => {
 	}
 };
 
-const run = () => {
+const run = async () => {
 	const body = draft.value.replace(/\s+$/, '');
 	if (!canRun.value || running.value) return;
 	const generation = ++runToken;
-	resetOutput();
+	const targets = await collectTargets();
+	if (generation !== runToken) return;
+	resetOutput(targets);
 	notice.value = '';
 	running.value = true;
 	const multiline = body.includes('\n');

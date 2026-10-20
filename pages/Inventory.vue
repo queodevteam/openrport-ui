@@ -9,9 +9,6 @@
 				</div>
 				<div class="flex-1" />
 				<div class="ml-2 flex-shrink-0">
-					<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-					</p>
 				</div>
 			</div>
 			<div class="w-full">

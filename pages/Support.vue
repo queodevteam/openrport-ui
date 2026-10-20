@@ -10,29 +10,23 @@
 								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Support options
 								</h3>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 							<div class="flex-1" />
 							<div class="ml-2 flex-shrink-0">
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 						</div><!---->
 						<div class="mt-10 flex w-full flex-wrap justify-start gap-4 xl:flex-nowrap xl:justify-center">
 							<div
-								class="flex flex-1 flex-col divide-y divide-slate-50 overflow-hidden rounded-lg bg-white shadow dark:divide-slate-700 dark:bg-slate-900 divide-none"
+								class="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
 							>
-								<div class="p-4 px-6">
+								<div class="border-b border-gray-100 bg-gray-50 px-3 py-2.5">
 									<a
 										href="https://github.com/sponsors/openrport"
 										rel="noopener noreferrer"
 										target="_blank"
 										class="cursor-pointer text-vtd-primary-500 underline transition-all duration-300 hover:text-vtd-primary-500 dark:text-primary-400 dark:hover:text-primary-400"
 									>
-										<h5 class="text-sm uppercase">Premium Support</h5>
+										<h5 class="text-sm font-semibold normal-case text-gray-900">Premium Support</h5>
 									</a>
 								</div>
 								<div class="flex-1 px-4 py-5 text-slate-950 dark:text-gray-50 sm:p-6">
@@ -75,16 +69,16 @@
 								</div>
 							</div>
 							<div
-								class="flex flex-1 flex-col divide-y divide-slate-50 overflow-hidden rounded-lg bg-white shadow dark:divide-slate-700 dark:bg-slate-900 divide-none"
+								class="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
 							>
-								<div class="p-4 px-6">
+								<div class="border-b border-gray-100 bg-gray-50 px-3 py-2.5">
 									<a
 										href="https://kb.openrport.io/"
 										rel="noopener noreferrer"
 										target="_blank"
 										class="cursor-pointer text-vtd-primary-500 underline transition-all duration-300 hover:text-vtd-primary-500 dark:text-vtd-primary-400 dark:hover:text-vtd-primary-400"
 									>
-										<h5 class="text-sm uppercase">Documentation</h5>
+										<h5 class="text-sm font-semibold normal-case text-gray-900">Documentation</h5>
 									</a>
 								</div>
 								<div class="flex-1 px-4 py-5 text-slate-950 dark:text-gray-50 sm:p-6">
@@ -129,16 +123,16 @@
 								</div>
 							</div>
 							<div
-								class="flex flex-1 flex-col divide-y divide-slate-50 overflow-hidden rounded-lg bg-white shadow dark:divide-slate-700 dark:bg-slate-900 divide-none"
+								class="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
 							>
-								<div class="p-4 px-6">
+								<div class="border-b border-gray-100 bg-gray-50 px-3 py-2.5">
 									<a
 										href="https://discord.gg/HQ4wMQmzcu"
 										rel="noopener noreferrer"
 										target="_blank"
 										class="cursor-pointer text-vtd-primary-500 underline transition-all duration-300 hover:text-vtd-primary-500 dark:text-vtd-primary-400 dark:hover:text-vtd-primary-400"
 									>
-										<h5 class="text-sm uppercase">Community Support</h5>
+										<h5 class="text-sm font-semibold normal-case text-gray-900">Community Support</h5>
 									</a>
 								</div>
 								<div class="flex-1 px-4 py-5 text-slate-950 dark:text-slate-50 sm:p-6">

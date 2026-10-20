@@ -80,12 +80,12 @@
 
 					<div class="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
 						<table class="min-w-full divide-y divide-gray-200 text-sm">
-							<thead class="bg-gray-50 text-left text-gray-600">
+							<thead class="bg-gray-50 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
 								<tr>
-									<th class="px-4 py-3 font-semibold">Prefix</th>
-									<th class="px-4 py-3 font-semibold">Scope</th>
-									<th class="px-4 py-3 font-semibold">Name</th>
-									<th class="px-4 py-3 font-semibold">Expires</th>
+									<th class="px-4 py-3">Prefix</th>
+									<th class="px-4 py-3">Scope</th>
+									<th class="px-4 py-3">Name</th>
+									<th class="px-4 py-3">Expires</th>
 									<th class="px-4 py-3" />
 								</tr>
 							</thead>

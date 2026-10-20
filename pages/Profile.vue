@@ -10,9 +10,6 @@
 								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Profile
 								</h3>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 							<div class="flex-1" />
 						</div><!---->
@@ -20,9 +17,9 @@
 							<div
 								class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 							>
-								<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+								<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 									<div class="flex max-h-16 flex-1 content-center items-center">
-										<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+										<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 											Update profile info
 										</h3>
 										<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-500" />
@@ -84,24 +81,18 @@
 									<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 										Settings
 									</h3>
-									<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-									</p>
 								</div>
 								<div class="flex-1" />
 								<div class="ml-2 flex-shrink-0">
-									<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-									</p>
 								</div>
 							</div><!---->
 							<div class="flex flex-col gap-y-8">
 								<div
 									class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 								>
-									<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+									<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 										<div class="flex max-h-16 flex-1 content-center items-center">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+											<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 												General
 											</h3>
 											<p
@@ -212,9 +203,9 @@
 								<div
 									class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 								>
-									<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+									<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 										<div class="flex max-h-16 flex-1 content-center items-center">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+											<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 												RDP
 											</h3>
 											<p

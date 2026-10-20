@@ -41,11 +41,15 @@
 					</ul>
 				</TabsList>
 			</div>
-			<div class="scrollbar-hide min-h-0 flex-1 overflow-y-auto py-4">
+			<div
+				class="min-h-0 flex-1 py-4"
+				:class="selectedTab === 'commands' ? 'flex flex-col overflow-hidden' : 'scrollbar-hide overflow-y-auto'"
+			>
 				<TabsContent
 					v-for="tab in visibleTabs"
 					:key="tab.id"
 					:value="tab.id"
+					:class="tab.id === 'commands' ? 'flex min-h-0 flex-1 flex-col overflow-hidden' : ''"
 				>
 					<component
 						:is="tabComponents[tab.id]"
@@ -100,8 +104,11 @@ const propsFor = (id: string) => {
 	if (id === 'inventory') {
 		return { device: device.value, metrics: metrics.value };
 	}
-	if (id === 'tunnels' || id === 'commands' || id === 'scripts') {
+	if (id === 'tunnels' || id === 'scripts') {
 		return { id: device.value?.id };
+	}
+	if (id === 'commands') {
+		return { id: device.value?.id, active: selectedTab.value === 'commands' };
 	}
 	return {};
 };

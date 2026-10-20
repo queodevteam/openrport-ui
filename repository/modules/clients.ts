@@ -122,6 +122,14 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
+	async runningJobs(id: string): Promise<{ data?: { jid?: string; status?: string; pid?: number; command?: string }[] }> {
+		return this.call(
+			'GET',
+			`${this.RESOURCE}/${id}/commands?sort=-started_at&page[limit]=10&filter[status]=running&fields[jobs]=jid,status,pid,command`,
+			undefined,
+		);
+	}
+
 	async delete(id: string) {
 		return this.call(
 			'DELETE',

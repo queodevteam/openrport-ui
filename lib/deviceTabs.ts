@@ -1,9 +1,8 @@
 import type { Component } from 'vue';
 import { defineAsyncComponent } from 'vue';
 import type { Permissions } from '~/types';
-import DeviceCommandsTab from '~/components/device/DeviceCommandsTab.vue';
+import DeviceConsoleTab from '~/components/device/DeviceConsoleTab.vue';
 import DeviceInventoryTab from '~/components/device/DeviceInventoryTab.vue';
-import DeviceScriptsTab from '~/components/device/DeviceScriptsTab.vue';
 import DeviceTunnelsTab from '~/components/device/DeviceTunnelsTab.vue';
 import SchedulesTab from '~/components/device/SchedulesTab.vue';
 
@@ -18,7 +17,7 @@ export const deviceTabCatalog: DeviceTab[] = [
 	{ id: 'tunnels', label: 'Tunnels', permission: 'tunnels' },
 	{ id: 'meta-data', label: 'Meta-Data', permission: null },
 	{ id: 'documents', label: 'Documents', permission: null },
-	{ id: 'commands', label: 'Commands', permission: 'commands' },
+	{ id: 'commands', label: 'Console', permission: 'commands' },
 	{ id: 'scripts', label: 'Scripts', permission: 'scripts' },
 	{ id: 'monitoring', label: 'Monitoring', permission: 'monitoring' },
 	{ id: 'files', label: 'Files', permission: 'uploads' },
@@ -33,7 +32,7 @@ export function isMonitoringEnabled(value: unknown): boolean {
 }
 
 export function isDeviceTabOffered(id: string, monitoringEnabled: boolean): boolean {
-	if (disabledTabIds.has(id)) {
+	if (disabledTabIds.has(id) || id === 'scripts') {
 		return false;
 	}
 	if (id === 'monitoring') {
@@ -58,6 +57,13 @@ export function visibleDeviceTabs(options: {
 		if (options.deviceTabs && options.deviceTabs[tab.id] === false) {
 			return false;
 		}
+		if (tab.id === 'commands') {
+			const permissions = options.permissions;
+			if (permissions && permissions.commands === false && permissions.scripts === false) {
+				return false;
+			}
+			return true;
+		}
 		if (tab.permission && options.permissions && options.permissions[tab.permission] === false) {
 			return false;
 		}
@@ -74,8 +80,7 @@ export function deviceTabComponents(monitoringEnabled: boolean): Record<string, 
 	const components: Record<string, Component> = {
 		inventory: DeviceInventoryTab,
 		tunnels: DeviceTunnelsTab,
-		commands: DeviceCommandsTab,
-		scripts: DeviceScriptsTab,
+		commands: DeviceConsoleTab,
 		schedules: SchedulesTab,
 	};
 

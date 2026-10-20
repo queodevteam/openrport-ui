@@ -27,10 +27,6 @@ const credentialsRef = ref<ILoginInput>({
 definePageMeta({
 	layout: 'auth',
 });
-useHead({
-	title: 'Login',
-});
-
 const handleLogin = async (credentials: ILoginInput) => {
 	credentialsRef.value = credentials;
 	await store.getLoginToken(credentials);

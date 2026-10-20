@@ -47,7 +47,7 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: 'OpenRport',
+			title: 'rport',
 
 			link: [
 

@@ -383,6 +383,7 @@ export interface TunnelPayload {
 	'remote': string;
 	'scheme': string;
 	'acl': string;
+	'name'?: string;
 	'check_port'?: string;
 	'idle-timeout-minutes'?: number;
 	'auto-close'?: string;

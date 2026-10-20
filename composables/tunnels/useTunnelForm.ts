@@ -45,10 +45,18 @@ export function useTunnelForm(client: any) {
 		}
 	};
 
+	const applyCurrentIp = async () => {
+		await profileStore.loadServerIp();
+		if (formState.acl_model === 'current') {
+			formState.acl = serverIp.value;
+		}
+	};
+
 	const handleAclModelChange = (acl: string) => {
 		switch (acl) {
 			case 'current':
-				formState.acl = '';
+				formState.acl = serverIp.value;
+				applyCurrentIp();
 				break;
 			case 'specific':
 				formState.acl = `${serverIp.value}/24`;
@@ -63,12 +71,19 @@ export function useTunnelForm(client: any) {
 
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
+		if (!isFormValid.value) return;
 		const payload: TunnelPayload = {
 			remote: String(formState.port),
 			scheme: formState.service,
 			acl: formState.acl,
 			protocol: formState.protocol,
 		};
+		if (formState.lport_random === 'specify' && formState.lport) {
+			payload.local = String(formState.lport);
+		}
+		if (formState.name) {
+			payload.name = formState.name;
+		}
 
 		if (formState.service === 'forwarding' && formState.forwardingService) {
 			payload.scheme = formState.forwardingService;
@@ -111,8 +126,7 @@ export function useTunnelForm(client: any) {
 	watch(() => formState.acl_model, handleAclModelChange);
 
 	onMounted(async () => {
-		await profileStore.loadServerIp();
-		formState.acl = serverIp.value;
+		await applyCurrentIp();
 	});
 	return {
 		formState,

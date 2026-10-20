@@ -114,6 +114,46 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
+	async deleteTunnel(clientId: string, tunnelId: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${clientId}/tunnels/${tunnelId}?force=true`,
+			undefined,
+		);
+	}
+
+	async updateTunnelAcl(clientId: string, tunnelId: string, acl: string) {
+		return this.call(
+			'PUT',
+			`${this.RESOURCE}/${clientId}/tunnels/${tunnelId}/acl`,
+			{ acl },
+		);
+	}
+
+	async deleteStoredTunnel(clientId: string, tunnelId: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${clientId}/stored-tunnels/${tunnelId}`,
+			undefined,
+		);
+	}
+
+	async updateStoredTunnel(clientId: string, tunnel: StoredTunnel) {
+		return this.call(
+			'PUT',
+			`${this.RESOURCE}/${clientId}/stored-tunnels/${tunnel.id}`,
+			{
+				name: tunnel.name,
+				scheme: tunnel.scheme,
+				remote_ip: tunnel.remote_ip,
+				remote_port: tunnel.remote_port,
+				public_port: tunnel.public_port,
+				acl: tunnel.acl,
+				further_options: tunnel.further_options,
+			},
+		);
+	}
+
 	async updateTagsLabel(client: Client): Promise<never> {
 		return await this.call(
 			'PUT',

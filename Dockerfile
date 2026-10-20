@@ -1,5 +1,6 @@
-# Build the SPA, then ship only the static files.
-FROM node:20-alpine AS build
+# The SPA is static, so compile it on the machine that runs the build.
+# The nginx image follows the target platform.
+FROM --platform=$BUILDPLATFORM node:20-alpine AS build
 
 WORKDIR /src
 

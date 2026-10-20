@@ -97,8 +97,12 @@
 						</svg>
 					</div>
 					<div class="ml-3 mt-1 flex-grow">
-						<p class="text-sm font-medium text-red-800">
-							unauthorized
+						<p
+							v-for="(message, index) in errors"
+							:key="index"
+							class="text-sm font-medium text-red-800"
+						>
+							{{ message }}
 						</p>
 					</div>
 				</div>

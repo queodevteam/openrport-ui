@@ -1,9 +1,8 @@
-import { getHostFromUrl } from '~/utils/url';
+import { apiWebSocketUrl } from '~/utils/url';
 
 export const useScriptExecution = () => {
 	const config = useRuntimeConfig();
 	const userAuth = useCookie('token');
-	const wsUrl = `wss://${getHostFromUrl(config.public.apiUrl)}/api/v1/ws/scripts?access_token=${userAuth.value}`;
 	let ws: WebSocket | null = null;
 	const results = ref<any[]>([]);
 	const isConnected = ref(false);
@@ -11,6 +10,7 @@ export const useScriptExecution = () => {
 	const isLoading = ref(false);
 
 	const executeScript = (script: string, clientIds: string[], groupIds: string[], cwd: string, executeConcurrently: boolean, isSudo: boolean, timeoutInSecond: number) => {
+		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/scripts', userAuth.value);
 		ws = new WebSocket(wsUrl);
 		isLoading.value = true;
 		const requestPayload = {

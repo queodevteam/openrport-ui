@@ -33,7 +33,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 		baseURL: config.public.apiUrl,
 		headers: {
 			Accept: 'application/json',
-			Authorization: `Bearer ${userAuth.value}`,
+		},
+		onRequest({ options }) {
+			const headers = new Headers(options.headers as HeadersInit);
+			if (userAuth.value) {
+				headers.set('Authorization', `Bearer ${userAuth.value}`);
+			}
+			else {
+				headers.delete('Authorization');
+			}
+			options.headers = headers;
 		},
 		onRequestError({ request, options, error }): void | Promise<void> {
 			console.log('[fetch request error]', request, error);

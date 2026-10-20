@@ -1,6 +1,15 @@
 import { defineStore } from 'pinia';
 import type { ILoginInput, TwoFa } from '~/types';
 
+function loginErrorMessage(error: any): string {
+	const data = error?.data ?? error?.response?._data ?? error?.response?.data;
+	const apiErrors = data?.errors;
+	if (Array.isArray(apiErrors) && apiErrors.length > 0) {
+		return apiErrors[0].detail || apiErrors[0].title || 'An error occurred. Please try again later.';
+	}
+	return 'An error occurred. Please try again later.';
+}
+
 export const useTokenStore = defineStore('token', {
 	state: () => ({
 		authenticated: false,
@@ -14,6 +23,7 @@ export const useTokenStore = defineStore('token', {
 		async getLoginToken(credentials: ILoginInput) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
+			this.errors = [];
 			const token = useCookie<string>('token');
 			const is_authenticated = useCookie<boolean>('is_authenticated');
 			try {
@@ -33,22 +43,14 @@ export const useTokenStore = defineStore('token', {
 				this.loading = false;
 			}
 			catch (error: any) {
-				if (error.response && error.response.data && error.response.data.errors) {
-					const apiErrors = error.response.data.errors;
-					if (apiErrors.length > 0) {
-						const errorMessage = apiErrors[0].detail || apiErrors[0].title;
-						this.errors = errorMessage;
-					}
-				}
-				else {
-					this.$state.errors = ['An error occurred. Please try again later.'];
-				}
+				this.errors = [loginErrorMessage(error)];
 				this.loading = false;
 			}
 		},
 		async verifyTwoFa(credentials: ILoginInput, code: string) {
 			const { $api } = useNuxtApp();
 			this.loading = true;
+			this.errors = [];
 			const token = useCookie<string>('token');
 			const is_authenticated = useCookie<boolean>('is_authenticated');
 			try {
@@ -61,16 +63,22 @@ export const useTokenStore = defineStore('token', {
 				this.loading = false;
 			}
 			catch (error: any) {
-				this.$state.errors = ['An error occurred. Please try again later.'];
-				console.log(error);
+				this.errors = [loginErrorMessage(error)];
+				this.loading = false;
 			}
-			this.loading = false;
 		},
 
 		async getProvider() {
 
 		},
-		logOut() {
+		async logOut() {
+			const { $api } = useNuxtApp();
+			try {
+				await $api.auth.logout();
+			}
+			catch {
+				// La sesión local se cierra aunque el servidor ya no acepte el token.
+			}
 			const token = useCookie('token');
 			const is_authenticated = useCookie<boolean>('is_authenticated');
 			this.authenticated = false;

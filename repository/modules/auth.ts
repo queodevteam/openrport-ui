@@ -31,15 +31,15 @@ class AuthModule extends HttpFactory {
 	}
 
 	async logout(): Promise<any> {
+		const token = useCookie<string | null>('token').value;
 		const fetchOptions: FetchOptions<'json'> = {
 			headers: {
-				'Authorization': `Basic ${token}`,
-				'Content-Type': 'application/json',
+				Authorization: token ? `Bearer ${token}` : '',
 			},
 		};
 		return this.call<any>(
 			'DELETE',
-			'api/v1/logout',
+			'/api/v1/logout',
 			undefined,
 			fetchOptions,
 		);

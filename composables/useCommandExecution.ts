@@ -1,11 +1,8 @@
-const getHostFromUrl = (fullUrl: string) => {
-	const url = new URL(fullUrl);
-	return url.host;
-};
+import { apiWebSocketUrl } from '~/utils/url';
+
 export const useCommandExecution = () => {
 	const config = useRuntimeConfig();
 	const userAuth = useCookie('token');
-	const wsUrl = `wss://${getHostFromUrl(config.public.apiUrl)}/api/v1/ws/commands?access_token=${userAuth.value}`;
 	let ws: WebSocket | null = null;
 	const results = ref<any[]>([]);
 	const isConnected = ref(false);
@@ -13,6 +10,7 @@ export const useCommandExecution = () => {
 	const isLoading = ref(false);
 
 	const executeCommand = (command: string, clientsIds: string[], groupIds: string[]) => {
+		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/commands', userAuth.value);
 		ws = new WebSocket(wsUrl);
 		isLoading.value = true;
 		const requestPayload = {

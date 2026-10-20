@@ -8,91 +8,53 @@
 			>
 				Edit
 			</button>
-			<div class="grid gap-3 px-3 py-2.5 pr-14 sm:grid-cols-2 xl:grid-cols-3">
-				<div>
-					<p class="mb-1 text-xs font-medium text-gray-400">
-						Tags
-					</p>
-					<div
-						v-if="device?.tags?.length"
-						class="flex flex-wrap gap-1"
-					>
-						<span
-							v-for="tag in device.tags"
-							:key="tag"
-							class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-900 ring-1 ring-inset ring-amber-200"
-						>{{ tag }}</span>
-					</div>
-					<p
-						v-else
-						class="text-xs text-gray-400"
-					>
-						None
-					</p>
+			<div class="px-3 py-2.5 pr-14">
+				<p class="mb-1 text-xs font-medium text-gray-400">
+					Tags
+				</p>
+				<div
+					v-if="device?.tags?.length"
+					class="flex flex-wrap gap-1"
+				>
+					<span
+						v-for="tag in device.tags"
+						:key="tag"
+						class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-900 ring-1 ring-inset ring-amber-200"
+					>{{ tag }}</span>
 				</div>
-				<div>
-					<p class="mb-1 text-xs font-medium text-gray-400">
-						Groups
-					</p>
-					<div
-						v-if="device?.groups?.length"
-						class="flex flex-wrap gap-1"
-					>
-						<span
-							v-for="group in device.groups"
-							:key="group"
-							class="inline-flex items-center rounded-md bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-800 ring-1 ring-inset ring-primary-200"
-						>{{ group }}</span>
-					</div>
-					<p
-						v-else
-						class="text-xs text-gray-400"
-					>
-						None
-					</p>
-				</div>
-				<div>
-					<p class="mb-1 text-xs font-medium text-gray-400">
-						Labels
-					</p>
-					<div
-						v-if="labelRows.length"
-						class="flex flex-wrap gap-1"
-					>
-						<span
-							v-for="label in labelRows"
-							:key="label.key"
-							class="inline-flex items-center gap-1 rounded-md bg-gray-50 px-2 py-0.5 text-xs text-gray-700 ring-1 ring-inset ring-gray-200"
-						><span class="font-medium">{{ label.key }}</span> {{ label.value }}</span>
-					</div>
-					<p
-						v-else
-						class="text-xs text-gray-400"
-					>
-						None
-					</p>
-				</div>
+				<p
+					v-else
+					class="text-xs text-gray-400"
+				>
+					None
+				</p>
 			</div>
 		</AppCard>
 		<AppCard>
 			<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
-				<span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-gray-200">
-					<ClientIcon
-						:os="device?.os"
-						:os_family="device?.os_family"
-						:os_full_name="device?.os_full_name"
-						:os_kernel="device?.os_kernel"
-						:size="18"
-					/>
+				<span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="18"
+						height="18"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<path
+							fill="currentColor"
+							d="M12 1.6c1.8.3 2.8 2 2.2 3.6-1.3-.3-2.3-1.4-2.2-2.8-.1 1.4-.9 2.5-2.2 2.8C9.2 3.6 10.2 1.9 12 1.6"
+						/>
+						<circle cx="8.5" cy="9.4" r="2.05" fill="currentColor" />
+						<circle cx="12" cy="8.2" r="2.05" fill="currentColor" />
+						<circle cx="15.5" cy="9.4" r="2.05" fill="currentColor" />
+						<circle cx="9.6" cy="12.8" r="2.05" fill="currentColor" />
+						<circle cx="14.2" cy="12.8" r="2.05" fill="currentColor" />
+						<circle cx="12" cy="16.1" r="2.05" fill="currentColor" />
+					</svg>
 				</span>
-				<div class="min-w-0">
-					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
-						Device
-					</h3>
-					<p class="truncate text-sm text-gray-500">
-						{{ device?.hostname || device?.name || 'This client' }}
-					</p>
-				</div>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					Device
+				</h3>
 			</div>
 			<dl class="divide-y divide-gray-100 dark:divide-gray-800">
 				<div
@@ -122,7 +84,7 @@
 
 		<AppCard>
 			<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
-				<span class="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+				<span class="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="18"
@@ -136,14 +98,9 @@
 						/>
 					</svg>
 				</span>
-				<div>
-					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
-						Network
-					</h3>
-					<p class="text-sm text-gray-500">
-						{{ device?.ipv4?.length || 0 }} local addresses
-					</p>
-				</div>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					Network
+				</h3>
 			</div>
 			<div class="space-y-3 px-3 py-3">
 				<div
@@ -212,14 +169,9 @@
 						/>
 					</svg>
 				</span>
-				<div class="min-w-0">
-					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
-						System
-					</h3>
-					<p class="truncate text-sm text-gray-500">
-						{{ device?.os_full_name || 'Operating system' }}
-					</p>
-				</div>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					System
+				</h3>
 			</div>
 			<dl class="divide-y divide-gray-100 dark:divide-gray-800">
 				<div
@@ -253,14 +205,9 @@
 						/>
 					</svg>
 				</span>
-				<div class="min-w-0">
-					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
-						Resources
-					</h3>
-					<p class="truncate text-sm text-gray-500">
-						{{ resourceHeadline }}
-					</p>
-				</div>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					Resources
+				</h3>
 			</div>
 			<dl class="divide-y divide-gray-100 dark:divide-gray-800">
 				<div
@@ -340,17 +287,9 @@
 							/>
 						</svg>
 					</span>
-					<div class="min-w-0">
-						<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
-							Updates
-						</h3>
-						<p
-							v-if="device.updates_status.refreshed"
-							class="truncate text-sm text-gray-500"
-						>
-							Checked {{ formatedDate(String(device.updates_status.refreshed)) }}
-						</p>
-					</div>
+					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+						Updates
+					</h3>
 				</div>
 				<button
 					type="button"
@@ -437,7 +376,6 @@
 
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core';
-import ClientIcon from '~/components/device/ClientIcon.vue';
 import TagsLabelDialog from '~/components/device/TagsLabelDialog.vue';
 import Modal from '~/components/Modal.vue';
 import { bytesToSize, formatedDate } from '~/lib/utils';
@@ -496,10 +434,20 @@ const identityRows = computed(() => {
 	return rows;
 });
 
+const kernelRelease = (device: { os?: string; os_kernel?: string }) => {
+	const parts = String(device.os || '').trim().split(/\s+/);
+	if (parts.length >= 3 && /^linux$/i.test(parts[0]) && parts[2] && !/^linux$/i.test(parts[2])) return parts[2];
+	const stored = String(device.os_kernel || '').trim();
+	if (stored && !/^linux$/i.test(stored)) return stored;
+	return '';
+};
+
 const systemRows = computed(() => {
 	const device = props.device || {};
 	const rows: { label: string; value: string }[] = [];
-	if (filled(device.os_kernel)) rows.push({ label: 'Kernel', value: String(device.os_kernel) });
+	if (filled(device.os_full_name)) rows.push({ label: 'OS', value: String(device.os_full_name) });
+	const kernel = kernelRelease(device);
+	if (kernel) rows.push({ label: 'Kernel', value: kernel });
 	if (filled(device.os_arch)) rows.push({ label: 'Architecture', value: String(device.os_arch) });
 	return rows;
 });
@@ -512,13 +460,6 @@ const resourceRows = computed(() => {
 	if (filled(device.num_cpus)) rows.push({ label: 'Cores', value: String(device.num_cpus) });
 	if (filled(device.mem_total)) rows.push({ label: 'Memory', value: bytesToSize(Number(device.mem_total)) });
 	return rows;
-});
-
-const resourceHeadline = computed(() => {
-	const parts = resourceRows.value
-		.filter(row => row.label === 'Cores' || row.label === 'Memory')
-		.map(row => row.label === 'Cores' ? `${row.value} cores` : row.value);
-	return parts.join(' · ') || 'CPU, memory and disks';
 });
 
 const percent = (value: unknown) => {
@@ -535,17 +476,6 @@ const usageBars = computed(() => {
 		{ label: 'Memory usage', percent: percent(latest.memory_usage_percent) },
 		{ label: 'Disk IO', percent: percent(latest.io_usage_percent) },
 	];
-});
-
-const labelRows = computed(() => {
-	const labels = props.device?.labels;
-	if (!labels || typeof labels !== 'object') return [];
-	return Object.keys(labels).map(key => ({ key, value: String(labels[key] ?? '') }));
-});
-
-const allowedGroups = computed(() => {
-	const groups = props.device?.allowed_user_groups;
-	return Array.isArray(groups) ? groups.filter(Boolean) : [];
 });
 
 const skipDisk = (path: string) => /\/(snap|run|dev|sys|proc|tmp)(\/|$)/.test(path);

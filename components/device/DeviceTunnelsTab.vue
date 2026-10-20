@@ -1,31 +1,28 @@
 <template>
-	<div class="h-full flex-1 px-2 pb-6 sm:px-4">
-		<div class="mt-4 w-full shrink-0">
-			<div class="relative z-10 w-full">
-				<div class="sm:flex sm:items-center">
-					<div class="sm:flex-auto">
-						<h1 class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-50">
-							Tunnels
-						</h1>
-						<p class="mt-2 text-sm text-gray-700 dark:text-gray-500" />
-					</div>
-					<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-						<button
-							class="bg-primary-800 hover:bg-primary-800 focus-visible:outline-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-							type="button"
-							@click="$emit('addtunnel')"
-						>
-							<span class="flex items-center justify-center gap-x-2"> Add Tunnel</span>
-						</button>
-					</div>
+	<div class="grid gap-3">
+		<AppCard>
+			<div class="flex items-center justify-between gap-3 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+				<div class="flex min-w-0 items-center gap-2.5">
+					<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path fill="currentColor" d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3v2h1a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h1v-2H6a2 2 0 0 1-2-2zm8 10v2h.01V16zM6 6v8h12V6z" />
+						</svg>
+					</span>
+					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+						Tunnels
+					</h3>
 				</div>
-				<div class="mt-8 flow-root overflow-hidden border border-gray-100 ring-1 ring-black ring-opacity-10 dark:border-gray-600 sm:rounded-lg">
-					<div class="overflow-auto relative z-10 -mb-2">
-						<div class="inline-block min-w-full align-middle">
-							<div class="sm:rounded-lg overflow-hidden">
-								<div>
-									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
+				<button
+					type="button"
+					class="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white"
+					@click="$emit('addtunnel')"
+				>
+					Add tunnel
+				</button>
+			</div>
+			<div class="overflow-x-auto">
+				<table class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800">
+										<thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-400 dark:bg-gray-950">
 											<tr>
 												<th
 													class="text-left py-3.5 pl-4 pr-3 text-sm font-semibold text-gray-600 dark:text-gray-200 sm:pl-6"
@@ -177,38 +174,29 @@
 												<!--												</div> -->
 											</tr>
 										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="h-12 w-full" />
+				</table>
 			</div>
-		</div>
-		<div class="mt-32">
-			<div class="relative z-10 w-full">
-				<div class="sm:flex sm:items-center">
-					<div class="sm:flex-auto">
-						<h1 class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-50">
-							Stored tunnels and service forwarding
-						</h1>
-						<p
-							v-if="startError"
-							class="mt-2 text-sm text-red-500"
-						>
-							{{ startError }}
-						</p>
-					</div>
-					<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none" />
-				</div>
-				<div class="mt-8 flow-root overflow-hidden border border-gray-100 ring-1 ring-black ring-opacity-10 dark:border-gray-600 sm:rounded-lg">
-					<div class="overflow-auto relative z-10 -mb-2">
-						<div class="inline-block min-w-full align-middle">
-							<div class="sm:rounded-lg overflow-hidden">
-								<div>
-									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
+		</AppCard>
+		<AppCard>
+			<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+				<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+						<path fill="currentColor" d="M5 4h14a2 2 0 0 1 2 2v3H3V6a2 2 0 0 1 2-2m-2 7h18v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm5 3v2h4v-2z" />
+					</svg>
+				</span>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					Stored tunnels
+				</h3>
+			</div>
+			<p
+				v-if="startError"
+				class="px-3 pt-3 text-sm text-red-700"
+			>
+				{{ startError }}
+			</p>
+			<div class="overflow-x-auto">
+				<table class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800">
+										<thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-400 dark:bg-gray-950">
 											<tr>
 												<th
 													class="text-left py-3.5 pl-4 pr-3 text-sm font-semibold text-gray-600 dark:text-gray-200 sm:pl-6"
@@ -293,13 +281,13 @@
 												@click="startStored(tun)"
 											>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
-													92.154.49.249
+													{{ tun.acl || '—' }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<span>{{ tun.scheme }}</span>
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
-													localhost
+													{{ tun.remote_ip || '—' }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													{{ tun.remote_port }}
@@ -345,18 +333,12 @@
 												<!--												</div> -->
 											</tr>
 										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="h-12 w-full" />
+				</table>
 			</div>
-		</div>
+		</AppCard>
 		<BaseModal :model-value="Boolean(editingAcl)">
 			<form
-				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6"
+				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900 sm:p-6"
 				@submit.prevent="saveAcl"
 			>
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
@@ -407,7 +389,7 @@
 		</BaseModal>
 		<BaseModal :model-value="Boolean(editingStored)">
 			<form
-				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6"
+				class="max-h-[100dvh] w-full max-w-lg overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900 sm:p-6"
 				@submit.prevent="saveStored"
 			>
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
@@ -500,7 +482,7 @@
 			</form>
 		</BaseModal>
 		<BaseModal :model-value="Boolean(pendingDelete)">
-			<div class="max-h-[100dvh] w-full max-w-md overflow-y-auto border border-slate-400 bg-white p-4 shadow dark:bg-slate-800 sm:rounded sm:p-6">
+			<div class="max-h-[100dvh] w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900 sm:p-6">
 				<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-50">
 					Delete tunnel
 				</h3>

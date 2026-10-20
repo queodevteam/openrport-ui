@@ -3,14 +3,14 @@
 		<form @submit="handleSubmit">
 			<div class="flex flex-col gap-y-8">
 				<div
-					class="flex flex-1 flex-col divide-y divide-slate-50 overflow-hidden rounded-lg bg-white shadow dark:divide-slate-700 dark:bg-slate-900"
+					class="flex flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900"
 				>
 					<TunnelFormHeader @cancel="tunnelStore.closeAddTunnel()" />
 					<div class="flex-1 px-4 py-5 text-slate-950 dark:text-slate-50 sm:p-6">
 						<div class="h-full w-full">
 							<div class="px-4 py-6">
 								<FormSection
-									title="Service to access on theremote site"
+									title="Service"
 									number="1"
 								>
 									<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -18,7 +18,7 @@
 											<div class="relative mt-1 flex w-full flex-col">
 												<select
 													v-model="formState.service"
-													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 												>
 													<option
 														disabled=""
@@ -46,7 +46,7 @@
 													<select
 														id="Kz5gjthDsT"
 														v-model="formState.protocol"
-														class="primary focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 													>
 														<option
 															disabled=""
@@ -74,7 +74,7 @@
 													<select
 														id="GnYHBlJMkN"
 														v-model="formState.forwardingService"
-														class="primary focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 													>
 														<option
 															disabled=""
@@ -100,7 +100,7 @@
 													<input
 														id="ylrgHFl5sf"
 														v-model="formState.port"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="number"
 														autocomplete="off"
@@ -134,7 +134,7 @@
 													<input
 														id="H1aqUNVHq0"
 														v-model="formState.name"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														:class="formState.name?.length === 0 ? 'error' : ''"
 														placeholder=" "
 														type="text"
@@ -162,7 +162,7 @@
 													<input
 														id="VnwXpFNc5z"
 														v-model="formState.forwardDestination"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														:class="forwardingError ? 'error' : ''"
 														placeholder=" "
 														type="text"
@@ -249,7 +249,7 @@
 													<input
 														id="0aEBi1Nb70"
 														v-model="formState.host_header"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="text"
 														autocomplete="off"
@@ -267,7 +267,7 @@
 													<input
 														id="lXXYwJIK67"
 														v-model="formState.auth_user"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="text"
 														autocomplete="off"
@@ -285,7 +285,7 @@
 													<input
 														id="h9Uloe2fyp"
 														v-model="formState.auth_password"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="password"
 														autocomplete="off"
@@ -315,7 +315,7 @@
 												<select
 													id="j98xCvnmDA"
 													v-model="formState.lport_random"
-													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 												>
 													<option
 														disabled=""
@@ -349,7 +349,7 @@
 												<input
 													id="f0EHciUkRI"
 													v-model="formState.lport"
-													class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+													class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 													:class="{ error: lportError }"
 													placeholder=" "
 													type="number"
@@ -380,7 +380,7 @@
 												<select
 													id="DQwQIB4Yu3"
 													v-model="formState.acl_model"
-													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border-theme-border bg-transparent shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+													class="primary focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 												>
 													<option
 														disabled=""
@@ -411,7 +411,7 @@
 												<input
 													id="phyGwyytY6"
 													v-model="formState.acl"
-													class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+													class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 													placeholder=" "
 													readonly=""
 													type="text"
@@ -431,7 +431,7 @@
 													<input
 														id="QjW3A9fc9B"
 														v-model="formState.acl"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="text"
 														autocomplete="off"
@@ -493,7 +493,7 @@
 
 								<button
 									type="button"
-									class="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-primary-700"
+									class="mt-4 inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-primary-700 hover:bg-gray-50"
 									@click="showAdvanced = !showAdvanced"
 								>
 									{{ showAdvanced ? 'Hide more options' : 'More options' }}
@@ -524,7 +524,7 @@
 													<input
 														id="VHShsDa9Lv"
 														v-model="formState.idle_timeout_minutes"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														type="number"
 														:readonly="!formState.skip_idle_timeout"
@@ -557,7 +557,7 @@
 													<input
 														id="BcEkEe6Wuw"
 														v-model="formState.autoclose_hour"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														:readonly="!formState.autoclose_enable"
 														type="number"
@@ -576,7 +576,7 @@
 													<input
 														id="fNg7mYStCA"
 														v-model="formState.autoclose_minute"
-														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
+														class="primary input-text focus:border-1 peer order-2 block h-10 w-full rounded border border-gray-200 bg-white px-3 leading-10 text-gray-900 shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 														placeholder=" "
 														:readonly="!formState.autoclose_enable"
 														type="number"
@@ -602,7 +602,7 @@
 				</p>
 				<div class="flex w-full items-center justify-end">
 					<button
-						class="inline-flex min-h-11 items-center rounded-md bg-primary-800 px-4 text-sm font-semibold text-white transition-colors duration-150 hover:bg-primary-700 disabled:bg-gray-400"
+						class="inline-flex min-h-11 items-center rounded-lg bg-primary-800 px-4 text-sm font-semibold text-white transition-colors duration-150 hover:bg-primary-700 disabled:bg-gray-400"
 						type="submit"
 						:disabled="isLoading"
 					>

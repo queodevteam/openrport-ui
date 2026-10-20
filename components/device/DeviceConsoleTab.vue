@@ -1,8 +1,17 @@
 <template>
 	<div class="flex h-full min-h-0 flex-1 flex-col gap-3">
-		<div class="shrink-0 overflow-hidden rounded-xl border-2 border-slate-300 bg-slate-100 shadow-sm">
-			<div class="flex items-center justify-between border-b border-slate-200 px-3 py-2">
-				<span class="text-xs font-semibold uppercase tracking-wide text-slate-700">Command</span>
+		<AppCard class="shrink-0">
+			<div class="flex items-center justify-between gap-3 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+				<div class="flex min-w-0 items-center gap-2.5">
+					<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path fill="currentColor" d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2m1 3.2 2.8 2.3L5 13v1.6l4.2-3.5L5 7.6zm6 6.3h6V16h-6z" />
+						</svg>
+					</span>
+					<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+						Command
+					</h3>
+				</div>
 				<span class="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-slate-200">Ctrl+Enter</span>
 			</div>
 			<div class="p-3">
@@ -15,10 +24,7 @@
 					@keydown="onKeydown"
 				/>
 			</div>
-			<div class="flex items-center justify-between gap-3 border-t border-slate-200 px-3 py-2">
-				<p class="text-xs text-gray-500">
-					One line runs as a command. Several lines run as a script.
-				</p>
+			<div class="flex items-center justify-end gap-3 border-t border-gray-100 px-3 py-2">
 				<button
 					v-if="running"
 					type="button"
@@ -37,11 +43,21 @@
 					Run
 				</button>
 			</div>
-		</div>
-		<div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-950 shadow-inner">
+		</AppCard>
+		<div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700">
+			<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+				<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+						<path fill="currentColor" d="M4 6h16v2H4zm0 4h10v2H4zm0 4h16v2H4zm0 4h7v2H4z" />
+					</svg>
+				</span>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+					Output
+				</h3>
+			</div>
 			<div
 				ref="logEl"
-				class="min-h-0 flex-1 overflow-y-auto p-3"
+				class="min-h-0 flex-1 overflow-y-auto bg-gray-950 p-3"
 			>
 				<p
 					v-if="!hasOutput"

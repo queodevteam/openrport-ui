@@ -1,23 +1,22 @@
 <template>
-	<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
-		<div class="flex max-h-16 flex-1 content-center items-center">
-			<h3
-				class="text-xl font-semibold leading-7 text-slate-900 dark:text-slate-50"
-			>
+	<div class="flex items-center justify-between gap-3 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
+		<div class="flex min-w-0 items-center gap-2.5">
+			<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-gray-700 shadow-sm ring-1 ring-gray-200">
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+					<path fill="currentColor" d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3v2h1a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h1v-2H6a2 2 0 0 1-2-2zm8 10v2h.01V16zM6 6v8h12V6z" />
+				</svg>
+			</span>
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 				Add tunnel
 			</h3>
-			<p class="mt-1 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-500" />
 		</div>
-		<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-			<button
-				class="bg-vtd-secondary-600 hover:bg-vtd-secondary-400 focus-visible:outline-vtd-secondary-600 disabled:bg-vtd-secondary-600/40 disabled:hover:bg-vtd-secondary-600/40 disabled:focus-visible:outline-vtd-secondary-600/40 text-white disabled:text-gray-600 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-				type="button"
-				@click="handleCancel"
-			>
-				<!----><!----><span class="flex items-center justify-center gap-x-2"><!---->
-					<!----> Cancel</span>
-			</button><!---->
-		</div>
+		<button
+			type="button"
+			class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700"
+			@click="handleCancel"
+		>
+			Cancel
+		</button>
 	</div>
 </template>
 

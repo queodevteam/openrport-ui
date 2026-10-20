@@ -154,6 +154,22 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
+	async createStoredTunnel(clientId: string, tunnel: {
+		name: string;
+		scheme: string;
+		remote_ip: string;
+		remote_port: number;
+		public_port: number;
+		acl: string;
+		further_options: Record<string, unknown>;
+	}) {
+		return this.call(
+			'POST',
+			`${this.RESOURCE}/${clientId}/stored-tunnels`,
+			tunnel,
+		);
+	}
+
 	async deleteStoredTunnel(clientId: string, tunnelId: string) {
 		return this.call(
 			'DELETE',

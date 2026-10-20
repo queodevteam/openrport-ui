@@ -6,6 +6,7 @@ import { tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
 
 export function useTunnelForm(client: any) {
 	const tunnelStore = useTunnelStore();
+	const { $api } = useNuxtApp();
 	const profileStore = useProfile();
 	const { ip: serverIp } = storeToRefs(profileStore);
 	const errors = ref({});
@@ -117,6 +118,34 @@ export function useTunnelForm(client: any) {
 		}
 		try {
 			isLoading.value = true;
+			if (formState.storeInLibrary) {
+				const forwarding = formState.service === 'forwarding';
+				const further: Record<string, unknown> = {
+					protocol: formState.protocol,
+				};
+				if (forwarding) further.is_service_forwarding = true;
+				if (formState.skip_idle_timeout) further['idle-timeout-minutes'] = formState.idle_timeout_minutes;
+				else further['skip-idle-timeout'] = 1;
+				if (formState.autoclose_enable) {
+					further['auto-close'] = `${formState.autoclose_hour}h${formState.autoclose_minute}m`;
+				}
+				if (formState.http_proxy) {
+					further.http_proxy = true;
+					if (formState.host_header) further.host_header = formState.host_header;
+					if (formState.auth_user) further.auth_user = formState.auth_user;
+					if (formState.auth_password) further.auth_password = formState.auth_password;
+				}
+				await $api.clients.createStoredTunnel(client.id, {
+					name: formState.name,
+					scheme: payload.scheme,
+					remote_ip: forwarding ? formState.forwardDestination : '127.0.0.1',
+					remote_port: Number(formState.port),
+					public_port: formState.lport_random === 'specify' ? Number(formState.lport) : 0,
+					acl: formState.acl,
+					further_options: further,
+				});
+				await refreshNuxtData(`stored_tunnels_${client.id}`);
+			}
 			const { data, error } = await tunnelStore.createTunnel(client.id, payload);
 			if (error) {
 				errors.value = error;

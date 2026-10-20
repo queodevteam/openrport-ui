@@ -13,6 +13,8 @@
 </template>
 
 <script setup lang="ts">
+import { groupLabel } from '~/lib/groupId';
+
 const route = useRoute();
 const clientStore = useClientStore();
 const accordionItems = ref([
@@ -31,9 +33,10 @@ const updateGroupsItems = () => {
 
 	clientStore.groups.forEach((group) => {
 		accordionItems.value.push({
-			title: group.id,
+			title: groupLabel(group.id),
 			id: group.id,
 			count: group.num_clients,
+			connected: group.num_clients_connected ?? 0,
 			content: `${group.description} - (${group.num_clients})`,
 		});
 	});

@@ -1,7 +1,7 @@
 <template>
 	<nav
 		aria-label="Sections"
-		class="relative h-full w-full flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:w-96 xl:flex-col"
+		class="relative h-full w-full flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:w-[26rem] xl:flex-col"
 		:class="route.params.id ? 'hidden xl:flex' : 'flex flex-col'"
 	>
 		<div class="flex h-full min-h-0 flex-col">

@@ -38,8 +38,8 @@
 		>
 			<button
 				type="button"
-				class="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-left text-gray-800 transition-colors duration-150"
-				:class="isActive(index) ? 'bg-amber-50' : 'hover:bg-amber-50/60'"
+				class="flex min-h-11 w-full items-center gap-2 rounded-lg pl-2 pr-1 text-left text-gray-800 transition-colors duration-150"
+				:class="isActive(index) ? 'bg-slate-100' : 'hover:bg-slate-50'"
 				:aria-expanded="isActive(index)"
 				@click="toggle(index, item.id)"
 			>
@@ -47,7 +47,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-amber-700/70 transition-transform duration-150"
+					class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-150"
 					:class="isActive(index) ? 'rotate-90' : ''"
 				>
 					<path
@@ -56,7 +56,7 @@
 						clip-rule="evenodd"
 					/>
 				</svg>
-				<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-700">
+				<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-200 text-slate-600">
 					<svg
 						v-if="item.id === 'favorites'"
 						xmlns="http://www.w3.org/2000/svg"
@@ -107,15 +107,26 @@
 					{{ item.title }}
 				</span>
 				<span
-					v-if="folderCount(item, index) != null"
-					class="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs tabular-nums text-amber-800"
+					v-if="folderStats(item, index)"
+					class="ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums text-slate-600"
 				>
-					{{ folderCount(item, index) }}
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-slate-400" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).total) }}</span>
+					</span>
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-[#90e884]" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).connected) }}</span>
+					</span>
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-red-500" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).disconnected) }}</span>
+					</span>
 				</span>
 			</button>
 			<div
 				v-if="isActive(index)"
-				class="relative z-10 mb-2 ml-5 mt-1 border-l border-amber-200 pl-3"
+				class="relative z-10 mb-2 ml-5 mt-1 border-l border-slate-200 pl-3"
 			>
 				<div
 					class="absolute inset-0 -top-4 z-30 flex items-center justify-center bg-white/50 backdrop-blur-sm"
@@ -285,10 +296,19 @@ const isActive = (index) => {
 	return activeIndex.value === index;
 };
 
-const folderCount = (item, index) => {
-	if (isActive(index) && Array.isArray(deviceList.value)) return deviceList.value.length;
+const countLabel = (value) => String(Math.max(0, Number(value) || 0));
+
+const folderStats = (item, index) => {
+	if (isActive(index) && Array.isArray(deviceList.value)) {
+		const total = deviceList.value.length;
+		const disconnected = deviceList.value.filter(device => device.disconnected_at).length;
+		return { total, connected: total - disconnected, disconnected };
+	}
 	if (item?.count == null || item.count === '') return null;
-	return item.count;
+	const total = Number(item.count) || 0;
+	if (item.connected == null) return { total, connected: null, disconnected: null };
+	const connected = Number(item.connected) || 0;
+	return { total, connected, disconnected: Math.max(0, total - connected) };
 };
 </script>
 

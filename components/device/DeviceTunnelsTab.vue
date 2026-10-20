@@ -110,7 +110,9 @@
 											</tr>
 											<tr
 												v-for="tunnel in tunnels?.tunnels"
-												class="cursor-pointer hover:bg-vtd-primary-600/30 border-t-1 group relative border-gray-200 transition-all duration-300"
+												:key="tunnel.id"
+												class="cursor-pointer border-t border-gray-200 transition-colors hover:bg-gray-50 dark:border-gray-700"
+												@click="openActiveTunnel(tunnel, config.public.apiUrl)"
 											>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													{{ tunnel.acl }}
@@ -521,7 +523,7 @@
 import { useTimeAgo } from '@vueuse/core';
 import { BaseModal } from '~/components/ui/base-modal';
 import TunnelRowMenu from '~/components/device/TunnelRowMenu.vue';
-import { payloadFromStoredTunnel, tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
+import { openActiveTunnel, payloadFromStoredTunnel, tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
 
 const props = defineProps({
 	id: {
@@ -532,6 +534,7 @@ const props = defineProps({
 
 defineEmits(['addtunnel']);
 const { $api } = useNuxtApp();
+const config = useRuntimeConfig();
 const tunnelStore = useTunnelStore();
 const profileStore = useProfile();
 const startingId = ref(null);

@@ -135,13 +135,14 @@
 												v-for="tunnel in updatedTunnels"
 												v-if="updatedTunnels?.length !== undefined && updatedTunnels?.length > 0"
 												:key="tunnel.id"
-												class="cursor-pointer hover:bg-vtd-primary-600/30 border-t-1 group relative border-gray-200 transition-all duration-300"
+												class="cursor-pointer border-t border-gray-200 transition-colors hover:bg-gray-50"
+												@click="openActiveTunnel(tunnel, config.public.apiUrl)"
 											>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6" />
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<a
 														:href="`/dashboard/${tunnel.client_id}`"
-														class=""
+														@click.stop
 													>{{ tunnel.client_name }}</a>
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
@@ -163,10 +164,7 @@
 													{{ tunnel.rport }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
-													<a
-														:href="`/dashboard/${tunnel.client_id}`"
-														class=""
-													>{{ tunnel.name }}</a>
+													{{ tunnel.name || '—' }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<div class="inline-flex w-max cursor-pointer">
@@ -248,8 +246,10 @@
 
 <script lang="ts" setup>
 import { useTimeAgo } from '@vueuse/core';
+import { openActiveTunnel } from '~/composables/tunnels/storedTunnel';
 
 const { $api } = useNuxtApp();
+const config = useRuntimeConfig();
 
 const tunnels = ref([]);
 const clients = ref([]);

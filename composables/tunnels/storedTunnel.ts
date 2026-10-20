@@ -62,6 +62,29 @@ export function payloadFromStoredTunnel(tunnel: StoredTunnel): TunnelPayload {
 	return payload;
 }
 
+export function tunnelPageUrl(tunnel: { tunnel_url?: string; scheme?: string; lport?: string | number }, apiUrl: string) {
+	const given = String(tunnel.tunnel_url || '').trim();
+	if (given) return given;
+	const port = String(tunnel.lport ?? '').trim();
+	if (!port) return '';
+	let host = window.location.hostname;
+	try {
+		host = new URL(apiUrl).hostname || host;
+	}
+	catch {
+		host = window.location.hostname;
+	}
+	const scheme = String(tunnel.scheme || '').toLowerCase();
+	const proto = scheme === 'https' ? 'https' : 'http';
+	return `${proto}://${host}:${port}`;
+}
+
+export function openActiveTunnel(tunnel: { tunnel_url?: string; scheme?: string; lport?: string | number }, apiUrl: string) {
+	const url = tunnelPageUrl(tunnel, apiUrl);
+	if (!url) return;
+	window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 export function tunnelErrorMessage(error: unknown) {
 	const payload = error as { errors?: Array<{ title?: string; detail?: string }> };
 	const item = payload?.errors?.[0];

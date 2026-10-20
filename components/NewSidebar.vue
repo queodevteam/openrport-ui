@@ -364,9 +364,11 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core';
+
 const store = useTokenStore();
 const router = useRouter();
-const isNavBarOpen = ref(true);
+const isNavBarOpen = useLocalStorage('main_nav_open', false);
 
 const toggleNavBar = () => {
 	isNavBarOpen.value = !isNavBarOpen.value;

@@ -6,8 +6,12 @@
 		<div>
 			<div class="relative h-screen w-full p-3 px-2">
 				<div class="flex h-10 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
-					<form class="w-full">
+					<form
+						class="w-full"
+						@submit.prevent
+					>
 						<input
+							v-model="searchText"
 							class="h-full w-full bg-transparent focus:outline-none"
 							placeholder="Filter"
 						>
@@ -69,6 +73,7 @@
 										<button
 											type="button"
 											class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 mx-1 px-1 py-2"
+											@click="reloadClients"
 										>
 											<span
 												class="flex items-center justify-center"
@@ -268,6 +273,8 @@
 				<Accordion
 					:list-style="selectedSettingOpt"
 					:items="accordionItems"
+					:filter="clientFilter"
+					:reload-token="reloadToken"
 				>
 					<template #title="{ item }">
 						{{ item.title }}
@@ -278,7 +285,13 @@
 				</Accordion>
 			</div>
 		</div>
-		<CustomModalFilter v-model="isFilterModalOpen" />
+		<CustomModalFilter
+			v-model="isFilterModalOpen"
+			:search="searchText"
+			:match-by="matchBy"
+			:connection-state="connectionState"
+			@apply="onApplyFilter"
+		/>
 		<AddClientModal
 			ref="addClientModal"
 			@save="handleCreateClientAccess"
@@ -291,7 +304,7 @@ import {
 	IconFolder,
 	IconBrandDebian,
 } from '@tabler/icons-vue';
-import { useLocalStorage } from '@vueuse/core';
+import { useDebounceFn, useLocalStorage } from '@vueuse/core';
 import Accordion from './Accordion.vue';
 import AddClientModal from '~/components/clients/AddClientModal.vue';
 
@@ -306,11 +319,36 @@ const props = defineProps({
 const isClientSettingOpen = ref(false);
 const selectedSettingOpt = useLocalStorage('dashboard_nav_drawer_item_lines', 1);
 const isFilterModalOpen = ref(false);
+const searchText = ref('');
+const appliedSearch = ref('');
+const matchBy = ref('word_in_word');
+const connectionState = ref('any');
+const reloadToken = ref(0);
+const clientFilter = computed(() => ({
+	search: appliedSearch.value,
+	matchBy: matchBy.value,
+	connectionState: connectionState.value,
+}));
+const queueSearch = useDebounceFn((value: string) => {
+	appliedSearch.value = value.trim();
+}, 300);
+watch(searchText, value => queueSearch(value));
 const addClientModal = ref<InstanceType<typeof AddClientModal> | null>(null);
 const { createClientAccess } = useClientAccess();
 
 const openFilter = () => {
 	isFilterModalOpen.value = true;
+};
+
+const onApplyFilter = (next: { search: string; matchBy: string; connectionState: string }) => {
+	searchText.value = next.search;
+	appliedSearch.value = next.search.trim();
+	matchBy.value = next.matchBy;
+	connectionState.value = next.connectionState;
+};
+
+const reloadClients = () => {
+	reloadToken.value += 1;
 };
 
 const openAddClientModal = () => {

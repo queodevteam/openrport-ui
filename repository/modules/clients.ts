@@ -10,6 +10,19 @@ import type {
 } from '~/types';
 import { toQueryString } from '~/lib/utils';
 
+export type ClientSearch = {
+	search?: string;
+	matchBy?: 'begins_with' | 'ends_with' | 'exact' | 'word_in_word';
+	connectionState?: 'any' | 'connected' | 'disconnected';
+};
+
+function withClientSearchWildcard(term: string, matchBy?: ClientSearch['matchBy']) {
+	if (matchBy === 'ends_with') return `*${term}`;
+	if (matchBy === 'exact') return term;
+	if (matchBy === 'begins_with') return `${term}*`;
+	return `*${term}*`;
+}
+
 class ClientsModule extends HttpFactory {
 	private RESOURCE = '/api/v1/clients';
 
@@ -35,14 +48,26 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
-	async listByGroup(id: string): Promise<ClientsResponse> {
-		let params = `?sort=name&fields[clients]=id,name,os,os_family,os_kernel,os_full_name,ipv4,disconnected_at,tags&page[limit]=20&page[offset]=0`;
-		if (id !== 'all') {
-			params += `&filter[groups]=${id}`;
+	async listByGroup(id: string, filter?: ClientSearch): Promise<ClientsResponse> {
+		const params = new URLSearchParams({
+			sort: 'name',
+			'fields[clients]': 'id,name,os,os_family,os_kernel,os_full_name,ipv4,disconnected_at,tags',
+			'page[limit]': '100',
+			'page[offset]': '0',
+		});
+		if (id !== 'all' && id !== 'favorites') {
+			params.set('filter[groups]', id);
+		}
+		const term = filter?.search?.trim();
+		if (term) {
+			params.set('filter[name|id|ipv4]', withClientSearchWildcard(term, filter?.matchBy));
+		}
+		if (filter?.connectionState && filter.connectionState !== 'any') {
+			params.set('filter[connection_state]', filter.connectionState);
 		}
 		return this.call(
 			'GET',
-			`${this.RESOURCE}${params}`,
+			`${this.RESOURCE}?${params.toString()}`,
 			undefined,
 		);
 	}

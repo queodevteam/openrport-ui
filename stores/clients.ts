@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { Client, ClientGroup, ClientMetric, ClientsResponse } from '~/types';
+import type { ClientSearch } from '~/repository/modules/clients';
 
 export const useClientStore = defineStore('clients', {
 	state: () => ({
@@ -39,9 +40,9 @@ export const useClientStore = defineStore('clients', {
 			this.$state.groups = <ClientGroup[]>data.data;
 		},
 
-		async loadGroupList(id: string) {
+		async loadGroupList(id: string, filter?: ClientSearch) {
 			const { $api } = useNuxtApp();
-			const data = await $api.clients.listByGroup(id);
+			const data = await $api.clients.listByGroup(id, filter);
 			return data.data;
 		},
 		async fetchClients() {

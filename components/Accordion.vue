@@ -32,8 +32,8 @@
 	<!--    </div> -->
 	<div class="absolute inset-x-0 bottom-0 top-32">
 		<div
-			v-for="(item, index) in items"
-			:key="index"
+			v-for="{ item, index } in visibleItems"
+			:key="item.id ?? index"
 			class="w-full px-1"
 		>
 			<div
@@ -197,20 +197,6 @@ import ClientIcon from '~/components/device/ClientIcon.vue';
 const activeIndex = ref(null);
 const deviceList = ref(null);
 const store = useClientStore();
-const toggle = async (index, id) => {
-	if (activeIndex.value === index) {
-		activeIndex.value = null;
-	}
-	else {
-		activeIndex.value = index;
-		deviceList.value = await store.loadGroupList(id);
-	}
-};
-
-const isActive = (index) => {
-	return activeIndex.value === index;
-};
-
 const props = defineProps({
 	items: {
 		type: Array,
@@ -224,7 +210,64 @@ const props = defineProps({
 		type: Number,
 		default: 1,
 	},
+	filter: {
+		type: Object,
+		default: () => ({}),
+	},
+	reloadToken: {
+		type: Number,
+		default: 0,
+	},
 });
+
+const hasActiveFilter = computed(() =>
+	Boolean(props.filter?.search) || (props.filter?.connectionState && props.filter.connectionState !== 'any'),
+);
+
+const searchFolderIndex = computed(() => {
+	const items = props.items || [];
+	const allIndex = items.findIndex(item => item?.id === 'all');
+	return allIndex >= 0 ? allIndex : 0;
+});
+
+const visibleItems = computed(() => {
+	const items = props.items || [];
+	if (!hasActiveFilter.value) {
+		return items.map((item, index) => ({ item, index }));
+	}
+	const index = searchFolderIndex.value;
+	const item = items[index];
+	return item ? [{ item, index }] : [];
+});
+
+const loadDevices = async (index) => {
+	const item = props.items?.[index];
+	if (!item) return;
+	deviceList.value = await store.loadGroupList(item.id, props.filter);
+};
+
+const toggle = async (index, id) => {
+	if (activeIndex.value === index) {
+		activeIndex.value = null;
+	}
+	else {
+		activeIndex.value = index;
+		deviceList.value = await store.loadGroupList(id, props.filter);
+	}
+};
+
+watch(() => [props.filter, props.reloadToken], async () => {
+	if (hasActiveFilter.value && props.items?.length) {
+		activeIndex.value = searchFolderIndex.value;
+	}
+	if (activeIndex.value !== null) {
+		await loadDevices(activeIndex.value);
+	}
+}, { deep: true });
+
+const isActive = (index) => {
+	return activeIndex.value === index;
+};
 </script>
 
 <style scoped>

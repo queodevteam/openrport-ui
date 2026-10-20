@@ -3,7 +3,7 @@
 		<div
 			class="relative z-20 w-full max-w-screen-xl items-center rounded border border-slate-400 bg-gray-100 px-5 py-10 text-theme-inverted-lighter shadow dark:bg-slate-800"
 		>
-			<form>
+			<form @submit.prevent="apply">
 				<div
 					class="relative z-50 flex w-full gap-2"
 				>
@@ -13,6 +13,7 @@
 						<div class="relative mt-1 flex w-full flex-col">
 							<input
 								id="ZmCZSffyDh"
+								v-model="search"
 								class="input-text focus:border-1 peer order-2 block h-10 w-full rounded bg-transparent text-theme-inverted shadow-sm focus:outline-0 focus:ring-0 sm:text-sm"
 								placeholder=" "
 								type="text"
@@ -53,6 +54,7 @@
 						>
 							<input
 								id="connection_state-any"
+								v-model="connectionState"
 								type="radio"
 								name="connection_state"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -67,6 +69,7 @@
 						>
 							<input
 								id="connection_state-connected"
+								v-model="connectionState"
 								type="radio"
 								name="connection_state"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -81,6 +84,7 @@
 						>
 							<input
 								id="connection_state-disconnected"
+								v-model="connectionState"
 								type="radio"
 								name="connection_state"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -102,6 +106,7 @@
 						>
 							<input
 								id="match_by-begins_with"
+								v-model="matchBy"
 								type="radio"
 								name="match_by"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -117,6 +122,7 @@
 						>
 							<input
 								id="match_by-ends_with"
+								v-model="matchBy"
 								type="radio"
 								name="match_by"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -131,6 +137,7 @@
 						>
 							<input
 								id="match_by-exact"
+								v-model="matchBy"
 								type="radio"
 								name="match_by"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -145,6 +152,7 @@
 						>
 							<input
 								id="match_by-word_in_word"
+								v-model="matchBy"
 								type="radio"
 								name="match_by"
 								class="h-4 w-4 border-theme-border focus:ring-2 focus:ring-blue-300"
@@ -183,15 +191,44 @@ import { BaseModal } from '~/components/ui/base-modal';
 
 const props = defineProps({
 	modelValue: Boolean,
+	search: {
+		type: String,
+		default: '',
+	},
+	matchBy: {
+		type: String,
+		default: 'word_in_word',
+	},
+	connectionState: {
+		type: String,
+		default: 'any',
+	},
 });
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'apply']);
 const internalIsOpen = ref(props.modelValue);
+const search = ref(props.search);
+const matchBy = ref(props.matchBy);
+const connectionState = ref(props.connectionState);
 
 watch(() => props.modelValue, (newValue) => {
 	internalIsOpen.value = newValue;
+	if (newValue) {
+		search.value = props.search;
+		matchBy.value = props.matchBy;
+		connectionState.value = props.connectionState;
+	}
 });
 
-const save = () => {
+watch(internalIsOpen, (open) => {
+	emit('update:modelValue', open);
+});
+
+const apply = () => {
+	emit('apply', {
+		search: search.value.trim(),
+		matchBy: matchBy.value,
+		connectionState: connectionState.value,
+	});
 	internalIsOpen.value = false;
 };
 const close = () => {

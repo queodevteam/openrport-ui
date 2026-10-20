@@ -15,7 +15,7 @@
 							/>
 						</div>
 						<h2 class="text-3xl font-bold uppercase text-primary">
-							{{ device?.hostname?.toUpperCase() }}
+							{{ (device?.name || device?.hostname || '').toUpperCase() }}
 						</h2>
 					</div>
 					<div

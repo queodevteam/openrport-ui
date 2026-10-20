@@ -1,15 +1,15 @@
-import type { Client, ClientMetric } from '~/types';
-
 export const useClientDetail = () => {
-	const deviceId = useRoute().params.id;
-
+	const route = useRoute();
 	const clientStore = useClientStore();
 	const { currentClient: device, currentMetrics: metrics } = storeToRefs(clientStore);
+	const deviceId = computed(() => route.params.id);
 
-	onMounted(async () => {
-		await clientStore.loadClients();
-		await clientStore.loadClientById(deviceId as string);
-	});
+	watch(deviceId, (id) => {
+		if (typeof id === 'string' && id) {
+			clientStore.loadClientById(id);
+		}
+	}, { immediate: true });
+
 	return {
 		deviceId,
 		clientStore,

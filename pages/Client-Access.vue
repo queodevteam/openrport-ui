@@ -10,9 +10,19 @@
 								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Client Access
 								</h3>
+								<p
+									v-if="refreshNote"
+									class="mt-1 text-sm text-gray-500"
+								>
+									{{ refreshNote }}
+								</p>
 							</div>
 							<div class="flex-1" />
-							<div class="ml-2 flex-shrink-0">
+							<div class="ml-2 flex shrink-0 items-center gap-2">
+								<RefreshButton
+									:pending="refreshing"
+									@refresh="reloadAccess"
+								/>
 								<a
 									href="https://kb.openrport.io/organize-clients-with-groups"
 									rel="noopener noreferrer"
@@ -357,8 +367,14 @@ const addClientModal = ref<InstanceType<typeof AddClientModal> | null>(null);
 const installClientModal = ref<InstanceType<typeof InstallClientModal> | null>(null);
 
 filter.value = route.hash.slice(1);
-const { data: response, pending, refresh } = useLazyAsyncData(`clients-auth`, () => $api.clientAuth.paginate(page.value, filter.value), {
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
+const { data: response, pending, error: accessError, refresh } = useLazyAsyncData(`clients-auth`, () => $api.clientAuth.paginate(page.value, filter.value), {
 	watch: [page, filter],
+});
+
+const reloadAccess = () => runRefresh('Client access', async () => {
+	await refresh();
+	if (accessError.value) throw accessError.value;
 });
 await statusStore.loadStatus();
 

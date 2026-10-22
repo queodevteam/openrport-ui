@@ -12,16 +12,31 @@
 						Tunnels
 					</h3>
 				</div>
-				<button
-					type="button"
-					class="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white"
-					@click="$emit('addtunnel')"
-				>
-					Add tunnel
-				</button>
+				<div class="flex shrink-0 items-center gap-2">
+					<RefreshButton
+						:pending="refreshing"
+						@refresh="reloadTunnels"
+					/>
+					<button
+						type="button"
+						class="inline-flex min-h-11 shrink-0 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white"
+						@click="$emit('addtunnel')"
+					>
+						Add tunnel
+					</button>
+				</div>
 			</div>
+			<p
+				v-if="refreshNote"
+				class="border-b border-gray-100 px-3 py-2 text-xs text-gray-500 dark:border-gray-800"
+			>
+				{{ refreshNote }}
+			</p>
 			<div class="overflow-x-auto">
-				<table class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800">
+				<table
+					class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800"
+					:class="refreshing ? 'opacity-60' : ''"
+				>
 										<thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-400 dark:bg-gray-950">
 											<tr>
 												<th
@@ -147,6 +162,8 @@
 													@click.stop
 												>
 													<TunnelRowMenu
+														:ssh="isSshTunnel(tunnel)"
+														@copy-ssh="copySsh(tunnel, $event)"
 														@update="openActiveUpdate(tunnel)"
 														@delete="openDelete('active', tunnel)"
 													/>
@@ -192,12 +209,16 @@
 			</div>
 			<p
 				v-if="startError"
-				class="px-3 pt-3 text-sm text-red-700"
+				class="mx-3 mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+				role="alert"
 			>
 				{{ startError }}
 			</p>
 			<div class="overflow-x-auto">
-				<table class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800">
+				<table
+					class="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800"
+					:class="refreshing ? 'opacity-60' : ''"
+				>
 										<thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-400 dark:bg-gray-950">
 											<tr>
 												<th
@@ -520,10 +541,17 @@
 </template>
 
 <script setup>
-import { useTimeAgo } from '@vueuse/core';
+import { useClipboard, useTimeAgo } from '@vueuse/core';
 import { BaseModal } from '~/components/ui/base-modal';
 import TunnelRowMenu from '~/components/device/TunnelRowMenu.vue';
-import { openActiveTunnel, payloadFromStoredTunnel, tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
+import {
+	duplicateTunnelMessage,
+	isSshTunnel,
+	openActiveTunnel,
+	payloadFromStoredTunnel,
+	tunnelErrorMessage,
+	tunnelSshCommand,
+} from '~/composables/tunnels/storedTunnel';
 
 const props = defineProps({
 	id: {
@@ -535,6 +563,9 @@ const props = defineProps({
 defineEmits(['addtunnel']);
 const { $api } = useNuxtApp();
 const config = useRuntimeConfig();
+const snackbar = useSnackbar();
+const { copy } = useClipboard();
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
 const tunnelStore = useTunnelStore();
 const profileStore = useProfile();
 const startingId = ref(null);
@@ -555,22 +586,70 @@ const storedDraft = ref({
 });
 const pendingDelete = ref(null);
 
-const { data: tunnels, refresh: refreshTunnels } = useAsyncData(`tunnels_${props.id}`, () => $api.clients.tunnels(props.id));
-const { data: storedTuns, refresh: refreshStored } = useAsyncData(`stored_tunnels_${props.id}`, () => $api.clients.storedTunnels(props.id));
+const { data: tunnels, error: tunnelsError, refresh: refreshTunnels } = useAsyncData(`tunnels_${props.id}`, () => $api.clients.tunnels(props.id));
+const { data: storedTuns, error: storedError, refresh: refreshStored } = useAsyncData(`stored_tunnels_${props.id}`, () => $api.clients.storedTunnels(props.id));
 
 const apiError = (error) => tunnelErrorMessage(error?.data ?? error);
 
+const reloadTunnels = () => runRefresh('Tunnels', async () => {
+	await Promise.all([refreshTunnels(), refreshStored()]);
+	if (tunnelsError.value) throw tunnelsError.value;
+	if (storedError.value) throw storedError.value;
+});
+
+const copySsh = async (tunnel, user) => {
+	const command = tunnelSshCommand(tunnel, config.public.apiUrl, user);
+	if (!command) {
+		snackbar.add({
+			type: 'error',
+			text: 'This tunnel has no exposed port to copy.',
+		});
+		return;
+	}
+	try {
+		await copy(command);
+		snackbar.add({
+			type: 'success',
+			text: `Copied ${command}`,
+		});
+	}
+	catch {
+		snackbar.add({
+			type: 'error',
+			text: 'Could not copy the SSH command.',
+		});
+	}
+};
+
 const startStored = async (tunnel) => {
 	if (startingId.value) return;
+	const payload = payloadFromStoredTunnel(tunnel);
+	const duplicate = duplicateTunnelMessage(props.id, payload);
+	if (duplicate) {
+		startError.value = duplicate;
+		snackbar.add({
+			type: 'error',
+			text: duplicate,
+		});
+		return;
+	}
 	startingId.value = tunnel.id;
 	startError.value = '';
-	const { error } = await tunnelStore.createTunnel(props.id, payloadFromStoredTunnel(tunnel));
+	const { error } = await tunnelStore.createTunnel(props.id, payload);
 	startingId.value = null;
 	if (error) {
 		startError.value = tunnelErrorMessage(error);
+		snackbar.add({
+			type: 'error',
+			text: startError.value,
+		});
 		return;
 	}
 	await refreshTunnels();
+	snackbar.add({
+		type: 'success',
+		text: 'Tunnel started',
+	});
 };
 
 const openActiveUpdate = (tunnel) => {

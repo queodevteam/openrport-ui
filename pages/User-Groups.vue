@@ -9,9 +9,19 @@
 							<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 								User groups
 							</h3>
+							<p
+								v-if="refreshNote"
+								class="mt-1 text-sm text-gray-500"
+							>
+								{{ refreshNote }}
+							</p>
 						</div>
 						<div class="flex-1" />
 						<div class="ml-2 flex-shrink-0">
+							<RefreshButton
+								:pending="refreshing"
+								@refresh="reloadGroups"
+							/>
 						</div>
 					</div><!---->
 					<div class="relative z-10 w-full">
@@ -21,7 +31,10 @@
 								<div class="inline-block min-w-full align-middle">
 									<div class="sm:rounded-t-lg overflow-hidden">
 										<div>
-											<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+											<table
+												class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+												:class="refreshing ? 'opacity-60' : ''"
+											>
 												<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 													<tr>
 														<th
@@ -60,7 +73,15 @@
 													</tr>
 												</thead>
 												<tbody class="z-10 divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-													<tr v-if="userGroups && userGroups.length === 0">
+													<tr v-if="refreshing && !userGroups?.length">
+														<td
+															colspan="4"
+															class="px-6 py-8 text-center text-sm text-gray-500"
+														>
+															Refreshing user groups…
+														</td>
+													</tr>
+													<tr v-else-if="userGroups && userGroups.length === 0">
 														<td colspan="4">
 															<AppEmpty>No user groups.</AppEmpty>
 														</td>
@@ -369,7 +390,13 @@ import { BaseModal } from '~/components/ui/base-modal';
 
 const { $api } = useNuxtApp();
 const { configurableTabs } = useDeviceTabs();
-const { data: userGroups, refresh } = useAsyncData(('user-groups'), () => $api.userGroups.all());
+const { data: userGroups, error: groupsError, refresh } = useAsyncData(('user-groups'), () => $api.userGroups.all());
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
+
+const reloadGroups = () => runRefresh('User groups', async () => {
+	await refresh();
+	if (groupsError.value) throw groupsError.value;
+});
 
 const tabsOpen = ref(false);
 const savingTabs = ref(false);

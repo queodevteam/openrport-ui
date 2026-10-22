@@ -10,9 +10,19 @@
 								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Client groups
 								</h3>
+								<p
+									v-if="refreshNote"
+									class="mt-1 text-sm text-gray-500"
+								>
+									{{ refreshNote }}
+								</p>
 							</div>
 							<div class="flex-1" />
-							<div class="ml-2 flex-shrink-0">
+							<div class="ml-2 flex shrink-0 items-center gap-2">
+								<RefreshButton
+									:pending="refreshing"
+									@refresh="reloadGroups"
+								/>
 								<a
 									href="https://chrome.google.com/webstore/detail/secure-shell-app/iodihamcpbpeioajjeobimgagajmlibd/organize-clients-with-groups"
 									rel="noopener noreferrer"
@@ -467,7 +477,8 @@ const reloadSidebar = async () => {
 	clientStore.listRevision += 1;
 };
 
-const { data: response, pending, refresh } = useLazyAsyncData('client-groups-all', async () => {
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
+const { data: response, pending, error: groupsError, refresh } = useLazyAsyncData('client-groups-all', async () => {
 	try {
 		loadError.value = '';
 		return await $api.groups.listAll();
@@ -476,6 +487,11 @@ const { data: response, pending, refresh } = useLazyAsyncData('client-groups-all
 		loadError.value = apiErrorMessage(error, 'Could not load client groups.');
 		throw error;
 	}
+});
+
+const reloadGroups = () => runRefresh('Client groups', async () => {
+	await refresh();
+	if (groupsError.value) throw groupsError.value;
 });
 
 onMounted(async () => {

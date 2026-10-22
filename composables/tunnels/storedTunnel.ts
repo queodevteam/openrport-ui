@@ -1,4 +1,5 @@
-import type { StoredTunnel, TunnelPayload } from '~/types';
+import type { StoredTunnel, Tunnel, TunnelPayload } from '~/types';
+import { apiErrorMessage } from '~/lib/apiError';
 
 function tunnelOptions(value: unknown): Record<string, unknown> {
 	if (!value) return {};
@@ -86,9 +87,65 @@ export function openActiveTunnel(tunnel: { tunnel_url?: string; scheme?: string;
 }
 
 export function tunnelErrorMessage(error: unknown) {
-	const payload = error as { errors?: Array<{ title?: string; detail?: string }> };
-	const item = payload?.errors?.[0];
-	if (item?.title && item.detail) return `${item.title} ${item.detail}`;
-	if (item?.title) return item.title;
-	return 'Could not start the tunnel.';
+	return apiErrorMessage(error, 'Could not start the tunnel.');
+}
+
+export function isSshTunnel(tunnel: { scheme?: string }) {
+	return String(tunnel?.scheme || '').toLowerCase() === 'ssh';
+}
+
+export function tunnelSshCommand(tunnel: { lport?: string | number; lhost?: string }, apiUrl: string, user: string) {
+	const port = String(tunnel.lport ?? '').trim();
+	const login = String(user || '').trim();
+	if (!port || !login) return '';
+	let host = window.location.hostname;
+	try {
+		host = new URL(apiUrl).hostname || host;
+	}
+	catch {
+		host = window.location.hostname;
+	}
+	const bind = String(tunnel.lhost || '').trim();
+	if (bind && !['0.0.0.0', '::', '127.0.0.1', 'localhost', '*'].includes(bind)) {
+		host = bind;
+	}
+	return `ssh -p ${port} ${login}@${host}`;
+}
+
+function aclKey(value: string) {
+	return String(value || '').split(',').map(part => part.trim()).filter(Boolean).sort().join(',');
+}
+
+function remoteParts(remote: string) {
+	const value = String(remote || '');
+	const index = value.lastIndexOf(':');
+	if (index === -1) return { host: '127.0.0.1', port: value };
+	return { host: value.slice(0, index) || '127.0.0.1', port: value.slice(index + 1) };
+}
+
+function cachedTunnels(clientId: string): Tunnel[] {
+	const cached = useNuxtData(`tunnels_${clientId}`).data.value as { tunnels?: Tunnel[]; data?: { tunnels?: Tunnel[] } } | Tunnel[] | null;
+	if (!cached) return [];
+	if (Array.isArray(cached)) return cached;
+	if (Array.isArray(cached.tunnels)) return cached.tunnels;
+	if (Array.isArray(cached.data?.tunnels)) return cached.data.tunnels;
+	return [];
+}
+
+export function duplicateTunnelMessage(clientId: string, payload: TunnelPayload) {
+	const { host, port } = remoteParts(String(payload.remote || ''));
+	const scheme = String(payload.scheme || '').toLowerCase();
+	const protocol = String(payload.protocol || 'tcp').toLowerCase();
+	const acl = aclKey(payload.acl || '');
+	const match = cachedTunnels(clientId).find((tunnel) => {
+		const tunnelHost = String(tunnel.rhost || '127.0.0.1');
+		const sameHost = host === '127.0.0.1' || host === '0.0.0.0' || host === tunnelHost;
+		return String(tunnel.rport) === port
+			&& String(tunnel.scheme || '').toLowerCase() === scheme
+			&& String(tunnel.protocol || 'tcp').toLowerCase() === protocol
+			&& aclKey(tunnel.acl || '') === acl
+			&& sameHost;
+	});
+	if (!match) return '';
+	return `A tunnel to port ${port} already exists for this ACL.`;
 }

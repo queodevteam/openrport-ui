@@ -73,7 +73,10 @@
 									<TooltipTrigger>
 										<button
 											type="button"
-											class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 mx-1 px-1 py-2"
+											class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 mx-1 px-1 py-2 disabled:cursor-wait"
+											:disabled="reloading"
+											:aria-busy="reloading"
+											:aria-label="reloading ? 'Refreshing clients' : 'Reload the client list'"
 											@click="reloadClients"
 										>
 											<span
@@ -86,6 +89,7 @@
 													height="20px"
 													viewBox="0 0 24 24"
 													class="icon"
+													:class="reloading ? 'animate-spin' : ''"
 												>
 													<path
 														fill="currentColor"
@@ -96,7 +100,7 @@
 										</button>
 									</TooltipTrigger>
 									<TooltipContent>
-										<span>Reload the client list. Filter are preserved</span>
+										<span>{{ reloading ? 'Refreshing clients…' : 'Reload the client list. Filters are preserved' }}</span>
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
@@ -279,6 +283,8 @@
 					:items="accordionItems"
 					:filter="clientFilter"
 					:reload-token="reloadToken"
+					@refreshed="onClientsRefreshed"
+					@refresh-failed="onClientsRefreshFailed"
 				>
 					<template #title="{ item }">
 						{{ item.title }}
@@ -314,6 +320,7 @@ import AddClientModal from '~/components/clients/AddClientModal.vue';
 
 const route = useRoute();
 const clientStore = useClientStore();
+const snackbar = useSnackbar();
 const props = defineProps({
 	accordionItems: Array,
 	default: [
@@ -330,6 +337,7 @@ const appliedSearch = ref('');
 const matchBy = ref('word_in_word');
 const connectionState = ref('any');
 const reloadToken = ref(0);
+const reloading = ref(false);
 watch(() => clientStore.listRevision, (revision) => {
 	if (revision > 0) reloadToken.value += 1;
 });
@@ -356,8 +364,42 @@ const onApplyFilter = (next: { search: string; matchBy: string; connectionState:
 	connectionState.value = next.connectionState;
 };
 
-const reloadClients = () => {
-	reloadToken.value += 1;
+const finishReload = () => {
+	reloading.value = false;
+};
+
+const onClientsRefreshed = () => {
+	if (!reloading.value) return;
+	finishReload();
+	snackbar.add({
+		type: 'success',
+		text: 'Client list refreshed',
+	});
+};
+
+const onClientsRefreshFailed = () => {
+	if (!reloading.value) return;
+	finishReload();
+	snackbar.add({
+		type: 'error',
+		text: 'Could not refresh the client list.',
+	});
+};
+
+const reloadClients = async () => {
+	if (reloading.value) return;
+	reloading.value = true;
+	try {
+		await clientStore.loadGroups();
+		clientStore.listRevision += 1;
+	}
+	catch {
+		finishReload();
+		snackbar.add({
+			type: 'error',
+			text: 'Could not refresh the client list.',
+		});
+	}
 };
 
 const openAddClientModal = () => {

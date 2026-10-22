@@ -2,14 +2,15 @@ import { storeToRefs } from 'pinia';
 import type { TunnelFormState, TunnelPayload } from '~/types';
 import { useTunnelValidation } from '~/composables/tunnels/useTunnelValidation';
 import { TUNNEL_OPTIONS } from '~/constants';
-import { tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
+import { duplicateTunnelMessage, tunnelErrorMessage } from '~/composables/tunnels/storedTunnel';
 
 export function useTunnelForm(client: any) {
 	const tunnelStore = useTunnelStore();
 	const { $api } = useNuxtApp();
+	const snackbar = useSnackbar();
 	const profileStore = useProfile();
 	const { ip: serverIp } = storeToRefs(profileStore);
-	const errors = ref({});
+	const errors = ref<unknown>(null);
 
 	const formState = reactive<TunnelFormState>({
 		service: 'ssh',
@@ -70,22 +71,42 @@ export function useTunnelForm(client: any) {
 		}
 	};
 
-	const submitError = computed(() => {
-		if (!errors.value || typeof errors.value !== 'object') return '';
-		if (!Object.keys(errors.value as object).length) return '';
-		return tunnelErrorMessage(errors.value);
+	const submitError = computed(() => errors.value ? tunnelErrorMessage(errors.value) : '');
+	const portApiError = computed(() => {
+		if (!submitError.value || /already exist/i.test(submitError.value)) return '';
+		return /port/i.test(submitError.value) ? submitError.value : '';
 	});
-	const portApiError = computed(() => /port/i.test(submitError.value) ? submitError.value : '');
 	const aclApiError = computed(() => /acl/i.test(submitError.value) ? submitError.value : '');
-	const formApiError = computed(() => {
-		if (!submitError.value || portApiError.value || aclApiError.value) return '';
-		return submitError.value;
-	});
+	const formApiError = computed(() => submitError.value);
+
+	const blockedReason = () => {
+		if (formState.acl_model === 'anyone' && !formState.acl_risk) {
+			return 'Confirm that you accept the risk of an open ACL.';
+		}
+		if (formState.storeInLibrary && !formState.name) {
+			return 'A name is required to store this tunnel.';
+		}
+		if (formState.lport_random === 'specify' && lportError.value) {
+			return lportErrorMessage.value || 'The public port is not valid.';
+		}
+		return '';
+	};
+
+	const fail = (error: unknown) => {
+		errors.value = error;
+		snackbar.add({
+			type: 'error',
+			text: tunnelErrorMessage(error),
+		});
+	};
 
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
-		errors.value = {};
-		if (!isFormValid.value) return;
+		errors.value = null;
+		if (!isFormValid.value) {
+			fail({ errors: [{ title: blockedReason() || 'Check the tunnel form and try again.' }] });
+			return;
+		}
 		const payload: TunnelPayload = {
 			remote: String(formState.port),
 			scheme: formState.service,
@@ -116,6 +137,12 @@ export function useTunnelForm(client: any) {
 		if (formState.http_proxy) {
 			payload.http_proxy = formState.http_proxy;
 		}
+		const duplicate = duplicateTunnelMessage(client.id, payload);
+		if (duplicate) {
+			fail({ errors: [{ title: duplicate }] });
+			return;
+		}
+
 		try {
 			isLoading.value = true;
 			if (formState.storeInLibrary) {
@@ -147,16 +174,19 @@ export function useTunnelForm(client: any) {
 				await refreshNuxtData(`stored_tunnels_${client.id}`);
 			}
 			const { data, error } = await tunnelStore.createTunnel(client.id, payload);
-			if (error) {
-				errors.value = error;
+			if (error || !data) {
+				fail(error ?? { errors: [{ title: 'Could not start the tunnel.' }] });
+				return;
 			}
-			else {
-				tunnelStore.closeAddTunnel();
-			}
-			isLoading.value = false;
+			await refreshNuxtData(`tunnels_${client.id}`);
+			tunnelStore.closeAddTunnel();
+			snackbar.add({
+				type: 'success',
+				text: 'Tunnel created',
+			});
 		}
 		catch (e) {
-			errors.value = (e as { data?: unknown })?.data ?? e;
+			fail(e);
 		}
 		finally {
 			isLoading.value = false;

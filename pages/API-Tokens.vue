@@ -13,13 +13,27 @@
 								Tokens for this account. The secret is shown only once, when it is created.
 							</p>
 						</div>
-						<button
-							type="button"
-							class="inline-flex min-h-11 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white"
-							@click="creating = !creating"
-						>
-							Add API token
-						</button>
+						<div class="flex flex-col items-end gap-2">
+							<div class="flex items-center gap-2">
+								<RefreshButton
+									:pending="refreshing"
+									@refresh="reloadTokens"
+								/>
+								<button
+									type="button"
+									class="inline-flex min-h-11 items-center rounded-lg bg-primary-800 px-4 text-sm font-medium text-white"
+									@click="creating = !creating"
+								>
+									Add API token
+								</button>
+							</div>
+							<p
+								v-if="refreshNote"
+								class="text-xs text-gray-500"
+							>
+								{{ refreshNote }}
+							</p>
+						</div>
 					</div>
 
 					<form
@@ -152,6 +166,8 @@ const formatWhen = (value?: string | Date) => {
 	}).format(date);
 };
 
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
+
 const load = async () => {
 	try {
 		const response = await $api.profile.apiTokens();
@@ -163,6 +179,12 @@ const load = async () => {
 		notice.value = apiErrorMessage(error, 'Could not load API tokens.');
 	}
 };
+
+const reloadTokens = () => runRefresh('API tokens', async () => {
+	const response = await $api.profile.apiTokens();
+	tokens.value = response.data ?? [];
+	notice.value = '';
+});
 
 const createToken = async () => {
 	busy.value = true;

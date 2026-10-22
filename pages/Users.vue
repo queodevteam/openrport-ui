@@ -9,9 +9,19 @@
 							<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 								Users
 							</h3>
+							<p
+								v-if="refreshNote"
+								class="mt-1 text-sm text-gray-500"
+							>
+								{{ refreshNote }}
+							</p>
 						</div>
 						<div class="flex-1" />
-						<div class="ml-2 flex-shrink-0">
+						<div class="ml-2 flex shrink-0 items-center gap-2">
+							<RefreshButton
+								:pending="refreshing"
+								@refresh="reloadUsers"
+							/>
 							<button
 								class="min-h-11 bg-primary-800 hover:bg-primary-800 focus-visible:outline-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-4 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
 								type="button"
@@ -30,7 +40,10 @@
 								<div class="inline-block min-w-full align-middle">
 									<div class="sm:rounded-t-lg overflow-hidden">
 										<div>
-											<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+											<table
+												class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+												:class="refreshing ? 'opacity-60' : ''"
+											>
 												<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 													<tr>
 														<th
@@ -57,7 +70,15 @@
 												<tbody
 													class="z-10 divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900"
 												>
-													<tr v-if="!pending && !users?.length">
+													<tr v-if="(pending || refreshing) && !users?.length">
+														<td
+															colspan="3"
+															class="px-6 py-8 text-center text-sm text-gray-500"
+														>
+															Refreshing users…
+														</td>
+													</tr>
+													<tr v-else-if="!pending && !users?.length">
 														<td
 															colspan="3"
 															class="p-0"
@@ -240,7 +261,13 @@ const { copy } = useClipboard();
 const { $api } = useNuxtApp();
 const snackbar = useSnackbar();
 
-const { data: users, pending, refresh } = useLazyAsyncData('users', () => $api.users.getAll());
+const { data: users, pending, error: usersError, refresh } = useLazyAsyncData('users', () => $api.users.getAll());
+const { refreshing, note: refreshNote, run: runRefresh } = useRefreshFeedback();
+
+const reloadUsers = () => runRefresh('Users', async () => {
+	await refresh();
+	if (usersError.value) throw usersError.value;
+});
 const { data: userGroups } = useLazyAsyncData(('user-groups'), () => $api.userGroups.all());
 
 const delConfirm = ref(false);

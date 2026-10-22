@@ -596,7 +596,8 @@
 				</div>
 				<p
 					v-if="formApiError"
-					class="text-sm text-red-600"
+					class="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+					role="alert"
 				>
 					{{ formApiError }}
 				</p>

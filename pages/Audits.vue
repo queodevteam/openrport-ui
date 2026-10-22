@@ -10,13 +10,18 @@
 						Recent actions recorded by the server.
 					</p>
 				</div>
-				<button
-					type="button"
-					class="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700"
-					@click="load"
-				>
-					Reload
-				</button>
+				<div class="flex flex-col items-end gap-1">
+					<RefreshButton
+						:pending="pending"
+						@refresh="reload"
+					/>
+					<p
+						v-if="refreshNote"
+						class="text-xs text-gray-500"
+					>
+						{{ refreshNote }}
+					</p>
+				</div>
 			</div>
 			<p
 				v-if="notice"
@@ -110,6 +115,8 @@ const formatWhen = (value?: string | Date) => {
 	}).format(date);
 };
 
+const { note: refreshNote, run: runRefresh } = useRefreshFeedback();
+
 const load = async () => {
 	pending.value = true;
 	notice.value = '';
@@ -127,6 +134,11 @@ const load = async () => {
 		pending.value = false;
 	}
 };
+
+const reload = () => runRefresh('Audit logs', async () => {
+	await load();
+	if (notice.value) throw new Error(notice.value);
+});
 
 const changePage = async (next: number) => {
 	page.value = next;

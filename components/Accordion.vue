@@ -128,9 +128,15 @@
 				v-if="isActive(index)"
 				class="relative z-10 mb-2 ml-5 mt-1 border-l border-slate-200 pl-3"
 			>
+				<p
+					v-if="listLoading"
+					class="px-2 py-2 text-xs font-medium text-primary-700"
+				>
+					Refreshing clients…
+				</p>
 				<div
+					v-if="listLoading"
 					class="absolute inset-0 -top-4 z-30 flex items-center justify-center bg-white/50 backdrop-blur-sm"
-					style="display: none;"
 				>
 					<div class="flex w-full justify-center">
 						<svg
@@ -162,7 +168,7 @@
 				</div>
 
 				<p
-					v-if="deviceList && deviceList.length === 0"
+					v-if="!listLoading && deviceList && deviceList.length === 0"
 					class="px-2 py-6 text-sm text-gray-500"
 				>
 					No clients match.
@@ -216,8 +222,10 @@
 import { IconBrandDebian, IconFolder } from '@tabler/icons-vue';
 import ClientIcon from '~/components/device/ClientIcon.vue';
 
+const emit = defineEmits(['refreshed', 'refresh-failed']);
 const activeIndex = ref(null);
 const deviceList = ref(null);
+const listLoading = ref(false);
 const store = useClientStore();
 const route = useRoute();
 const props = defineProps({
@@ -283,14 +291,33 @@ const toggle = async (index, id) => {
 	}
 };
 
-watch(() => [props.filter, props.reloadToken], async () => {
-	if (hasActiveFilter.value && props.items?.length) {
-		activeIndex.value = searchFolderIndex.value;
+const reloadOpenFolder = async (notify) => {
+	listLoading.value = true;
+	try {
+		if (hasActiveFilter.value && props.items?.length) {
+			activeIndex.value = searchFolderIndex.value;
+		}
+		if (activeIndex.value !== null) {
+			await loadDevices(activeIndex.value);
+		}
+		if (notify) emit('refreshed');
 	}
-	if (activeIndex.value !== null) {
-		await loadDevices(activeIndex.value);
+	catch (error) {
+		if (notify) emit('refresh-failed', error);
 	}
+	finally {
+		listLoading.value = false;
+	}
+};
+
+watch(() => props.filter, () => {
+	reloadOpenFolder(false);
 }, { deep: true });
+
+watch(() => props.reloadToken, (token, previous) => {
+	if (token === previous) return;
+	reloadOpenFolder(true);
+});
 
 const isActive = (index) => {
 	return activeIndex.value === index;

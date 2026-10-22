@@ -1,5 +1,29 @@
+import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import type { ILoginInput, TwoFa } from '~/types';
+
+function sessionCookieOptions(lifetimeSeconds: string) {
+	const seconds = Number(lifetimeSeconds);
+	const options: { path: string; sameSite: 'lax'; secure?: boolean; maxAge?: number } = {
+		path: '/',
+		sameSite: 'lax',
+	};
+	if (import.meta.client && window.location.protocol === 'https:') {
+		options.secure = true;
+	}
+	if (Number.isFinite(seconds) && seconds > 0) {
+		options.maxAge = Math.floor(seconds);
+	}
+	return options;
+}
+
+function persistSessionCookie(name: string, value: string, lifetimeSeconds: string) {
+	if (!import.meta.client) return;
+	const seconds = Number(lifetimeSeconds);
+	const maxAge = Number.isFinite(seconds) && seconds > 0 ? `; Max-Age=${Math.floor(seconds)}` : '';
+	const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+	document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}${maxAge}; Path=/; SameSite=Lax${secure}`;
+}
 
 function loginErrorMessage(error: any): string {
 	const data = error?.data ?? error?.response?._data ?? error?.response?.data;
@@ -24,8 +48,9 @@ export const useTokenStore = defineStore('token', {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 			this.errors = [];
-			const token = useCookie<string>('token');
-			const is_authenticated = useCookie<boolean>('is_authenticated');
+			const cookieOptions = sessionCookieOptions(credentials.remember_me);
+			const token = useCookie<string>('token', cookieOptions);
+			const is_authenticated = useCookie<boolean>('is_authenticated', cookieOptions);
 			try {
 				const response = await $api.auth.login(credentials);
 				if (response?.data.token) {
@@ -38,6 +63,9 @@ export const useTokenStore = defineStore('token', {
 						token.value = response.data.token;
 						is_authenticated.value = true;
 						this.authenticated = true;
+						await nextTick();
+						persistSessionCookie('token', response.data.token, credentials.remember_me);
+						persistSessionCookie('is_authenticated', 'true', credentials.remember_me);
 					}
 				}
 				this.loading = false;
@@ -51,14 +79,18 @@ export const useTokenStore = defineStore('token', {
 			const { $api } = useNuxtApp();
 			this.loading = true;
 			this.errors = [];
-			const token = useCookie<string>('token');
-			const is_authenticated = useCookie<boolean>('is_authenticated');
+			const cookieOptions = sessionCookieOptions(credentials.remember_me);
+			const token = useCookie<string>('token', cookieOptions);
+			const is_authenticated = useCookie<boolean>('is_authenticated', cookieOptions);
 			try {
 				const response = await $api.auth.verify2fa(credentials, this.twoFaToken, code);
 				if (response?.data.token) {
 					token.value = response.data.token;
 					is_authenticated.value = true;
 					this.authenticated = true;
+					await nextTick();
+					persistSessionCookie('token', response.data.token, credentials.remember_me);
+					persistSessionCookie('is_authenticated', 'true', credentials.remember_me);
 				}
 				this.loading = false;
 			}

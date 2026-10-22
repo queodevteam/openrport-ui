@@ -67,6 +67,9 @@
 						<option value="2592000">
 							30 days
 						</option>
+						<option value="7776000">
+							3 months
+						</option>
 					</select>
 					<label
 						for="rememberMe"
@@ -161,7 +164,7 @@
 import { ref, watch } from 'vue';
 import type { ILoginInput } from '~/types';
 
-const REMEMBER_OPTIONS = ['', '3600', '86400', '604800', '1209600', '2592000'];
+const REMEMBER_OPTIONS = ['', '3600', '86400', '604800', '1209600', '2592000', '7776000'];
 
 const store = useTokenStore();
 

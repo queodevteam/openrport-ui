@@ -38,8 +38,8 @@
 		>
 			<button
 				type="button"
-				class="flex min-h-11 w-full items-center gap-2 rounded-lg pl-2 pr-1 text-left text-gray-800 transition-colors duration-150"
-				:class="isActive(index) ? 'bg-slate-100' : 'hover:bg-slate-50'"
+				class="folder-row flex min-h-11 w-full items-center gap-2 rounded-lg pl-2 pr-1 text-left transition-colors duration-150"
+				:class="{ 'is-open': isActive(index) }"
 				:aria-expanded="isActive(index)"
 				@click="toggle(index, item.id)"
 			>
@@ -47,7 +47,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-150"
+					class="folder-chevron h-4 w-4 shrink-0 transition-transform duration-150"
 					:class="isActive(index) ? 'rotate-90' : ''"
 				>
 					<path
@@ -56,7 +56,7 @@
 						clip-rule="evenodd"
 					/>
 				</svg>
-				<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-200 text-slate-600">
+				<span class="folder-mark flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
 					<svg
 						v-if="item.id === 'favorites'"
 						xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@
 				</span>
 				<span
 					v-if="folderStats(item, index)"
-					class="ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums text-slate-600"
+					class="folder-counts ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums"
 				>
 					<span class="inline-flex w-11 shrink-0 items-center gap-1">
 						<span class="h-2 w-2 shrink-0 rounded-full bg-slate-400" />
@@ -340,6 +340,47 @@ const folderStats = (item, index) => {
 </script>
 
 <style scoped>
+.folder-row {
+	color: #1f2937;
+}
+
+.folder-row:hover,
+.folder-row.is-open {
+	background-color: #f1f5f9;
+}
+
+.folder-chevron {
+	color: #94a3b8;
+}
+
+.folder-mark {
+	background-color: #e2e8f0;
+	color: #475569;
+}
+
+.folder-counts {
+	color: #475569;
+}
+
+:global(html.dark) .folder-row {
+	color: #f8fafc;
+}
+
+:global(html.dark) .folder-row:hover,
+:global(html.dark) .folder-row.is-open {
+	background-color: #374151;
+}
+
+:global(html.dark) .folder-chevron,
+:global(html.dark) .folder-counts {
+	color: #e2e8f0;
+}
+
+:global(html.dark) .folder-mark {
+	background-color: #f59e0b;
+	color: #451a03;
+}
+
 .accordion-header[aria-expanded=true] {
     background-color: #00528d !important;
 }

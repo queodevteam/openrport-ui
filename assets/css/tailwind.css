@@ -467,3 +467,13 @@ html.dark .app-page .divide-y.overflow-hidden.rounded-lg.bg-white.shadow.dark\:b
         background: #1f2937;
     }
 }
+
+html.dark .folder-row:hover,
+html.dark .folder-row.is-open {
+    background-color: #374151;
+}
+
+html.dark .folder-mark {
+    background-color: #f59e0b;
+    color: #451a03;
+}

@@ -47,7 +47,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
-					class="folder-chevron h-4 w-4 shrink-0 transition-transform duration-150"
+					class="folder-chevron h-4 w-4 shrink-0 text-gray-500 transition-transform duration-150"
 					:class="isActive(index) ? 'rotate-90' : ''"
 				>
 					<path
@@ -103,12 +103,12 @@
 						/>
 					</svg>
 				</span>
-				<span class="min-w-0 flex-1 truncate text-sm font-medium">
+				<span class="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">
 					{{ item.title }}
 				</span>
 				<span
 					v-if="folderStats(item, index)"
-					class="folder-counts ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums"
+					class="folder-counts ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums text-gray-600"
 				>
 					<span class="inline-flex w-11 shrink-0 items-center gap-1">
 						<span class="h-2 w-2 shrink-0 rounded-full bg-slate-400" />
@@ -340,45 +340,14 @@ const folderStats = (item, index) => {
 </script>
 
 <style scoped>
-.folder-row {
-	color: #1f2937;
-}
-
 .folder-row:hover,
 .folder-row.is-open {
 	background-color: #f1f5f9;
 }
 
-.folder-chevron {
-	color: #94a3b8;
-}
-
 .folder-mark {
 	background-color: #e2e8f0;
 	color: #475569;
-}
-
-.folder-counts {
-	color: #475569;
-}
-
-:global(html.dark) .folder-row {
-	color: #f8fafc;
-}
-
-:global(html.dark) .folder-row:hover,
-:global(html.dark) .folder-row.is-open {
-	background-color: #374151;
-}
-
-:global(html.dark) .folder-chevron,
-:global(html.dark) .folder-counts {
-	color: #e2e8f0;
-}
-
-:global(html.dark) .folder-mark {
-	background-color: #f59e0b;
-	color: #451a03;
 }
 
 .accordion-header[aria-expanded=true] {

@@ -1,8 +1,9 @@
 <template>
 	<div
-		class="absolute bottom-4 left-4 right-4 top-4 flex justify-between overflow-hidden rounded-xl bg-white shadow-lg shadow-gray-400"
+		class="absolute bottom-4 left-4 right-4 top-4 flex justify-between overflow-hidden rounded-xl bg-white text-gray-900 shadow-lg shadow-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:shadow-black/40"
 	>
-		<div class="flex h-full w-2/5 items-center justify-center px-8">
+		<div class="relative flex h-full w-2/5 items-center justify-center px-8">
+			<ThemeToggle class="absolute right-4 top-4 text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" />
 			<slot />
 		</div>
 		<div class="bg-primary-800 flex h-full w-3/5 flex-col items-stretch justify-between py-6">

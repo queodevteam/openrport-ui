@@ -53,6 +53,13 @@ export default defineNuxtConfig({
 			link: [
 
 			],
+			script: [
+				{
+					key: 'color-mode',
+					tagPriority: 'critical',
+					innerHTML: '(function(){try{var stored=localStorage.getItem("color-mode");var dark=stored==="dark"||(stored!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var root=document.documentElement;root.classList.toggle("dark",dark);root.style.colorScheme=dark?"dark":"light";}catch(e){}})();',
+				},
+			],
 			bodyAttrs: {
 				class: 'min-h-screen h-full bg-gray-50 dark:bg-gray-800',
 			},

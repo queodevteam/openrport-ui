@@ -222,3 +222,248 @@ select.primary {
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
+
+/*
+ * Surfaces that were authored only for the light theme.
+ * html.dark beats both the hardcoded rules above and a single dark: utility.
+ */
+html {
+    color-scheme: light;
+}
+
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark .bg-white,
+html.dark .bg-theme {
+    background-color: #1f2937;
+}
+
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100,
+html.dark .bg-theme-light,
+html.dark .bg-theme-lighter {
+    background-color: #111827;
+}
+
+html.dark .bg-primary-50,
+html.dark .hover\:bg-primary-50:hover {
+    background-color: rgb(0 82 141 / 0.28);
+}
+
+html.dark .bg-primary-100 {
+    background-color: #075985;
+}
+
+html.dark .bg-sky-50 {
+    background-color: rgb(12 74 110 / 0.45);
+}
+
+html.dark .border-primary-200,
+html.dark .border-sky-100 {
+    border-color: #0369a1;
+}
+
+html.dark .text-primary-800,
+html.dark .text-primary-700,
+html.dark .primary-plain,
+html.dark button.primary.plain {
+    color: #7dd3fc;
+}
+
+html.dark .bg-white\/50 {
+    background-color: rgb(17 24 39 / 0.5);
+}
+
+html.dark .hover\:bg-white:hover,
+html.dark .hover\:bg-gray-50:hover,
+html.dark .hover\:bg-gray-100:hover,
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .focus\:bg-white:focus {
+    background-color: #374151;
+}
+
+html.dark .text-gray-900,
+html.dark .text-slate-900,
+html.dark .text-theme-inverted {
+    color: #f9fafb;
+}
+
+html.dark .text-gray-800,
+html.dark .text-slate-800,
+html.dark .text-theme-inverted-light,
+html.dark .text-theme-inverted-lighter {
+    color: #f3f4f6;
+}
+
+html.dark .text-gray-700,
+html.dark .text-slate-700 {
+    color: #e5e7eb;
+}
+
+html.dark .text-gray-600,
+html.dark .text-slate-600,
+html.dark .text-theme-label {
+    color: #d1d5db;
+}
+
+html.dark .text-gray-500,
+html.dark .text-slate-500 {
+    color: #9ca3af;
+}
+
+html.dark .text-black,
+html.dark .text-black-087 {
+    color: #f3f4f6;
+}
+
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-slate-200,
+html.dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #374151;
+}
+
+html.dark .border-gray-300,
+html.dark .border-slate-300 {
+    border-color: #4b5563;
+}
+
+html.dark .ring-gray-200,
+html.dark .ring-slate-200 {
+    --tw-ring-color: #374151;
+}
+
+html.dark .bg-red-50 {
+    background-color: rgb(127 29 29 / 0.35);
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-yellow-50 {
+    background-color: rgb(120 53 15 / 0.4);
+}
+
+html.dark .bg-green-50 {
+    background-color: rgb(20 83 45 / 0.45);
+}
+
+html.dark .bg-blue-50 {
+    background-color: rgb(30 58 138 / 0.4);
+}
+
+html.dark .text-red-700 {
+    color: #fecaca;
+}
+
+html.dark .text-amber-950,
+html.dark .text-amber-900,
+html.dark .text-amber-800,
+html.dark .text-yellow-800 {
+    color: #fde68a;
+}
+
+html.dark .text-green-700 {
+    color: #86efac;
+}
+
+html.dark .border-red-200 {
+    border-color: rgb(153 27 27 / 0.7);
+}
+
+html.dark .border-amber-200 {
+    border-color: rgb(146 64 14 / 0.7);
+}
+
+html.dark .hover\:bg-red-100:hover {
+    background-color: rgb(127 29 29 / 0.55);
+}
+
+html.dark input.primary,
+html.dark select.primary,
+html.dark textarea.primary,
+html.dark :is(
+    [multiple],
+    [type="date"],
+    [type="datetime-local"],
+    [type="email"],
+    [type="month"],
+    [type="number"],
+    [type="password"],
+    [type="search"],
+    [type="tel"],
+    [type="text"],
+    [type="time"],
+    [type="url"],
+    [type="week"],
+    select,
+    textarea
+) {
+    background-color: #111827;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+html.dark :is(
+    [multiple],
+    [type="date"],
+    [type="datetime-local"],
+    [type="email"],
+    [type="month"],
+    [type="number"],
+    [type="password"],
+    [type="search"],
+    [type="tel"],
+    [type="text"],
+    [type="time"],
+    [type="url"],
+    [type="week"],
+    select,
+    textarea
+):focus {
+    --tw-ring-offset-color: #111827;
+    border-color: #2563eb;
+    box-shadow: 0 0 #111827, 0 0 0 1px #2563eb, var(--tw-shadow);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #9ca3af;
+}
+
+html.dark option {
+    background-color: #111827;
+    color: #f9fafb;
+}
+
+html.dark [type="checkbox"],
+html.dark [type="radio"] {
+    background-color: #1f2937;
+    border-color: #6b7280;
+}
+
+html.dark [type="checkbox"]:focus,
+html.dark [type="radio"]:focus {
+    --tw-ring-offset-color: #111827;
+    box-shadow: 0 0 0 2px #111827, 0 0 0 4px #2563eb, var(--tw-shadow);
+}
+
+html.dark .app-page .flow-root.ring-1,
+html.dark .app-page .divide-y.overflow-hidden.rounded-lg.bg-white.shadow,
+html.dark .app-page .divide-y.overflow-hidden.rounded-lg.bg-white.shadow.dark\:bg-gray-900 {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+@media (max-width: 767px) {
+    html.dark .app-table tbody tr {
+        border-color: #374151;
+        background: #1f2937;
+    }
+}

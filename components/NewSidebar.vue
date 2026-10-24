@@ -244,6 +244,12 @@
 					</nav>
 				</div>
 				<div class="flex flex-shrink-0 flex-col items-center gap-y-4 pb-5">
+					<div class="w-full px-2">
+						<ThemeToggle
+							variant="nav"
+							:show-label="showLabels"
+						/>
+					</div>
 					<div class="hidden lg:block">
 						<button
 							class="bg-primary hover:bg-vtd-primary-700 focus-visible:outline-vtd-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"

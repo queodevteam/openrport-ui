@@ -254,6 +254,7 @@ import { apiWebSocketUrl } from '~/utils/url';
 import { apiErrorMessage } from '~/lib/apiError';
 import { groupLabel } from '~/lib/groupId';
 import { createAnsiAppender } from '~/lib/ansi';
+import { readSessionToken } from '~/composables/useSessionAuth';
 
 type SavedItem = {
 	id: string;
@@ -265,7 +266,6 @@ type SavedItem = {
 
 const { $api } = useNuxtApp();
 const config = useRuntimeConfig();
-const token = useCookie('token');
 
 const name = ref('');
 const draft = ref('');
@@ -652,7 +652,7 @@ const run = async () => {
 	const payload = multiline
 		? { ...shared, script: toBase64(body), cwd: '' }
 		: { ...shared, command: body };
-	const ws = new WebSocket(apiWebSocketUrl(config.public.apiUrl, path, token.value));
+	const ws = new WebSocket(apiWebSocketUrl(config.public.apiUrl, path, readSessionToken()));
 	socket = ws;
 	const inbox: string[] = [];
 	let pumping = false;

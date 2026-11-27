@@ -1,5 +1,6 @@
 import type { StoredTunnel, Tunnel, TunnelPayload } from '~/types';
 import { apiErrorMessage } from '~/lib/apiError';
+import { resolvePublicApiUrl } from '~/utils/url';
 
 function tunnelOptions(value: unknown): Record<string, unknown> {
 	if (!value) return {};
@@ -70,7 +71,7 @@ export function tunnelPageUrl(tunnel: { tunnel_url?: string; scheme?: string; lp
 	if (!port) return '';
 	let host = window.location.hostname;
 	try {
-		host = new URL(apiUrl).hostname || host;
+		host = new URL(resolvePublicApiUrl(apiUrl)).hostname || host;
 	}
 	catch {
 		host = window.location.hostname;
@@ -100,7 +101,7 @@ export function tunnelSshCommand(tunnel: { lport?: string | number; lhost?: stri
 	if (!port || !login) return '';
 	let host = window.location.hostname;
 	try {
-		host = new URL(apiUrl).hostname || host;
+		host = new URL(resolvePublicApiUrl(apiUrl)).hostname || host;
 	}
 	catch {
 		host = window.location.hostname;

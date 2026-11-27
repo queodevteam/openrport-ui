@@ -17,7 +17,6 @@ import type { ILoginInput } from '~/types';
 
 const store = useTokenStore();
 const { authenticated, showTwoFa } = storeToRefs(store);
-const router = useRouter();
 const credentialsRef = ref<ILoginInput>({
 	username: '',
 	password: '',
@@ -27,18 +26,29 @@ const credentialsRef = ref<ILoginInput>({
 definePageMeta({
 	layout: 'auth',
 });
+
+const goDashboard = async () => {
+	// Full navigation so middleware reads the cookie from a clean load.
+	// Soft navigateTo can race useCookie and bounce straight back to /auth.
+	if (import.meta.client) {
+		window.location.replace('/dashboard');
+		return;
+	}
+	await navigateTo('/dashboard', { replace: true });
+};
+
 const handleLogin = async (credentials: ILoginInput) => {
 	credentialsRef.value = credentials;
-	await store.getLoginToken(credentials);
-	if (authenticated.value && !showTwoFa.value) {
-		await router.push('/dashboard');
+	const ok = await store.getLoginToken(credentials);
+	if (ok && authenticated.value && !showTwoFa.value) {
+		await goDashboard();
 	}
 };
 
 const handleTwoFa = async (two_fa: string) => {
-	await store.verifyTwoFa(credentialsRef.value, two_fa);
-	if (authenticated.value) {
-		await router.push('/dashboard');
+	const ok = await store.verifyTwoFa(credentialsRef.value, two_fa);
+	if (ok && authenticated.value) {
+		await goDashboard();
 	}
 };
 </script>

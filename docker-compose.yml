@@ -5,11 +5,18 @@ services:
   ui:
     build:
       context: .
+      args:
+        # same-origin: browser calls /api on :3001; nginx proxies to rportd (no CORS).
+        NUXT_API_URL: ${NUXT_API_URL:-same-origin}
+        NUXT_PUBLIC_MONITORING_ENABLED: ${NUXT_PUBLIC_MONITORING_ENABLED:-false}
+        NUXT_APP_ENV: ${NUXT_APP_ENV:-staging}
     image: openrport-ui:latest
     ports:
-      - "${UI_PORT:-3001}:80"
+      # Host maps to 8080 inside: this server redirects TCP/80 -> 853 (rportd),
+      # which breaks Docker publishing when the container listens on 80.
+      - "${UI_PORT:-3001}:8080"
     environment:
-      NUXT_API_URL: ${NUXT_API_URL:-https://iot.console.queo.com.co}
+      NUXT_API_URL: ${NUXT_API_URL:-same-origin}
       NUXT_PUBLIC_MONITORING_ENABLED: ${NUXT_PUBLIC_MONITORING_ENABLED:-false}
-      NUXT_APP_ENV: ${NUXT_APP_ENV:-}
+      NUXT_APP_ENV: ${NUXT_APP_ENV:-staging}
     restart: unless-stopped

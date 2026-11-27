@@ -3,8 +3,8 @@ import { validation } from '~/lib/validation';
 
 export function useTunnelValidation(formState: TunnelFormState) {
 	const lportError = computed(() => {
-		if (!formState.lport) return false;
-		if (formState.lport.toString().length === 0) return true;
+		if (formState.lport_random !== 'specify') return false;
+		if (!formState.lport || formState.lport.toString().length === 0) return true;
 		return formState.lport < 20000 || formState.lport > 30000;
 	});
 

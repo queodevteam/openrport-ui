@@ -6,7 +6,7 @@
 		/>
 		<div
 			v-if="modelValue"
-			class="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden p-5 transition"
+			class="fixed inset-0 z-[200] flex items-end justify-center overflow-y-auto p-0 transition duration-150 sm:items-center sm:p-5"
 		>
 			<slot />
 		</div>

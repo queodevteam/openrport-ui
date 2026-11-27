@@ -14,13 +14,12 @@ export const useTunnelStore = defineStore('tunnel', {
 			const { $api } = useNuxtApp();
 			try {
 				const data = await $api.clients.createTunnel(clientID, payload);
-				console.log(data);
 				return { data: data, error: null };
 			}
-			catch (e: any) {
+			catch (error: unknown) {
 				return {
 					data: null,
-					error: e.data,
+					error: error ?? { errors: [{ title: 'Could not start the tunnel.' }] },
 				};
 			}
 		},

@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
-	devtools: { enabled: true },
+	devtools: { enabled: process.env.NODE_ENV !== 'production' },
+	sourcemap: false,
 
 	css: [
 		'~/assets/css/tailwind.css',
@@ -47,10 +48,17 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: 'OpenRport',
+			title: 'rport',
 
 			link: [
 
+			],
+			script: [
+				{
+					key: 'color-mode',
+					tagPriority: 'critical',
+					innerHTML: '(function(){try{var stored=localStorage.getItem("color-mode");var dark=stored==="dark"||(stored!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var root=document.documentElement;root.classList.toggle("dark",dark);root.style.colorScheme=dark?"dark":"light";}catch(e){}})();',
+				},
 			],
 			bodyAttrs: {
 				class: 'min-h-screen h-full bg-gray-50 dark:bg-gray-800',
@@ -77,10 +85,26 @@ export default defineNuxtConfig({
 		},
 	},
 
+	components: {
+		dirs: [
+			{
+				path: '~/components',
+				ignore: [
+					'**/DeviceMonitoringTab.vue',
+					'**/DeviceMetaDataTab.vue',
+					'**/DeviceDocumentsTab.vue',
+					'**/DeviceFilesTab.vue',
+					'**/DeviceAuditTab.vue',
+				],
+			},
+		],
+	},
+
 	runtimeConfig: {
 		public: {
 			appEnv: process.env.NUXT_APP_ENV,
 			apiUrl: process.env.NUXT_API_URL,
+			monitoringEnabled: process.env.NUXT_PUBLIC_MONITORING_ENABLED === 'true',
 		},
 	},
 

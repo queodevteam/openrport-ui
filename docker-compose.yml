@@ -1,0 +1,40 @@
+# UI :3001 + staging rportd API :3002 (agents :1853, disconnected copy of prod DB)
+#
+# On the host, prepare data once:
+#   sudo /opt/openrport-staging/sync-db-from-prod.sh
+
+services:
+  rportd:
+    image: alpine:3.19
+    # Host binary is statically linked (prod 0.9.14).
+    volumes:
+      - /usr/local/bin/rportd:/usr/local/bin/rportd:ro
+      - /opt/openrport-staging/rportd.conf:/etc/rportd.conf:ro
+      - /var/lib/rport-staging:/var/lib/rport
+      - /var/log/rport-staging:/var/log/rport
+    ports:
+      # API stays on loopback (UI uses the compose network). Agents must be public.
+      - "127.0.0.1:${RPORTD_API_PORT:-3002}:3002"
+      - "${RPORTD_AGENT_PORT:-1853}:1853"
+    command: ["rportd", "-c", "/etc/rportd.conf"]
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: .
+      args:
+        NUXT_API_URL: ${NUXT_API_URL:-same-origin}
+        NUXT_PUBLIC_MONITORING_ENABLED: ${NUXT_PUBLIC_MONITORING_ENABLED:-false}
+        NUXT_APP_ENV: ${NUXT_APP_ENV:-staging}
+    image: openrport-ui:latest
+    ports:
+      # Host maps to 8080 inside: this server redirects TCP/80 -> 853 (rportd prod),
+      # which breaks Docker publishing when the container listens on 80.
+      - "${UI_PORT:-3001}:8080"
+    environment:
+      NUXT_API_URL: ${NUXT_API_URL:-same-origin}
+      NUXT_PUBLIC_MONITORING_ENABLED: ${NUXT_PUBLIC_MONITORING_ENABLED:-false}
+      NUXT_APP_ENV: ${NUXT_APP_ENV:-staging}
+    depends_on:
+      - rportd
+    restart: unless-stopped

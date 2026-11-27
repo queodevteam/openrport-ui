@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full w-full flex-1">
+	<div class="h-full w-full flex-1 px-2 pb-6 sm:px-4">
 		<div
 			data-v-8efdf101=""
 			class="min-h-[600px] w-full px-1"
@@ -79,7 +79,7 @@
 								<div class="sm:rounded-t-lg overflow-hidden">
 									<div>
 										<table
-											class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+											class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700"
 										>
 											<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 												<tr>

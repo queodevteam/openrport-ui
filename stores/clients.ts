@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia';
 import type { Client, ClientGroup, ClientMetric, ClientsResponse } from '~/types';
+import type { ClientSearch } from '~/repository/modules/clients';
 
 export const useClientStore = defineStore('clients', {
 	state: () => ({
 		clients: [] as Array<Client>,
 		groups: [] as Array<ClientGroup>,
+		knownClients: {} as Record<string, Client>,
 		currentClient: {} as Client,
 		currentMetrics: [] as Array<ClientMetric>,
+		clientLoadSeq: 0,
+		listRevision: 0,
 	}),
 	getters: {
 		getClients(state) {
@@ -39,10 +43,44 @@ export const useClientStore = defineStore('clients', {
 			this.$state.groups = <ClientGroup[]>data.data;
 		},
 
-		async loadGroupList(id: string) {
+		rememberClient(client: Client) {
+			if (!client?.id) return;
+			const previous = this.knownClients[client.id] ?? this.knownClients[client.id.toLowerCase()];
+			const merged = previous ? { ...previous, ...client } : client;
+			this.knownClients[client.id] = merged;
+			const lowerId = client.id.toLowerCase();
+			if (lowerId !== client.id) {
+				this.knownClients[lowerId] = merged;
+			}
+		},
+
+		rememberClients(clients: Client[]) {
+			for (const client of clients) {
+				this.rememberClient(client);
+			}
+		},
+
+		forgetClient(clientId: string) {
+			if (!clientId) return;
+			delete this.knownClients[clientId];
+			delete this.knownClients[clientId.toLowerCase()];
+			if (this.currentClient?.id === clientId || this.currentClient?.id?.toLowerCase() === clientId.toLowerCase()) {
+				this.currentClient = {} as Client;
+			}
+		},
+
+		async dropClient(clientId: string) {
+			this.forgetClient(clientId);
+			await this.loadGroups();
+			this.listRevision += 1;
+		},
+
+		async loadGroupList(id: string, filter?: ClientSearch) {
 			const { $api } = useNuxtApp();
-			const data = await $api.clients.listByGroup(id);
-			return data.data;
+			const data = await $api.clients.listByGroup(id, filter);
+			const clients = data.data ?? [];
+			this.rememberClients(clients);
+			return clients;
 		},
 		async fetchClients() {
 			const { $api } = useNuxtApp();
@@ -55,15 +93,27 @@ export const useClientStore = defineStore('clients', {
 		},
 		async loadClientById(clientId: string) {
 			const { $api } = useNuxtApp();
-			try {
-				const data = await $api.clients.show(clientId);
-				this.$state.currentClient = <Client>data.data;
-				const metricsData = await $api.clients.metrics(clientId as string);
-				this.$state.currentMetrics = <ClientMetric[]>metricsData.data;
-			}
-			catch (e) {
-				console.error('Error fetching client:', e);
-			}
+			const seq = ++this.clientLoadSeq;
+			const known = this.knownClients[clientId] ?? this.knownClients[clientId.toLowerCase()];
+			this.currentClient = known ? { ...known } : { id: clientId } as Client;
+			this.currentMetrics = [];
+
+			await Promise.allSettled([
+				$api.clients.show(clientId).then((data) => {
+					if (seq !== this.clientLoadSeq) return;
+					const client = <Client>data.data;
+					this.rememberClient(client);
+					this.currentClient = client;
+				}).catch((error) => {
+					console.error('Error fetching client:', error);
+				}),
+				$api.clients.metrics(clientId).then((data) => {
+					if (seq !== this.clientLoadSeq) return;
+					this.currentMetrics = <ClientMetric[]>data.data;
+				}).catch((error) => {
+					console.error('Error fetching client metrics:', error);
+				}),
+			]);
 		},
 		updateClient(client: Partial<Client>) {
 			this.$state.currentClient = {

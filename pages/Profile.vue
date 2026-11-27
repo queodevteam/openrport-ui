@@ -1,41 +1,25 @@
 <template>
 	<new-page-wrapper is-extra="true">
-		<div class="flex flex-1 xl:overflow-hidden">
+		<div class="flex min-h-0 flex-1 flex-col xl:flex-row xl:overflow-hidden">
 			<new-settings-sidebar />
 			<div class="scrollbar-hide max-h-screen flex-1 xl:overflow-y-auto">
-				<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+				<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
 					<form>
-						<div class="relative z-20 flex h-16 items-center justify-between">
+						<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 							<div class="">
-								<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+								<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 									Profile
 								</h3>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
 							</div>
 							<div class="flex-1" />
-							<div class="ml-2 flex-shrink-0">
-								<button
-									class="bg-primary-500 hover:bg-primary-800 focus-visible:outline-primary-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-									type="button"
-								>
-									<!----><!----><span
-										class="flex items-center justify-center gap-x-2"
-									><!----> Reload</span>
-								</button>
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-								</p>
-							</div>
 						</div><!---->
 						<div class="flex flex-col gap-y-8">
 							<div
 								class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 							>
-								<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+								<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 									<div class="flex max-h-16 flex-1 content-center items-center">
-										<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+										<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 											Update profile info
 										</h3>
 										<p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-500" />
@@ -92,29 +76,23 @@
 					</form>
 					<div class="mt-8 pb-8">
 						<form>
-							<div class="relative z-20 flex h-16 items-center justify-between">
+							<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 								<div class="">
-									<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+									<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 										Settings
 									</h3>
-									<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-									</p>
 								</div>
 								<div class="flex-1" />
 								<div class="ml-2 flex-shrink-0">
-									<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-									</p>
 								</div>
 							</div><!---->
 							<div class="flex flex-col gap-y-8">
 								<div
 									class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 								>
-									<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+									<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 										<div class="flex max-h-16 flex-1 content-center items-center">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+											<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 												General
 											</h3>
 											<p
@@ -225,9 +203,9 @@
 								<div
 									class="flex flex-1 flex-col divide-y divide-gray-50 overflow-hidden rounded-lg bg-white shadow dark:divide-gray-700 dark:bg-gray-900"
 								>
-									<div class="px-4 py-4 sm:flex sm:items-center sm:px-6">
+									<div class="flex items-center gap-2.5 border-b border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-gray-800 dark:bg-gray-800/60">
 										<div class="flex max-h-16 flex-1 content-center items-center">
-											<h3 class="text-xl font-semibold leading-7 text-gray-900 dark:text-gray-50">
+											<h3 class="text-sm font-semibold text-gray-900 dark:text-white">
 												RDP
 											</h3>
 											<p

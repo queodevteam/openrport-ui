@@ -9,5 +9,10 @@
 </script>
 
 <style>
-
+html,
+body,
+#__nuxt {
+	height: 100%;
+	overflow: hidden;
+}
 </style>

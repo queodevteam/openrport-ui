@@ -1,28 +1,13 @@
 <template>
 	<new-page-wrapper>
-		<div class="mx-auto h-screen max-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-			<div class="relative z-20 flex h-16 items-center justify-between">
+		<div class="app-page mx-auto min-h-0 w-full max-w-7xl overflow-y-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+			<div class="relative z-20 flex min-h-16 flex-wrap items-center justify-between gap-3">
 				<div class="">
-					<h3 class="text-3xl leading-6 text-gray-800 dark:text-white">
+					<h3 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
 						Tunnels
 					</h3>
-					<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-					</p>
 				</div>
 				<div class="flex-1" />
-				<div class="ml-2 flex-shrink-0">
-					<button
-						class="bg-primary-800 hover:bg-primary-700 focus-visible:outline-blue-600 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:focus-visible:outline-gray-400 text-white disabled:text-gray-500 cursor-pointer rounded-md px-2.5 py-1.5 text-sm relative font-semibold shadow-sm transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-						type="button"
-					>
-						<!----><!----><span class="flex items-center justify-center gap-x-2"><!---->
-							Reload</span>
-					</button>
-					<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-&nbsp;
-					</p>
-				</div>
 			</div><!---->
 			<div class="relative z-10 w-full">
 				<!---->
@@ -33,7 +18,7 @@
 						<div class="inline-block min-w-full align-middle">
 							<div class="sm:rounded-t-lg overflow-hidden">
 								<div>
-									<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+									<table class="app-table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 										<thead class="rounded-lg bg-gray-50 dark:bg-gray-950">
 											<tr>
 												<th
@@ -143,20 +128,21 @@
 													colspan="12"
 													class="w-full flex-1 text-center text-gray-800 dark:text-gray-200"
 												>
-													No results
+													<AppEmpty>No tunnels.</AppEmpty>
 												</td>
 											</tr>
 											<tr
 												v-for="tunnel in updatedTunnels"
 												v-if="updatedTunnels?.length !== undefined && updatedTunnels?.length > 0"
 												:key="tunnel.id"
-												class="cursor-pointer hover:bg-vtd-primary-600/30 border-t-1 group relative border-gray-200 transition-all duration-300"
+												class="cursor-pointer border-t border-gray-200 transition-colors hover:bg-gray-50"
+												@click="openActiveTunnel(tunnel, config.public.apiUrl)"
 											>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6" />
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<a
 														:href="`/dashboard/${tunnel.client_id}`"
-														class=""
+														@click.stop
 													>{{ tunnel.client_name }}</a>
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
@@ -166,7 +152,7 @@
 													{{ tunnel.lport }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
-													<span class="bg-vtd-secondary-50 dark:bg-vtd-secondary-500/10 text-vtd-secondary-700 dark:text-vtd-secondary-400 ring-vtd-secondary-600/20 dark:ring-vtd-secondary-400/30 px-2 py-1 inline-flex items-center gap-x-1.5 rounded-md text-xs font-medium ring-1 ring-inset"><!----><span><!----> </span><span>Disabled</span><!----></span>
+													<span>{{ tunnel.http_proxy ? 'On' : 'Off' }}</span>
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<span class="text-center">{{ tunnel.protocol }}<span>:{{ tunnel.scheme }}</span></span>
@@ -178,10 +164,7 @@
 													{{ tunnel.rport }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
-													<a
-														:href="`/dashboard/${tunnel.client_id}`"
-														class=""
-													>{{ tunnel.name }}</a>
+													{{ tunnel.name || '—' }}
 												</td>
 												<td class="text-left min-h-[42px] whitespace-nowrap py-3.5 pl-4 pr-3 text-sm font-normal text-gray-800 dark:text-white sm:pl-6">
 													<div class="inline-flex w-max cursor-pointer">
@@ -248,70 +231,12 @@
 							</div>
 						</div>
 					</div>
-					<div class="relative z-0 -mx-4 mt-2 sm:-mx-6 lg:-mx-8">
-						<div class="inline-block min-w-full align-middle sm:px-6 lg:px-8">
-							<div class="border-t border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-950">
-								<div>
-									<div
-										colspan="12"
-										class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-600 sm:pl-6"
-									>
-										<div class="flex w-full items-center justify-between">
-											<div class="flex items-center justify-between">
-												<span
-													class="text-xs text-gray-500"
-												> Showing <span
-													class="font-medium"
-												>1</span> to <span
-													class="font-medium"
-												>0</span> of <span
-													class="font-medium"
-												>0</span> results </span>
-											</div>
-											<div class="flex-1" />
-											<div class="flex w-full max-w-[90px] items-center justify-between">
-												<button
-													disabled=""
-													class="rounded-full p-1 text-gray-500 transition-all duration-300 hover:bg-gray-300 hover:text-primary-600 disabled:cursor-not-allowed disabled:text-gray-300 hover:disabled:bg-transparent hover:dark:bg-gray-900 disabled:dark:text-gray-700 hover:dark:disabled:bg-transparent"
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 20 20"
-														fill="currentColor"
-														aria-hidden="true"
-														class="h-6 w-6"
-													>
-														<path
-															fill-rule="evenodd"
-															d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-															clip-rule="evenodd"
-														/>
-													</svg>
-												</button><button
-													disabled=""
-													class="rounded-full p-1 text-gray-500 transition-all duration-300 hover:bg-gray-300 hover:text-primary-600 disabled:cursor-not-allowed disabled:text-gray-300 hover:disabled:bg-transparent hover:dark:bg-gray-900 disabled:dark:text-gray-700 hover:dark:disabled:bg-transparent"
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 20 20"
-														fill="currentColor"
-														aria-hidden="true"
-														class="h-6 w-6"
-													>
-														<path
-															fill-rule="evenodd"
-															d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-															clip-rule="evenodd"
-														/>
-													</svg>
-												</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<p
+						v-if="updatedTunnels?.length"
+						class="px-4 py-3 text-xs text-gray-500"
+					>
+						{{ updatedTunnels.length }} tunnels
+					</p>
 				</div>
 				<div class="h-12 w-full" />
 			</div>
@@ -321,8 +246,10 @@
 
 <script lang="ts" setup>
 import { useTimeAgo } from '@vueuse/core';
+import { openActiveTunnel } from '~/composables/tunnels/storedTunnel';
 
 const { $api } = useNuxtApp();
+const config = useRuntimeConfig();
 
 const tunnels = ref([]);
 const clients = ref([]);

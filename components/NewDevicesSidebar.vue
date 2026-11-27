@@ -1,13 +1,18 @@
 <template>
 	<nav
 		aria-label="Sections"
-		class="hidden h-screen w-96 flex-shrink-0 overflow-auto border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:flex xl:flex-col"
+		class="relative h-full w-full flex-shrink-0 overflow-hidden border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 xl:w-[26rem] xl:flex-col"
+		:class="route.params.id ? 'hidden xl:flex' : 'flex flex-col'"
 	>
-		<div>
-			<div class="relative h-screen w-full p-3 px-2">
-				<div class="flex h-10 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
-					<form class="w-full">
+		<div class="flex h-full min-h-0 flex-col">
+			<div class="sticky top-0 z-30 shrink-0 border-b border-gray-200 bg-white px-2 pb-2 pt-3 dark:border-gray-700 dark:bg-gray-900">
+				<div class="flex min-h-11 w-full cursor-pointer items-center justify-between rounded border border-gray-400 bg-theme-lighter px-2 text-sm">
+					<form
+						class="w-full"
+						@submit.prevent
+					>
 						<input
+							v-model="searchText"
 							class="h-full w-full bg-transparent focus:outline-none"
 							placeholder="Filter"
 						>
@@ -68,7 +73,11 @@
 									<TooltipTrigger>
 										<button
 											type="button"
-											class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 mx-1 px-1 py-2"
+											class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 mx-1 px-1 py-2 disabled:cursor-wait"
+											:disabled="reloading"
+											:aria-busy="reloading"
+											:aria-label="reloading ? 'Refreshing clients' : 'Reload the client list'"
+											@click="reloadClients"
 										>
 											<span
 												class="flex items-center justify-center"
@@ -80,6 +89,7 @@
 													height="20px"
 													viewBox="0 0 24 24"
 													class="icon"
+													:class="reloading ? 'animate-spin' : ''"
 												>
 													<path
 														fill="currentColor"
@@ -90,7 +100,7 @@
 										</button>
 									</TooltipTrigger>
 									<TooltipContent>
-										<span>Reload the client list. Filter are preserved</span>
+										<span>{{ reloading ? 'Refreshing clients…' : 'Reload the client list. Filters are preserved' }}</span>
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
@@ -227,6 +237,8 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="relative min-h-0 flex-1 overflow-hidden">
 
 				<!--                <div class="absolute inset-x-0 bottom-0 top-32">&lt;!&ndash;&ndash;&gt; -->
 				<!--                    <div class="w-full px-1"> -->
@@ -266,8 +278,13 @@
 				<!--                    <div class="my-4 flex items-center justify-between">&lt;!&ndash;&ndash;&gt;&lt;!&ndash;&ndash;&gt;</div> -->
 				<!--                </div> -->
 				<Accordion
+					class="!top-0 overflow-y-auto px-2 pb-3"
 					:list-style="selectedSettingOpt"
 					:items="accordionItems"
+					:filter="clientFilter"
+					:reload-token="reloadToken"
+					@refreshed="onClientsRefreshed"
+					@refresh-failed="onClientsRefreshFailed"
 				>
 					<template #title="{ item }">
 						{{ item.title }}
@@ -278,7 +295,13 @@
 				</Accordion>
 			</div>
 		</div>
-		<CustomModalFilter v-model="isFilterModalOpen" />
+		<CustomModalFilter
+			v-model="isFilterModalOpen"
+			:search="searchText"
+			:match-by="matchBy"
+			:connection-state="connectionState"
+			@apply="onApplyFilter"
+		/>
 		<AddClientModal
 			ref="addClientModal"
 			@save="handleCreateClientAccess"
@@ -291,10 +314,13 @@ import {
 	IconFolder,
 	IconBrandDebian,
 } from '@tabler/icons-vue';
-import { useLocalStorage } from '@vueuse/core';
+import { useDebounceFn, useLocalStorage } from '@vueuse/core';
 import Accordion from './Accordion.vue';
 import AddClientModal from '~/components/clients/AddClientModal.vue';
 
+const route = useRoute();
+const clientStore = useClientStore();
+const snackbar = useSnackbar();
 const props = defineProps({
 	accordionItems: Array,
 	default: [
@@ -306,11 +332,74 @@ const props = defineProps({
 const isClientSettingOpen = ref(false);
 const selectedSettingOpt = useLocalStorage('dashboard_nav_drawer_item_lines', 1);
 const isFilterModalOpen = ref(false);
+const searchText = ref('');
+const appliedSearch = ref('');
+const matchBy = ref('word_in_word');
+const connectionState = ref('any');
+const reloadToken = ref(0);
+const reloading = ref(false);
+watch(() => clientStore.listRevision, (revision) => {
+	if (revision > 0) reloadToken.value += 1;
+});
+const clientFilter = computed(() => ({
+	search: appliedSearch.value,
+	matchBy: matchBy.value,
+	connectionState: connectionState.value,
+}));
+const queueSearch = useDebounceFn((value: string) => {
+	appliedSearch.value = value.trim();
+}, 300);
+watch(searchText, value => queueSearch(value));
 const addClientModal = ref<InstanceType<typeof AddClientModal> | null>(null);
 const { createClientAccess } = useClientAccess();
 
 const openFilter = () => {
 	isFilterModalOpen.value = true;
+};
+
+const onApplyFilter = (next: { search: string; matchBy: string; connectionState: string }) => {
+	searchText.value = next.search;
+	appliedSearch.value = next.search.trim();
+	matchBy.value = next.matchBy;
+	connectionState.value = next.connectionState;
+};
+
+const finishReload = () => {
+	reloading.value = false;
+};
+
+const onClientsRefreshed = () => {
+	if (!reloading.value) return;
+	finishReload();
+	snackbar.add({
+		type: 'success',
+		text: 'Client list refreshed',
+	});
+};
+
+const onClientsRefreshFailed = () => {
+	if (!reloading.value) return;
+	finishReload();
+	snackbar.add({
+		type: 'error',
+		text: 'Could not refresh the client list.',
+	});
+};
+
+const reloadClients = async () => {
+	if (reloading.value) return;
+	reloading.value = true;
+	try {
+		await clientStore.loadGroups();
+		clientStore.listRevision += 1;
+	}
+	catch {
+		finishReload();
+		snackbar.add({
+			type: 'error',
+			text: 'Could not refresh the client list.',
+		});
+	}
 };
 
 const openAddClientModal = () => {

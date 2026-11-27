@@ -1,351 +1,76 @@
 <template>
-	<div class="flex-1 max-h-screen scrollbar-hide xl:overflow-y-auto">
+	<div class="flex h-full min-h-0 flex-1 flex-col overflow-hidden px-6 pt-4 sm:px-10 sm:pt-6">
+		<device-header
+			:device="device"
+			class="shrink-0"
+			@delete="confirmDelete = true"
+		/>
 		<div
-			class="h-screen max-h-screen px-4 py-10 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-12"
+			v-if="isAddingTunnel"
+			class="scrollbar-hide mt-4 min-h-0 flex-1 overflow-y-auto pb-6"
 		>
-			<div class="relative w-full h-full">
-				<device-header :device="device" />
-				<div class="absolute inset-0 w-full h-full">
-					<div
-						v-if="!isAddingTunnel"
-						class="z-10 w-full h-full pt-16"
-					>
-						<!-- Create tabs from here -->
-						<Tabs v-model="selectedTab">
-							<div class="relative z-20 text-center text-sm font-bold text-muted after:absolute after:-left-0 after:-right-0 after:bottom-0 after:h-px after:bg-theme-border after:content-['']">
-								<div class="flex items-center overflow-hidden">
-									<!--									<ScrollArea> -->
-									<button
-										type="button"
-										class="inline-flex items-center duration-200 focus:outline-none rounded-full p-3 flex h-14 w-6 items-center justify-center px-0 py-0 focus:border-0 focus:outline-none focus:ring-0"
-										:disabled="isAtStart"
-										@click="scrollLeft"
-									>
-										<span
-											class="flex items-center justify-center"
-											style="
-														width: 24px;
-														height: 24px;
-													"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												width="24px"
-												height="24px"
-												viewBox="0 0 24 24"
-												class="icon"
-											>
-												<path
-													fill="#607a8c"
-													d="m13.3 17.3l-4.6-4.6q-.15-.15-.212-.325T8.425 12q0-.2.063-.375T8.7 11.3l4.6-4.6q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7L10.8 12l3.9 3.9q.275.275.275.7t-.275.7q-.275.275-.7.275t-.7-.275Z"
-												/>
-											</svg>
-										</span>
-									</button>
-									<div class="overflow-hidden">
-										<TabsList
-
-											class="relative shrink-0 flex border-b border-mauve6"
-										>
-											<ul
-												ref="tabsListRef"
-												class="relative flex justify-start w-full gap-0 -mb-px transition flex-nowrap"
-												:style="{ transform: `translateX(${translateX}px)` }"
-											>
-												<TabsTrigger
-													as="li"
-													value="inventory"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Inventory
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="tunnels"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Tunnels
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="meta-data"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Meta-Data
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="documents"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Documents
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="commands"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Commands
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="scripts"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Scripts
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="monitoring"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Monitoring
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="files"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-600"
-													>
-														Files
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="audit"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-800"
-													>
-														Audit
-													</span>
-												</TabsTrigger>
-												<TabsTrigger
-													as="li"
-													value="schedules"
-													class="w-1/10 min-w-min cursor-pointer whitespace-nowrap border-b-[3px] border-transparent"
-												>
-													<span
-														class="flex items-center justify-center w-full px-8 py-4 rounded-t-lg text-theme-inverted-lighter text-gray-600 hover:text-primary-800"
-													>
-														Schedules
-													</span>
-												</TabsTrigger>
-											</ul>
-										</TabsList>
-									</div>
-									<button
-										class="flex inline-flex items-center justify-center w-6 p-3 px-0 py-0 duration-200 rounded-full focus:outline-none h-14 focus:border-0 focus:ring-0"
-										:disabled="isAtEnd"
-										@click="scrollRight"
-									>
-										<span
-											class="flex items-center justify-center"
-											style="
-														width: 24px;
-														height: 24px;
-													"
-										><svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="24px"
-											height="24px"
-											viewBox="0 0 24 24"
-											class="icon"
-										>
-											<path
-												fill="#607a8c"
-												d="M8.7 17.3q-.275-.275-.275-.7t.275-.7l3.9-3.9l-3.9-3.9q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l4.6 4.6q.15.15.213.325t.062.375q0 .2-.063.375t-.212.325l-4.6 4.6q-.275.275-.7.275t-.7-.275Z"
-											/>
-										</svg>
-										</span>
-									</button>
-								</div>
-							</div>
-							<div class="absolute inset-0 z-0 w-full pt-12 top-20">
-								<div class="flex h-full flex-nowrap">
-									<div class="flex-1 w-full h-full">
-										<div class="px-1 text-sm font-normal">
-											<TabsContent value="inventory">
-												<DeviceInventoryTab
-													:device="device"
-													:metrics="metrics"
-												/>
-											</TabsContent>
-											<TabsContent value="tunnels">
-												<DeviceTunnelsTab
-													:id="device.id"
-													@addtunnel="tunnelStore.openAddTunel()"
-												/>
-											</TabsContent>
-											<TabsContent value="meta-data">
-												<DeviceMetaDataTab />
-											</TabsContent>
-											<TabsContent value="documents">
-												<DeviceDocumentsTab />
-											</TabsContent>
-											<TabsContent value="commands">
-												<DeviceCommandsTab :id="device.id" />
-											</TabsContent>
-											<TabsContent value="scripts">
-												<DeviceScriptsTab :id="device.id" />
-											</TabsContent>
-											<TabsContent value="monitoring">
-												<DeviceMonitoringTab />
-											</TabsContent>
-											<TabsContent value="files">
-												<DeviceFilesTab />
-											</TabsContent>
-											<TabsContent value="audit">
-												<DeviceAuditTab />
-											</TabsContent>
-											<TabsContent value="schedules">
-												<DeviceSchedulesTab />
-											</TabsContent>
-										</div>
-									</div>
-								</div>
-							</div>
-						</Tabs>
-					</div>
-					<TunnelsTunnelForm
-						v-if="isAddingTunnel"
-						:device="device"
-					/>
-				</div>
-				<div
-					class="fixed inset-0 z-50 overflow-y-auto transition"
-					style="display: none"
-				>
-					<div
-						class="fixed inset-0 transition bg-theme-backdrop/75"
-					/>
-					<div
-						class="fixed inset-0 overflow-y-auto transition"
-						style="display: none"
-					>
-						<div
-							class="flex items-center justify-center min-h-full text-center"
-						>
-							<div
-								class="relative px-6 py-4 mx-4 overflow-hidden text-left transform rounded shadow-xl bg-theme sm:w-full sm:max-w-lg"
-							>
-								<div as="div">
-									<h3
-										class="mt-2 text-3xl font-medium leading-6 text-theme-inverted"
-									>
-										<span
-											class="text-sm font-medium text-gray-600"
-										>Are you sure?</span>
-									</h3>
-								</div>
-								<div class="pt-4 pb-2">
-									<div
-										class="text-sm font-medium text-black-087"
-									>
-										Are you sure you want to delete this
-										note?
-									</div>
-								</div>
-								<div class="flex justify-end mt-5">
-									<button
-										class="inline-flex items-center px-4 py-2 mr-2 text-sm text-white duration-200 rounded hover:opacity-80 focus:outline-none primary-800 plain"
-										type="button"
-									>
-										No
-									</button><button
-										class="inline-flex items-center px-4 py-2 text-sm text-white duration-200 rounded hover:opacity-80 focus:outline-none primary-800"
-										type="button"
-									>
-										Yes
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div>
-					<div
-						class="fixed inset-0 z-50 overflow-y-auto transition"
-						style="display: none"
-					>
-						<div
-							class="fixed inset-0 transition bg-theme-backdrop/75"
-						/>
-						<div
-							class="fixed inset-0 overflow-y-auto transition"
-							style="display: none"
-						>
-							<div
-								class="flex items-center justify-center min-h-full text-center"
-							>
-								<div
-									class="relative px-6 py-4 mx-4 overflow-hidden text-left transform rounded shadow-xl bg-theme sm:w-full sm:max-w-lg"
-								>
-									<div as="div">
-										<h3
-											class="mt-2 text-3xl font-medium leading-6 text-theme-inverted"
-										>
-											Are you sure?
-										</h3>
-									</div>
-									<div class="pt-4 pb-2">
-										<div class="text-sm text-gray-700">
-											Are you sure you want to delete this
-											schedule?
-										</div>
-									</div>
-									<div class="flex justify-end mt-5">
-										<button
-											class="inline-flex items-center px-4 py-2 mr-2 text-sm text-white duration-200 rounded hover:opacity-80 focus:outline-none primary-800 plain"
-											type="button"
-										>
-											No
-										</button><button
-											class="inline-flex items-center px-4 py-2 text-sm text-white duration-200 rounded hover:opacity-80 focus:outline-none primary-800"
-											type="button"
-										>
-											Yes
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div />
-			</div>
+			<TunnelsTunnelForm :device="device" />
 		</div>
+		<Tabs
+			v-else
+			v-model="selectedTab"
+			class="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden"
+		>
+			<div class="relative shrink-0 border-b border-gray-200 dark:border-gray-700">
+				<TabsList class="h-auto w-full justify-start bg-transparent p-0">
+					<ul
+						class="flex w-full snap-x gap-1 overflow-x-auto overscroll-x-contain"
+					>
+						<TabsTrigger
+							v-for="tab in visibleTabs"
+							:key="tab.id"
+							as="li"
+							:value="tab.id"
+							:disabled="tabLocked(tab.id)"
+							:title="tabLocked(tab.id) ? 'Available when the device is connected' : undefined"
+							class="min-h-11 shrink-0 snap-start whitespace-nowrap border-b-[3px] border-transparent disabled:cursor-not-allowed disabled:opacity-40"
+							:class="tabLocked(tab.id) ? 'cursor-not-allowed' : 'cursor-pointer'"
+						>
+							<span
+								class="flex min-h-11 items-center px-4 text-sm font-medium text-gray-600 transition-colors duration-150 data-[state=active]:text-primary-800"
+								:class="tabLocked(tab.id) ? '' : 'hover:text-primary-700'"
+							>
+								{{ tab.label }}
+							</span>
+						</TabsTrigger>
+					</ul>
+				</TabsList>
+			</div>
+			<div
+				class="min-h-0 flex-1 py-4"
+				:class="selectedTab === 'commands' ? 'flex flex-col overflow-hidden' : 'scrollbar-hide overflow-y-auto'"
+			>
+				<TabsContent
+					v-for="tab in visibleTabs"
+					:key="tab.id"
+					:value="tab.id"
+					:class="tab.id === 'commands' ? 'flex min-h-0 flex-1 flex-col overflow-hidden' : ''"
+				>
+					<component
+						:is="tabComponents[tab.id]"
+						v-bind="propsFor(tab.id)"
+						@addtunnel="tunnelStore.openAddTunel()"
+					/>
+				</TabsContent>
+			</div>
+		</Tabs>
+		<Modal
+			v-model="confirmDelete"
+			title="Delete device"
+			ok-text="Delete"
+			cancel-text="Cancel"
+			:show-cancel="true"
+			@ok="deleteDevice"
+		>
+			<div class="flex min-h-[200px] items-center justify-center p-6 text-center text-sm text-gray-700">
+				Delete {{ device?.name || device?.hostname || device?.id }}? This removes the disconnected device from the server.
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -356,22 +81,75 @@ import {
 	TabsList,
 	TabsTrigger,
 } from '@/components/ui/tabs';
-import DeviceHeader from '~/components/device/DeviceHeader.vue';
-import { useScrollableTabs } from '~/composables/useScrollableTabs';
+import { deviceTabComponents } from '~/lib/deviceTabs';
 import { useClientDetail } from '~/composables/useClientDetail';
 
 const tunnelStore = useTunnelStore();
+const profileStore = useProfile();
+const clientStore = useClientStore();
+const snackbar = useSnackbar();
+const router = useRouter();
+const { $api } = useNuxtApp();
+const confirmDelete = ref(false);
+const deleting = ref(false);
 const selectedTab = ref('inventory');
-
 const { isAddingTunnel } = storeToRefs(tunnelStore);
-
 const { device, metrics } = useClientDetail();
-const {
-	translateX,
-	tabsListRef,
-	isAtStart,
-	isAtEnd,
-	scrollLeft,
-	scrollRight,
-} = useScrollableTabs();
+const { monitoringEnabled, visibleTabs } = useDeviceTabs();
+const tabComponents = deviceTabComponents(monitoringEnabled.value);
+const offline = computed(() => device.value?.disconnected_at != null && device.value.disconnected_at !== '');
+const tabLocked = (id: string) => offline.value && id !== 'inventory';
+
+const propsFor = (id: string) => {
+	if (id === 'inventory') {
+		return { device: device.value, metrics: metrics.value };
+	}
+	if (id === 'tunnels' || id === 'scripts') {
+		return { id: device.value?.id };
+	}
+	if (id === 'commands') {
+		return { id: device.value?.id, active: selectedTab.value === 'commands' };
+	}
+	return {};
+};
+
+watch([offline, visibleTabs], () => {
+	if (offline.value) {
+		selectedTab.value = 'inventory';
+		if (isAddingTunnel.value) tunnelStore.closeAddTunnel();
+		return;
+	}
+	if (!visibleTabs.value.some(tab => tab.id === selectedTab.value)) {
+		selectedTab.value = visibleTabs.value[0]?.id || 'inventory';
+	}
+}, { immediate: true });
+
+const deleteDevice = async () => {
+	const id = device.value?.id;
+	if (!id || deleting.value) return;
+	deleting.value = true;
+	try {
+		await $api.clients.delete(id);
+		confirmDelete.value = false;
+		await router.push('/dashboard');
+		await clientStore.dropClient(id);
+		snackbar.add({
+			type: 'success',
+			text: 'Device deleted',
+		});
+	}
+	catch (error) {
+		snackbar.add({
+			type: 'error',
+			text: 'Could not delete the device',
+		});
+	}
+	finally {
+		deleting.value = false;
+	}
+};
+
+onMounted(() => {
+	profileStore.fetchProfile();
+});
 </script>

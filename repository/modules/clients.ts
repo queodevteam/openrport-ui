@@ -10,6 +10,19 @@ import type {
 } from '~/types';
 import { toQueryString } from '~/lib/utils';
 
+export type ClientSearch = {
+	search?: string;
+	matchBy?: 'begins_with' | 'ends_with' | 'exact' | 'word_in_word';
+	connectionState?: 'any' | 'connected' | 'disconnected';
+};
+
+function withClientSearchWildcard(term: string, matchBy?: ClientSearch['matchBy']) {
+	if (matchBy === 'ends_with') return `*${term}`;
+	if (matchBy === 'exact') return term;
+	if (matchBy === 'begins_with') return `${term}*`;
+	return `*${term}*`;
+}
+
 class ClientsModule extends HttpFactory {
 	private RESOURCE = '/api/v1/clients';
 
@@ -35,14 +48,26 @@ class ClientsModule extends HttpFactory {
 		);
 	}
 
-	async listByGroup(id: string): Promise<ClientsResponse> {
-		let params = `?sort=name&fields[clients]=id,name,os,os_family,os_kernel,os_full_name,ipv4,disconnected_at,tags&page[limit]=20&page[offset]=0`;
-		if (id !== 'all') {
-			params += `&filter[groups]=${id}`;
+	async listByGroup(id: string, filter?: ClientSearch): Promise<ClientsResponse> {
+		const params = new URLSearchParams({
+			sort: 'name',
+			'fields[clients]': 'id,name,os,os_family,os_kernel,os_full_name,ipv4,disconnected_at,tags',
+			'page[limit]': '100',
+			'page[offset]': '0',
+		});
+		if (id !== 'all' && id !== 'favorites') {
+			params.set('filter[groups]', id);
+		}
+		const term = filter?.search?.trim();
+		if (term) {
+			params.set('filter[name|id|ipv4]', withClientSearchWildcard(term, filter?.matchBy));
+		}
+		if (filter?.connectionState && filter.connectionState !== 'any') {
+			params.set('filter[connection_state]', filter.connectionState);
 		}
 		return this.call(
 			'GET',
-			`${this.RESOURCE}${params}`,
+			`${this.RESOURCE}?${params.toString()}`,
 			undefined,
 		);
 	}
@@ -59,6 +84,14 @@ class ClientsModule extends HttpFactory {
 		return this.call(
 			'GET',
 			`${this.RESOURCE}/${id}/metrics`,
+			undefined,
+		);
+	}
+
+	async mountpoints(id: string): Promise<{ data?: { mountpoints?: string | Record<string, number> }[] }> {
+		return this.call(
+			'GET',
+			`${this.RESOURCE}/${id}/mountpoints?page[limit]=1`,
 			undefined,
 		);
 	}
@@ -86,6 +119,78 @@ class ClientsModule extends HttpFactory {
 			'PUT',
 			`${this.RESOURCE}/${clientId}/tunnels${toQueryString(payload)}`,
 			undefined,
+		);
+	}
+
+	async runningJobs(id: string): Promise<{ data?: { jid?: string; status?: string; pid?: number; command?: string }[] }> {
+		return this.call(
+			'GET',
+			`${this.RESOURCE}/${id}/commands?sort=-started_at&page[limit]=10&filter[status]=running&fields[jobs]=jid,status,pid,command`,
+			undefined,
+		);
+	}
+
+	async delete(id: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${id}`,
+			undefined,
+		);
+	}
+
+	async deleteTunnel(clientId: string, tunnelId: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${clientId}/tunnels/${tunnelId}?force=true`,
+			undefined,
+		);
+	}
+
+	async updateTunnelAcl(clientId: string, tunnelId: string, acl: string) {
+		return this.call(
+			'PUT',
+			`${this.RESOURCE}/${clientId}/tunnels/${tunnelId}/acl`,
+			{ acl },
+		);
+	}
+
+	async createStoredTunnel(clientId: string, tunnel: {
+		name: string;
+		scheme: string;
+		remote_ip: string;
+		remote_port: number;
+		public_port: number;
+		acl: string;
+		further_options: Record<string, unknown>;
+	}) {
+		return this.call(
+			'POST',
+			`${this.RESOURCE}/${clientId}/stored-tunnels`,
+			tunnel,
+		);
+	}
+
+	async deleteStoredTunnel(clientId: string, tunnelId: string) {
+		return this.call(
+			'DELETE',
+			`${this.RESOURCE}/${clientId}/stored-tunnels/${tunnelId}`,
+			undefined,
+		);
+	}
+
+	async updateStoredTunnel(clientId: string, tunnel: StoredTunnel) {
+		return this.call(
+			'PUT',
+			`${this.RESOURCE}/${clientId}/stored-tunnels/${tunnel.id}`,
+			{
+				name: tunnel.name,
+				scheme: tunnel.scheme,
+				remote_ip: tunnel.remote_ip,
+				remote_port: tunnel.remote_port,
+				public_port: tunnel.public_port,
+				acl: tunnel.acl,
+				further_options: tunnel.further_options,
+			},
 		);
 	}
 

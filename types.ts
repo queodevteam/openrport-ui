@@ -90,6 +90,7 @@ export interface ClientGroup {
 	id: string;
 	description: string;
 	num_clients: number;
+	num_clients_connected?: number;
 	clients_ids?: string[];
 	params?: any;
 	allowed_user_groups?: string[];
@@ -145,6 +146,7 @@ export interface Profile {
 	groups: string[];
 	two_fa_send_to: string;
 	effective_user_permissions: Permissions;
+	effective_device_tabs?: Record<string, boolean>;
 	group_permissions_enabled: boolean;
 }
 export interface UserListResponse {
@@ -182,6 +184,7 @@ export interface UserPayload {
 export interface UserGroup {
 	name: string;
 	permissions: Permissions;
+	device_tabs?: Record<string, boolean>;
 }
 
 export interface UserGroupResponse {
@@ -282,6 +285,7 @@ export interface APIToken {
 	name: string;
 	created_at: Date;
 	expires_at: Date;
+	token?: string;
 }
 export interface APITokensResponse {
 	data: APIToken[];
@@ -296,7 +300,7 @@ export interface IpResponse {
 	};
 }
 export interface APITokenPayload {
-	expires_at: Date;
+	expires_at?: Date;
 	name: string;
 	scope: string;
 	prefix?: string;
@@ -383,6 +387,7 @@ export interface TunnelPayload {
 	'remote': string;
 	'scheme': string;
 	'acl': string;
+	'name'?: string;
 	'check_port'?: string;
 	'idle-timeout-minutes'?: number;
 	'auto-close'?: string;

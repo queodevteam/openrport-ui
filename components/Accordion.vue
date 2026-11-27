@@ -32,65 +32,111 @@
 	<!--    </div> -->
 	<div class="absolute inset-x-0 bottom-0 top-32">
 		<div
-			v-for="(item, index) in items"
-			:key="index"
-			class="w-full px-1"
+			v-for="{ item, index } in visibleItems"
+			:key="item.id ?? index"
+			class="mb-1 w-full"
 		>
-			<div
-				:class="[
-					'relative z-20 flex min-h-10 cursor-pointer items-center justify-between gap-1 rounded py-1 pl-2 pr-2',
-					isActive(index) ? 'bg-primary text-white hover:bg-primary' : 'text-vtd-primary-500 hover:bg-slate-200 dark:text-vtd-primary-400 hover:dark:bg-slate-800',
-				]"
+			<button
+				type="button"
+				class="folder-row flex min-h-11 w-full items-center gap-2 rounded-lg pl-2 pr-1 text-left transition-colors duration-150"
+				:class="{ 'is-open': isActive(index) }"
+				:aria-expanded="isActive(index)"
 				@click="toggle(index, item.id)"
 			>
-				<div class="absolute left-1.5 top-1.5">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20px"
-						height="20px"
-						viewBox="0 0 24 24"
-						class="icon text-current"
-					>
-						<path
-							fill="currentColor"
-							d="M4 20q-.825 0-1.413-.588T2 18V6q0-.825.588-1.413T4 4h5.175q.4 0 .763.15t.637.425L12 6h8q.825 0 1.413.588T22 8v10q0 .825-.588 1.413T20 20H4ZM4 6v12h16V8h-8.825l-2-2H4Zm0 0v12V6Z"
-						/>
-					</svg>
-				</div>
-
-				<div class="info w-full pl-6">
-					<div class="inline-flex w-max cursor-pointer min-w-full">
-						<div class="text-sm font-normal text-current">
-							{{ item.title }}
-						</div>
-					</div>
-				</div>
-
-				<div
-					v-if="isActive(index)"
-					class="relative flex w-6 items-center justify-center pt-0.5"
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+					class="folder-chevron h-4 w-4 shrink-0 text-gray-500 transition-transform duration-150"
+					:class="isActive(index) ? 'rotate-90' : ''"
 				>
+					<path
+						fill-rule="evenodd"
+						d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+				<span class="folder-mark flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
 					<svg
+						v-if="item.id === 'favorites'"
 						xmlns="http://www.w3.org/2000/svg"
-						width="24px"
-						height="24px"
+						fill="none"
 						viewBox="0 0 24 24"
-						class="icon rotate-180 transform text-current transition-transform"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="h-5 w-5"
 					>
 						<path
-							fill="currentColor"
-							d="M6.7 14.7q-.275-.275-.275-.7t.275-.7l4.6-4.6q.15-.15.325-.212T12 8.425q.2 0 .388.075t.312.2l4.6 4.6q.275.275.275.7t-.275.7q-.275.275-.7.275t-.7-.275L12 10.8l-3.9 3.9q-.275.275-.7.275t-.7-.275Z"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
 						/>
 					</svg>
-				</div>
-			</div>
+					<svg
+						v-else-if="isActive(index)"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="h-5 w-5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776"
+						/>
+					</svg>
+					<svg
+						v-else
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="h-5 w-5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+						/>
+					</svg>
+				</span>
+				<span class="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">
+					{{ item.title }}
+				</span>
+				<span
+					v-if="folderStats(item, index)"
+					class="folder-counts ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums text-gray-600"
+				>
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-slate-400" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).total) }}</span>
+					</span>
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-[#90e884]" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).connected) }}</span>
+					</span>
+					<span class="inline-flex w-11 shrink-0 items-center gap-1">
+						<span class="h-2 w-2 shrink-0 rounded-full bg-red-500" />
+						<span class="w-[3ch]">{{ countLabel(folderStats(item, index).disconnected) }}</span>
+					</span>
+				</span>
+			</button>
 			<div
 				v-if="isActive(index)"
-				class="relative z-10 w-full pb-2 pl-5 after:absolute after:-top-4 after:bottom-0 after:left-3 after:flex after:border-l-2 after:border-dashed after:border-primary after:content-['']"
+				class="relative z-10 mb-2 ml-5 mt-1 border-l border-slate-200 pl-3"
 			>
+				<p
+					v-if="listLoading"
+					class="px-2 py-2 text-xs font-medium text-primary-700"
+				>
+					Refreshing clients…
+				</p>
 				<div
+					v-if="listLoading"
 					class="absolute inset-0 -top-4 z-30 flex items-center justify-center bg-white/50 backdrop-blur-sm"
-					style="display: none;"
 				>
 					<div class="flex w-full justify-center">
 						<svg
@@ -121,16 +167,25 @@
 					</div>
 				</div>
 
-				<RouterLink
-					v-for="(device, i) in deviceList"
-					v-if="listStyle === 1"
-					:to="`/dashboard/${device.id}`"
-					class="mt-2 flex min-h-10 w-full max-w-full flex-100 cursor-pointer items-center overflow-hidden rounded border border-r-[3px] px-1 py-1 pr-2 bg-theme"
-					:class="{ 'border-r-error': device.disconnected_at !== null, 'border-r-success': device.disconnected_at === null }"
+				<p
+					v-if="!listLoading && deviceList && deviceList.length === 0"
+					class="px-2 py-6 text-sm text-gray-500"
 				>
+					No clients match.
+				</p>
+				<RouterLink
+					v-for="device in deviceList"
+					:key="device.id"
+					:to="`/dashboard/${device.id}`"
+					class="mt-2 flex min-h-11 w-full items-center gap-3 overflow-hidden rounded-lg border px-3 py-2 transition-colors duration-150"
+					:class="route.params.id === device.id ? 'border-primary-200 bg-primary-50' : 'border-gray-200 bg-white hover:bg-gray-50'"
+				>
+					<span
+						class="h-2.5 w-2.5 shrink-0 rounded-full"
+						:class="device.disconnected_at ? 'bg-gray-300' : 'bg-[#90e884]'"
+					/>
 					<div
-						class="client-icon ml-1 mr-2 flex w-10 items-center justify-center"
-						style="opacity: 1; transform: scale(0.8);"
+						class="client-icon flex w-8 shrink-0 items-center justify-center"
 					>
 						<ClientIcon
 							:os="device.os"
@@ -139,49 +194,22 @@
 							:os_kernel="device.os_kernel"
 						/>
 					</div>
-					<div class="flex flex-1 flex-col flex-wrap text-vtd-primary-500 dark:text-vtd-primary-400">
-						<div class="truncate text-sm font-normal">
-							{{ device.name }}
-						</div><!----><!---->
-					</div>
-				</RouterLink>
-
-				<RouterLink
-					v-for="(device, i) in deviceList"
-					v-if="listStyle === 2 || listStyle === 3"
-					:to="`/dashboard/${device.id}`"
-					class="mt-2 flex min-h-10 w-full max-w-full flex-100 cursor-pointer items-center overflow-hidden rounded border border-r-[3px] px-1 py-1 pr-2 bg-theme"
-					:class="{ 'border-r-error': device.disconnected_at !== null, 'border-r-success': device.disconnected_at === null }"
-				>
-					<div
-						class="client-icon ml-1 mr-2 flex w-10 items-center justify-center"
-						style="opacity: 1; transform: scale(1.2);"
-					>
-						<ClientIcon
-							:os="device.os"
-							:os_family="device.os_family"
-							:os_full_name="device.os_full_name"
-							:os_kernel="device.os_kernel"
-						/>
-					</div>
-					<div class="flex flex-1 flex-col flex-wrap text-vtd-primary-500 dark:text-vtd-primary-400">
-						<div class="truncate text-sm font-normal">
+					<div class="min-w-0 flex-1">
+						<div class="truncate text-sm font-medium text-gray-900">
 							{{ device.name }}
 						</div>
-						<div class="truncate py-0.5 text-sm font-normal text-theme-inverted-lightinverted">
-							{{ device?.ipv4 && device.ipv4?.length ? device.ipv4[0] : '' }}
+						<div class="truncate text-xs text-gray-500">
+							{{ device?.ipv4?.length ? device.ipv4[0] : 'No IP' }}
 						</div>
 						<div
 							v-if="listStyle === 3 && device?.tags?.length"
-							class="relative flex h-5 w-full"
+							class="mt-1 flex gap-1 overflow-hidden"
 						>
-							<div class="absolute bottom-0 left-0 right-1 z-10 flex w-auto items-center gap-1 truncate">
-								<span
-									v-for="tag in device?.tags"
-									class="whitespace-nowrap rounded bg-slate-200 px-3 py-0 text-sm text-theme-inverted"
-								>{{ tag }}</span>
-							</div>
-							<!---->
+							<span
+								v-for="tag in device.tags"
+								:key="tag"
+								class="truncate rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
+							>{{ tag }}</span>
 						</div>
 					</div>
 				</RouterLink>
@@ -194,23 +222,12 @@
 import { IconBrandDebian, IconFolder } from '@tabler/icons-vue';
 import ClientIcon from '~/components/device/ClientIcon.vue';
 
+const emit = defineEmits(['refreshed', 'refresh-failed']);
 const activeIndex = ref(null);
 const deviceList = ref(null);
+const listLoading = ref(false);
 const store = useClientStore();
-const toggle = async (index, id) => {
-	if (activeIndex.value === index) {
-		activeIndex.value = null;
-	}
-	else {
-		activeIndex.value = index;
-		deviceList.value = await store.loadGroupList(id);
-	}
-};
-
-const isActive = (index) => {
-	return activeIndex.value === index;
-};
-
+const route = useRoute();
 const props = defineProps({
 	items: {
 		type: Array,
@@ -224,10 +241,115 @@ const props = defineProps({
 		type: Number,
 		default: 1,
 	},
+	filter: {
+		type: Object,
+		default: () => ({}),
+	},
+	reloadToken: {
+		type: Number,
+		default: 0,
+	},
 });
+
+const hasActiveFilter = computed(() =>
+	Boolean(props.filter?.search) || (props.filter?.connectionState && props.filter.connectionState !== 'any'),
+);
+
+const searchFolderIndex = computed(() => {
+	const items = props.items || [];
+	const allIndex = items.findIndex(item => item?.id === 'all');
+	return allIndex >= 0 ? allIndex : 0;
+});
+
+const visibleItems = computed(() => {
+	const items = props.items || [];
+	if (activeIndex.value !== null) {
+		const item = items[activeIndex.value];
+		return item ? [{ item, index: activeIndex.value }] : [];
+	}
+	if (hasActiveFilter.value) {
+		const index = searchFolderIndex.value;
+		const item = items[index];
+		return item ? [{ item, index }] : [];
+	}
+	return items.map((item, index) => ({ item, index }));
+});
+
+const loadDevices = async (index) => {
+	const item = props.items?.[index];
+	if (!item) return;
+	deviceList.value = await store.loadGroupList(item.id, props.filter);
+};
+
+const toggle = async (index, id) => {
+	if (activeIndex.value === index) {
+		activeIndex.value = null;
+	}
+	else {
+		activeIndex.value = index;
+		deviceList.value = await store.loadGroupList(id, props.filter);
+	}
+};
+
+const reloadOpenFolder = async (notify) => {
+	listLoading.value = true;
+	try {
+		if (hasActiveFilter.value && props.items?.length) {
+			activeIndex.value = searchFolderIndex.value;
+		}
+		if (activeIndex.value !== null) {
+			await loadDevices(activeIndex.value);
+		}
+		if (notify) emit('refreshed');
+	}
+	catch (error) {
+		if (notify) emit('refresh-failed', error);
+	}
+	finally {
+		listLoading.value = false;
+	}
+};
+
+watch(() => props.filter, () => {
+	reloadOpenFolder(false);
+}, { deep: true });
+
+watch(() => props.reloadToken, (token, previous) => {
+	if (token === previous) return;
+	reloadOpenFolder(true);
+});
+
+const isActive = (index) => {
+	return activeIndex.value === index;
+};
+
+const countLabel = (value) => String(Math.max(0, Number(value) || 0));
+
+const folderStats = (item, index) => {
+	if (isActive(index) && Array.isArray(deviceList.value)) {
+		const total = deviceList.value.length;
+		const disconnected = deviceList.value.filter(device => device.disconnected_at).length;
+		return { total, connected: total - disconnected, disconnected };
+	}
+	if (item?.count == null || item.count === '') return null;
+	const total = Number(item.count) || 0;
+	if (item.connected == null) return { total, connected: null, disconnected: null };
+	const connected = Number(item.connected) || 0;
+	return { total, connected, disconnected: Math.max(0, total - connected) };
+};
 </script>
 
 <style scoped>
+.folder-row:hover,
+.folder-row.is-open {
+	background-color: #f1f5f9;
+}
+
+.folder-mark {
+	background-color: #e2e8f0;
+	color: #475569;
+}
+
 .accordion-header[aria-expanded=true] {
     background-color: #00528d !important;
 }

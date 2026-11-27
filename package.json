@@ -1,6 +1,6 @@
 {
   "name": "openrport-frontend",
-  "version": "0.9.14",
+  "version": "1.0.0",
   "private": true,
   "description": "OpenRPort ui is the managing front-end for the backend RMM OpenRPort",
   "repository": {

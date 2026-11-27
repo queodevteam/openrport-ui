@@ -1,21 +1,18 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-	// const isLoggedIn = false;
-	// if (isLoggedIn) {
-	//     return navigateTo(to.fullPath);
-	// }
-	// return navigateTo("/auth")
-	const { authenticated } = storeToRefs(useTokenStore());
-	const token = useCookie<string>('token');
+import { hasSessionToken } from '~/composables/useSessionAuth';
 
-	if (token.value) {
+export default defineNuxtRouteMiddleware((to) => {
+	const store = useTokenStore();
+	const { authenticated } = storeToRefs(store);
+	const loggedIn = hasSessionToken() || authenticated.value;
+
+	if (loggedIn) {
 		authenticated.value = true;
 	}
 
-	if (token.value && to?.name === 'auth') {
-		return navigateTo('/');
+	if (loggedIn && to?.name === 'auth') {
+		return navigateTo('/dashboard');
 	}
-	if (!token.value && to?.name !== 'auth') {
-		abortNavigation();
+	if (!loggedIn && to?.name !== 'auth') {
 		return navigateTo('/auth');
 	}
 });

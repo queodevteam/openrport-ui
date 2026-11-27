@@ -1,8 +1,8 @@
 import { apiWebSocketUrl } from '~/utils/url';
+import { readSessionToken } from '~/composables/useSessionAuth';
 
 export const useCommandExecution = () => {
 	const config = useRuntimeConfig();
-	const userAuth = useCookie('token');
 	let ws: WebSocket | null = null;
 	const results = ref<any[]>([]);
 	const isConnected = ref(false);
@@ -10,7 +10,7 @@ export const useCommandExecution = () => {
 	const isLoading = ref(false);
 
 	const executeCommand = (command: string, clientsIds: string[], groupIds: string[]) => {
-		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/commands', userAuth.value);
+		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/commands', readSessionToken());
 		ws = new WebSocket(wsUrl);
 		isLoading.value = true;
 		const requestPayload = {

@@ -1,5 +1,14 @@
+export const resolvePublicApiUrl = (apiUrl?: string | null): string => {
+	const configured = String(apiUrl || '').trim();
+	if (!configured || configured === 'same-origin') {
+		if (import.meta.client) return window.location.origin;
+		return '';
+	}
+	return configured;
+};
+
 export const apiWebSocketUrl = (apiUrl: string, path: string, token: string | null | undefined): string => {
-	const url = new URL(apiUrl);
+	const url = new URL(resolvePublicApiUrl(apiUrl));
 	url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
 	url.pathname = path;
 	url.search = '';

@@ -17,10 +17,14 @@ export default defineNuxtPlugin({
 		const external = window.__RPORT_CONFIG__;
 		if (!external) return;
 		const config = useRuntimeConfig();
-		if (external.apiUrl) config.public.apiUrl = external.apiUrl;
-		if (typeof external.monitoringEnabled === 'boolean') {
-			config.public.monitoringEnabled = external.monitoringEnabled;
-		}
-		if (external.appEnv) config.public.appEnv = external.appEnv;
+		const publicConfig = config.public as PublicRuntime & Record<string, unknown>;
+		// Prefer Object.assign: some Nuxt builds expose a readonly proxy for public config.
+		Object.assign(publicConfig, {
+			...(typeof external.apiUrl === 'string' ? { apiUrl: external.apiUrl } : {}),
+			...(typeof external.monitoringEnabled === 'boolean'
+				? { monitoringEnabled: external.monitoringEnabled }
+				: {}),
+			...(external.appEnv ? { appEnv: external.appEnv } : {}),
+		});
 	},
 });

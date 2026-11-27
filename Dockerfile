@@ -9,6 +9,13 @@ RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 COPY . .
 
 ENV NUXT_TELEMETRY_DISABLED=1
+# Bake the API origin into the SPA. Runtime __RPORT_CONFIG__ can still override.
+ARG NUXT_API_URL=https://iot.console.queo.com.co
+ENV NUXT_API_URL=$NUXT_API_URL
+ARG NUXT_PUBLIC_MONITORING_ENABLED=false
+ENV NUXT_PUBLIC_MONITORING_ENABLED=$NUXT_PUBLIC_MONITORING_ENABLED
+ARG NUXT_APP_ENV=staging
+ENV NUXT_APP_ENV=$NUXT_APP_ENV
 
 RUN yarn install --frozen-lockfile --network-timeout 600000 \
 	&& NODE_ENV=production yarn generate \
@@ -22,6 +29,6 @@ COPY --from=build /src/.output/public /usr/share/nginx/html
 
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]

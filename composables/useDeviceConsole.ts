@@ -1,4 +1,5 @@
 import { apiWebSocketUrl } from '~/utils/url';
+import { readSessionToken } from '~/composables/useSessionAuth';
 
 type JobMessage = {
 	status?: string;
@@ -26,7 +27,6 @@ function errorText(data: JobMessage) {
 
 export function useDeviceConsole() {
 	const config = useRuntimeConfig();
-	const userAuth = useCookie('token');
 	const { $api } = useNuxtApp();
 	const running = ref(false);
 	let socket: WebSocket | null = null;
@@ -56,7 +56,7 @@ export function useDeviceConsole() {
 	};
 
 	const openSocket = (path: string, payload: object) => {
-		const wsUrl = apiWebSocketUrl(config.public.apiUrl, path, userAuth.value);
+		const wsUrl = apiWebSocketUrl(config.public.apiUrl, path, readSessionToken());
 		const ws = new WebSocket(wsUrl);
 		ws.onopen = () => ws.send(JSON.stringify(payload));
 		return ws;

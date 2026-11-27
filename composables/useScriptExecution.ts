@@ -1,8 +1,8 @@
 import { apiWebSocketUrl } from '~/utils/url';
+import { readSessionToken } from '~/composables/useSessionAuth';
 
 export const useScriptExecution = () => {
 	const config = useRuntimeConfig();
-	const userAuth = useCookie('token');
 	let ws: WebSocket | null = null;
 	const results = ref<any[]>([]);
 	const isConnected = ref(false);
@@ -10,7 +10,7 @@ export const useScriptExecution = () => {
 	const isLoading = ref(false);
 
 	const executeScript = (script: string, clientIds: string[], groupIds: string[], cwd: string, executeConcurrently: boolean, isSudo: boolean, timeoutInSecond: number) => {
-		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/scripts', userAuth.value);
+		const wsUrl = apiWebSocketUrl(config.public.apiUrl, '/api/v1/ws/scripts', readSessionToken());
 		ws = new WebSocket(wsUrl);
 		isLoading.value = true;
 		const requestPayload = {
